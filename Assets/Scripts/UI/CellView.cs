@@ -8,7 +8,7 @@ using Shikaku.Settings;
 namespace Shikaku.UI
 {
     public class CellView : MonoBehaviour,
-        IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler
+        IPointerDownHandler, IPointerEnterHandler, IPointerUpHandler, ICancelHandler
     {
         [Header("Refs")]
         [SerializeField] private Image bg;
@@ -61,6 +61,15 @@ namespace Shikaku.UI
         [SerializeField] private Color selectedCellBorderColor =
             new Color32(255, 250, 235, 255);
         [SerializeField, Min(1f)] private float selectedCellBorderThickness = 4f;
+        [SerializeField] private Color invalidRegionBorderColor =
+            new Color32(210, 69, 69, 255);
+        [SerializeField] private Color previewFillColor =
+            new Color32(76, 181, 204, 150);
+        [SerializeField] private Color previewBorderColor =
+            new Color32(30, 119, 145, 255);
+        [SerializeField] private Color invalidPreviewBorderColor =
+            new Color32(220, 75, 75, 255);
+        [SerializeField, Min(1f)] private float previewBorderThickness = 6f;
         [SerializeField] private float hintBorderThickness = 7f;
         [SerializeField] private Color tutorialHighlightColor =
             new Color32(236, 174, 48, 255);
@@ -120,6 +129,7 @@ namespace Shikaku.UI
         private bool _isDarkTheme;
 
         private static bool _isPointerDown;
+        private static int _activePointerId = int.MinValue;
         private static float _lastTapTime = -999f;
         private static int _lastTapCell = -1;
 
@@ -731,146 +741,77 @@ namespace Shikaku.UI
 
         public void Render()
         {
-            // ALWAYS reset first so no stale enabled flags remain
             HardDisableAllBorders();
-            bool isAnchor = _board.IsAnchorCell(_index);
-            int val = _board.ValueAt(_index);           // 0 empty, else number
             SetHintThickness(false);
 
-            // Label reset so non-anchors never keep old text
+            bool isClue = _board.IsAnchorCell(_index);
+            int regionId = _board.RegionIdAt(_index);
+            bool isAssigned = regionId >= 0;
+            bool isSelected = isAssigned && _board.IsRegionSelectedAt(_index);
+            bool isValid = isAssigned && _board.IsRegionValidAt(_index);
+            bool isDraft = _board.IsDraftCell(_index);
+
             if (label != null)
             {
                 label.text = "";
                 label.alpha = 0f;
             }
-
-            // Color label reset so it never sticks
             if (colorLabel != null)
             {
                 colorLabel.text = "";
                 colorLabel.alpha = 0f;
             }
 
-            // Empty cell
-            if (val == 0)
+            Color fill = _isDarkTheme ? darkBlankCellColor : blankCellColor;
+            if (isAssigned)
             {
-                ApplyCompleteFx(false);
-                _wasCompleteLastRender = false;
-                ApplyPressedVisual(false);
-                _hasRenderedOnce = true;
-
-                // Empty hint: flash fill with target color (transparent)
-                if (_board.IsHintCell(_index) && _board.HintIsEmptyCell)
-                {
-                    int target = _board.HintTargetValue;
-                    Color hintColor = (_board.Palette != null)
-                        ? _board.Palette.GetColorForNumber(target)
-                        : Color.white;
-
-                    float a = _board.GetHintAlpha();
-                    ApplyTileFill(WithAlpha(hintColor, a));
-                }
-                else
-                {
-                    ApplyTileFill(_isDarkTheme
-                        ? darkBlankCellColor
-                        : blankCellColor);
-                }
-
-                // Wrong-hint border doesn't apply here, but harmless
-                ApplyWrongHintBorderIfNeeded();
-                ApplyTutorialHighlight();
-
-                return;
+                fill = _board.Palette != null
+                    ? _board.Palette.GetColorForNumber((regionId % 12) + 1)
+                    : (Color)new Color32(183, 214, 205, 255);
+            }
+            if (isDraft)
+            {
+                float blend = Mathf.Clamp01(previewFillColor.a);
+                fill = Color.Lerp(fill, new Color(
+                    previewFillColor.r,
+                    previewFillColor.g,
+                    previewFillColor.b,
+                    1f), blend);
             }
 
-            // Filled cell background
-            Color baseFill = (_board.Palette != null)
-              ? _board.Palette.GetColorForNumber(val)
-              : Color.white;
+            ApplyTileFill(fill);
+            ApplyPressedVisual(isAssigned);
 
-            ApplyTileFill(baseFill);
-            ApplyPressedVisual(true);
-
-            // ✅ Color-blind labels: show ONLY on drawn (non-anchor) filled cells
-            if (!isAnchor && val != 0 && colorLabel != null && AppSettings.ColorLabels)
+            if (isClue && label != null)
             {
-                UpdateColorLabelFontSize();
-
-                colorLabel.text = $"{val}";
-                colorLabel.alpha = 0.85f;
-
-                // Optional styling
-                colorLabel.enableAutoSizing = false;
-                colorLabel.fontStyle = FontStyles.Bold;
-                colorLabel.color = new Color(0f, 0f, 0f, 0.85f);
+                ApplyAnchorLabelStyle();
+                label.text = _board.GivenNumberAt(_index).ToString();
+                label.alpha = 1f;
+                float luminance = (fill.r * 0.299f) + (fill.g * 0.587f) + (fill.b * 0.114f);
+                label.color = luminance > 0.58f
+                    ? new Color32(47, 42, 35, 255)
+                    : new Color32(250, 246, 235, 255);
             }
 
-            // Component info
-            int compId = _board.ComponentIdAt(_index);
-            bool isSelectedComp = (_board.SelectedComponentId != -1 && compId == _board.SelectedComponentId);
-            bool isCompComplete = _board.IsComponentCompleteAt(_index);
-
-            // ✅ Complete FX for ALL cells in the component, but ONLY when complete AND NOT selected
-            // Sheen visibility rule
-            bool showCompleteFx = isCompComplete && !isSelectedComp;
-
-            // True completion state, independent of selection
-            bool regionIsCompleteNow = isCompComplete;
-
+            bool showCompleteFx = isValid && !isSelected && !isDraft;
             ApplyCompleteFx(showCompleteFx);
-
-            // Only pulse when the region itself becomes complete,
-            // not when selection changes and not on initial render
-            if (_hasRenderedOnce && regionIsCompleteNow && !_wasCompleteLastRender)
+            if (_hasRenderedOnce && isValid && !_wasCompleteLastRender)
             {
                 if (_completeSheenRoutine != null)
                     StopCoroutine(_completeSheenRoutine);
-
-                // Every cell begins on the same frame, so the completed
-                // region reads as one quick confirmation instead of a sweep.
-                _completeSheenRoutine =
-                    StartCoroutine(PlayCompleteSheenPulse());
+                _completeSheenRoutine = StartCoroutine(PlayCompleteSheenPulse());
             }
-
-            _wasCompleteLastRender = regionIsCompleteNow;
+            _wasCompleteLastRender = isValid;
             _hasRenderedOnce = true;
 
-            // Anchor label (shows target, or count/target when selected — even if complete)
-            if (isAnchor)
-            {
-                ApplyAnchorLabelStyle();
-
-                int target = _board.GivenNumberAt(_index);      // fixed number on this anchor
-                int count = _board.ComponentSizeAt(_index);     // current connected region size
-
-                if (isSelectedComp)
-                {
-                    // ✅ Always show progress when selected (even if complete)
-                    label.text = $"{count}/{target}";
-                    label.alpha = 1f;
-                }
-                else
-                {
-                    // Normal view
-                    label.text = $"{target}";
-                    label.alpha = 1f;
-                }
-            }
-
-            // Outline rules:
-            // - If component is complete: blob outline always
-            // - If selected: ALSO draw per-cell outline (even if complete)
-            if (isCompComplete && showCompleteOutline)
-                DrawBlobOutlineStrict(compId);
-
-            if (isSelectedComp)
-                DrawCellOutlineStrict();
+            if (isDraft)
+                DrawDraftOutlineStrict();
+            else if (isAssigned)
+                DrawRegionOutlineStrict(regionId, isSelected, isValid);
 
             ApplyWrongHintBorderIfNeeded();
             ApplyTutorialHighlight();
         }
-
         private void ApplyTutorialHighlight()
         {
             if (!_tutorialHighlighted)
@@ -881,13 +822,29 @@ namespace Shikaku.UI
             ApplyBorderColor(tutorialHighlightColor);
         }
 
-        private void DrawCellOutlineStrict()
+        private void DrawRegionOutlineStrict(int regionId, bool selected, bool valid)
         {
-            SetBorderThickness(selectedCellBorderThickness);
-            Enable(top); Enable(right); Enable(bottom); Enable(left);
-            ApplyBorderColor(selectedCellBorderColor);
+            SetBorderThickness(selected ? selectedCellBorderThickness : baseBorderThickness);
+            if (!NeighborInSameRegion(regionId, _index, 0, -1)) Enable(top);
+            if (!NeighborInSameRegion(regionId, _index, 1, 0)) Enable(right);
+            if (!NeighborInSameRegion(regionId, _index, 0, 1)) Enable(bottom);
+            if (!NeighborInSameRegion(regionId, _index, -1, 0)) Enable(left);
+            ApplyBorderColor(!valid
+                ? invalidRegionBorderColor
+                : selected ? selectedCellBorderColor : borderColor);
         }
 
+        private void DrawDraftOutlineStrict()
+        {
+            SetBorderThickness(previewBorderThickness);
+            if (!_board.IsDraftNeighbor(_index, 0, -1)) Enable(top);
+            if (!_board.IsDraftNeighbor(_index, 1, 0)) Enable(right);
+            if (!_board.IsDraftNeighbor(_index, 0, 1)) Enable(bottom);
+            if (!_board.IsDraftNeighbor(_index, -1, 0)) Enable(left);
+            ApplyBorderColor(_board.DraftIsGeometricallyValid
+                ? previewBorderColor
+                : invalidPreviewBorderColor);
+        }
         private void SetBorderThickness(float thickness)
         {
             if (top != null)
@@ -919,18 +876,6 @@ namespace Shikaku.UI
             }
         }
 
-        private void DrawBlobOutlineStrict(int compId)
-        {
-            // IMPORTANT: y increases DOWN the screen:
-            // up = -1, down = +1
-            if (!NeighborInSameComponent(compId, _index, 0, -1)) Enable(top);
-            if (!NeighborInSameComponent(compId, _index, +1, 0)) Enable(right);
-            if (!NeighborInSameComponent(compId, _index, 0, +1)) Enable(bottom);
-            if (!NeighborInSameComponent(compId, _index, -1, 0)) Enable(left);
-
-            ApplyBorderColor(borderColor);
-        }
-
         private void Enable(Image img)
         {
             if (img != null) img.enabled = true;
@@ -944,7 +889,7 @@ namespace Shikaku.UI
             if (left && left.enabled) left.color = c;
         }
 
-        private bool NeighborInSameComponent(int compId, int index, int dx, int dy)
+        private bool NeighborInSameRegion(int compId, int index, int dx, int dy)
         {
             int w = _board.Width;
             int h = _board.Height;
@@ -960,75 +905,93 @@ namespace Shikaku.UI
             int nIndex = ny * w + nx;
 
             // Empty cells have compId -1, so this naturally returns false on edges to empty
-            return _board.ComponentIdAt(nIndex) == compId;
+            return _board.RegionIdAt(nIndex) == compId;
         }
 
-        // Input (double tap erase stays)
+        // Input is transactional: pointer movement only updates the preview.
         public static void CancelPointerInput()
         {
             _isPointerDown = false;
+            _activePointerId = int.MinValue;
             _lastTapCell = -1;
             _lastTapTime = -999f;
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (_board == null || _board.InputLocked)
+            if (_board == null || _board.InputLocked ||
+                (_isPointerDown && eventData.pointerId != _activePointerId))
                 return;
 
             _board.NotifyBoardTouched();
-            _isPointerDown = true;
-            _board.BeginStroke();
-
-            bool isAnchor = _board.IsAnchorCell(_index);
-            bool isColored = _board.ValueAt(_index) != 0;
-
-            bool isBlank = !isAnchor && !isColored;
-            if (isBlank)
-            {
-                if (_blankTapRoutine != null)
-                    StopCoroutine(_blankTapRoutine);
-
-                _blankTapRoutine = StartCoroutine(PlayBlankTapAnimation());
-            }
-
+            bool isAssigned = _board.IsCellAssigned(_index);
             float now = Time.unscaledTime;
-            bool isDoubleTapSameCell = (_lastTapCell == _index) && (now - _lastTapTime <= doubleTapThreshold);
-
-            // Double-tap any filled cell.
-            // - Non-anchor: erase that individual cell using the existing behavior.
-            // - Anchor: erase all non-anchor cells in its connected region.
-            if (isColored && isDoubleTapSameCell)
+            bool isDoubleTap = isAssigned && _lastTapCell == _index &&
+                               now - _lastTapTime <= doubleTapThreshold;
+            if (isDoubleTap)
             {
                 _board.OnDoubleTapCell(_index);
-
-                // Reset double-tap tracking so a third quick tap
-                // is treated as a new first tap.
-                _lastTapCell = -1;
-                _lastTapTime = -999f;
+                CancelPointerInput();
                 return;
             }
 
             _lastTapCell = _index;
             _lastTapTime = now;
+            _isPointerDown = true;
+            _activePointerId = eventData.pointerId;
+            _board.BeginStroke();
+            _board.OnPointerDownCell(_index, eventData.pointerId);
 
-            _board.OnPointerDownCell(_index);
+            if (!isAssigned)
+            {
+                if (_blankTapRoutine != null)
+                    StopCoroutine(_blankTapRoutine);
+                _blankTapRoutine = StartCoroutine(PlayBlankTapAnimation());
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_board == null || _board.InputLocked)
+            if (_board == null || _board.InputLocked || !_isPointerDown ||
+                eventData.pointerId != _activePointerId)
                 return;
-
-            if (_isPointerDown)
-                _board.OnPointerEnterCell(_index);
+            _board.OnPointerEnterCell(_index, eventData.pointerId);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
+            if (!_isPointerDown || eventData.pointerId != _activePointerId)
+                return;
+            GameObject releaseObject = eventData.pointerCurrentRaycast.gameObject;
+            CellView releaseCell = releaseObject != null
+                ? releaseObject.GetComponentInParent<CellView>()
+                : null;
+            int releaseCellIndex = releaseCell != null && releaseCell._board == _board
+                ? releaseCell._index
+                : -1;
+            _board?.OnPointerUpCell(
+                eventData.pointerId,
+                eventData.position,
+                eventData.pressEventCamera,
+                releaseCellIndex);
             _isPointerDown = false;
+            _activePointerId = int.MinValue;
         }
 
+        public void OnCancel(BaseEventData eventData)
+        {
+            _board?.CancelRegionDrag();
+            CancelPointerInput();
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                _board?.CancelRegionDrag();
+                CancelPointerInput();
+            }
+        }
         private void Update()
         {
             if (_board == null) return;

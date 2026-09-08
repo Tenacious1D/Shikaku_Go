@@ -865,62 +865,51 @@ namespace Shikaku.UI
         {
             if (_tutorialRoot == null || board == null)
             {
-                Debug.LogError(
-                    "Tutorial could not start because its HUD or board is missing.");
+                Debug.LogError("Tutorial could not start because its HUD or board is missing.");
                 return;
             }
 
             _timerRunning = false;
             GameAnalytics.TutorialStarted();
+            _tutorialStep = -1;
+            _tutorialSwipeTracking = false;
+            if (_tutorialCard != null)
+                _tutorialCard.pickingMode = PickingMode.Ignore;
+            board.ClearTutorialInputFilter();
+            board.SetTutorialHighlights();
             _tutorialRoot.RemoveFromClassList("screen-hidden");
             SetHeaderNextVisible(false);
 
             if (_actions != null)
-            {
                 _actions.style.display = DisplayStyle.None;
-            }
             else
             {
-                if (hintButton != null)
-                    hintButton.style.display = DisplayStyle.None;
-                if (resetButton != null)
-                    resetButton.style.display = DisplayStyle.None;
+                if (hintButton != null) hintButton.style.display = DisplayStyle.None;
+                if (resetButton != null) resetButton.style.display = DisplayStyle.None;
             }
 
-            _tutorialCardLastPosition =
-                new Vector2(float.NaN, float.NaN);
-            ScheduleResponsiveGameplayLayout();
+            if (_tutorialTitle != null)
+                _tutorialTitle.text = "Draw rectangles";
+            if (_tutorialMessage != null)
+                _tutorialMessage.text =
+                    "Drag from one corner to the opposite corner. Every rectangle must contain exactly one number, and its area must equal that number.";
+            if (_tutorialAction != null)
+                _tutorialAction.text =
+                    "Redraw across a region to replace it when you release.";
+            if (_tutorialProgress != null)
+                _tutorialProgress.style.display = DisplayStyle.None;
+            if (_tutorialPreviousButton != null)
+                _tutorialPreviousButton.style.display = DisplayStyle.None;
+            if (_tutorialForwardButton != null)
+                _tutorialForwardButton.style.display = DisplayStyle.None;
+            if (_tutorialNextButton != null)
+                _tutorialNextButton.style.display = DisplayStyle.None;
 
+            ScheduleResponsiveGameplayLayout();
             RefreshTitle();
             UpdateTimerText();
             RefreshBestTime();
-
-            bool expectedFirstPuzzle =
-                board.Width == 4 &&
-                board.Height == 4 &&
-                board.GivenNumberAt(TUTORIAL_SHARED_ANCHOR_LEFT) == 3 &&
-                board.GivenNumberAt(TUTORIAL_SHARED_ANCHOR_RIGHT) == 3 &&
-                board.ValueAt(TUTORIAL_SHARED_FILL) == 0 &&
-                board.GivenNumberAt(TUTORIAL_THREE_ANCHOR) == 3 &&
-                board.ValueAt(TUTORIAL_THREE_NEAR) == 0 &&
-                board.ValueAt(TUTORIAL_THREE_FAR) == 0 &&
-                board.GivenNumberAt(TUTORIAL_TWO_ANCHOR) == 2 &&
-                board.ValueAt(TUTORIAL_ILLEGAL_ABOVE) == 0 &&
-                board.GivenNumberAt(TUTORIAL_ILLEGAL_CONNECTED_ANCHOR) == 3 &&
-                board.ValueAt(TUTORIAL_ILLEGAL_LEFT) == 0 &&
-                board.GivenNumberAt(TUTORIAL_ILLEGAL_ANCHOR) == 3;
-
-            if (!expectedFirstPuzzle)
-            {
-                Debug.LogWarning(
-                    "The first Adventure puzzle changed. Running the generic tutorial finish step.");
-                SetTutorialStep(7);
-                return;
-            }
-
-            SetTutorialStep(0);
         }
-
         private void AdvanceTutorial()
         {
             NavigateTutorial(1);
@@ -2894,7 +2883,7 @@ namespace Shikaku.UI
 
                 totalCells++;
 
-                if (board.ValueAt(i) != 0)
+                if (board.IsCellAssigned(i))
                     filled++;
             }
 

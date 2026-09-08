@@ -10,6 +10,15 @@ namespace Shikaku.UI
 {
     public enum BoardInputAction
     {
+        BeginRegion,
+        UpdateRegion,
+        CommitRegion,
+        OverrideRegion,
+        RemoveRegion,
+        InvalidRegion,
+
+        // Retained so the legacy tutorial UI continues to compile while its
+        // Fillomino lesson is replaced.
         Select,
         DragOverwrite,
         Paint,
@@ -118,7 +127,11 @@ namespace Shikaku.UI
         private bool _gridBuilt = false;
         private bool _useEdgeToEdgeBoardSlot;
 
-        private int[] _solutionValues;
+        private SolutionRegion[] _solutionRegions;
+        private bool _dragActive;
+        private int _dragPointerId = int.MinValue;
+        private int _dragStartIndex = -1;
+        private int _dragCurrentIndex = -1;
 
         private int _hintIndex = -1;
         private HintKind _hintKind = HintKind.None;
@@ -174,6 +187,24 @@ namespace Shikaku.UI
 
             // Standalone developer puzzle.
             return PuzzleLoader.LoadFromResources(entryId);
+        }
+
+        private static PuzzleData CreateDemoFallbackPuzzle()
+        {
+            return new PuzzleData
+            {
+                id = "shikaku_demo_4x4",
+                width = 4,
+                height = 4,
+                givens = new[]
+                {
+                    new Given { x = 1, y = 0, v = 4 },
+                    new Given { x = 2, y = 1, v = 4 },
+                    new Given { x = 0, y = 2, v = 4 },
+                    new Given { x = 3, y = 3, v = 4 }
+                },
+                solution = null
+            };
         }
 
         private void BuildCellExistsFromMask(PuzzleData data)
@@ -266,40 +297,24 @@ namespace Shikaku.UI
 
             if (data == null)
             {
-                // fallback to old hardcoded setup if json missing
-                int[] given = new int[width * height];
-                given[0] = 4;
-                given[3] = 4;
-                given[10] = 3;
-                given[27] = 5;
-
-                _model = new PuzzleModel(width, height, given);
-                _cellExists = null; // ✅ ensure no previous mask sticks
-            }
-            else
-            {
-                puzzleId = PuzzleProgressStore.NormalizePuzzleId(data.id);
-                GameSession.SetPuzzle(puzzleId);
-                width = data.width;
-                height = data.height;
-
-                _model = new PuzzleModel(width, height, null);
-                // ✅ build mask BEFORE model load triggers BoardReset
-                BuildCellExistsFromMask(data);
-                _model.LoadPuzzle(data);
+                Debug.LogWarning(
+                    $"Could not load '{puzzleId}'. Using the built-in Shikaku demo puzzle.");
+                data = CreateDemoFallbackPuzzle();
             }
 
-            _solutionValues = (data.solution != null) ? data.solution.values : null;
-
-            if (_solutionValues != null && _solutionValues.Length != width * height)
-            {
-                Debug.LogWarning($"Solution length mismatch for {data.id}. Expected {width * height}, got {_solutionValues.Length}. Disabling hints.");
-                _solutionValues = null;
-            }
+            puzzleId = PuzzleProgressStore.NormalizePuzzleId(data.id);
+            GameSession.SetPuzzle(puzzleId);
+            width = data.width;
+            height = data.height;
+            _model = new PuzzleModel(width, height, null);
+            BuildCellExistsFromMask(data);
+            _model.LoadPuzzle(data);
+            _solutionRegions = data.solution != null ? data.solution.regions : null;
 
             _model.CellChanged += OnCellChanged;
             _model.SelectionChanged += RenderAll;
             _model.BoardReset += OnBoardReset;
+            _model.BoardChanged += RenderAll;
             AppSettings.EnsureLoaded();
             AppSettings.Changed += OnAnySettingChanged;
 
@@ -882,6 +897,7 @@ namespace Shikaku.UI
             {
                 _model?.ClearSelection();
                 CellView.CancelPointerInput();
+                CancelRegionDrag();
             }
         }
 
@@ -890,6 +906,7 @@ namespace Shikaku.UI
         {
             _tutorialInputFilter = filter;
             CellView.CancelPointerInput();
+            CancelRegionDrag();
             _model?.ClearSelection();
         }
 
@@ -928,207 +945,163 @@ namespace Shikaku.UI
                    _tutorialInputFilter(action, cellIndex);
         }
 
-        public void OnPointerDownCell(int cellIndex)
+        public void OnPointerDownCell(int cellIndex, int pointerId = -1)
         {
-
-            if (_inputLocked || !CellExists(cellIndex))
+            if (_inputLocked || !CellExists(cellIndex) || _dragActive)
+                return;
+            if (!AllowsInput(BoardInputAction.BeginRegion, cellIndex))
                 return;
 
-            if (_model.Value[cellIndex] != 0)
-            {
-                // Some filled regions have no meaningful interaction:
-                // - regions completed entirely by the original givens
-                // - regions completed by a hint
-                if (!_model.CanSelectCell(cellIndex))
-                    return;
-
-                if (!AllowsInput(BoardInputAction.Select, cellIndex))
-                    return;
-
-                _model.SelectCell(cellIndex);
-
-                InputPerformed?.Invoke(
-                    BoardInputAction.Select,
-                    cellIndex);
-
-                return;
-            }
-
-            if (_model.SelectedCellIndex == -1)
-                return;
-
-            if (_model.CanPaintCell(cellIndex))
-            {
-                if (!AllowsInput(BoardInputAction.Paint, cellIndex))
-                    return;
-
-                _model.TryApplyToCell(cellIndex);
-
-                if (sfx != null)
-                    sfx.PlayDraw(isDrag: false);
-
-                InputPerformed?.Invoke(
-                    BoardInputAction.Paint,
-                    cellIndex);
-                CheckSolved();
-            }
-            else
-            {
-                bool overflowed =
-                    _model.WouldPaintOverflow(cellIndex);
-
-                // Preserve the current behavior of clearing selection.
-                _model.ClearSelection();
-
-                if (overflowed)
-                {
-                    if (!AllowsInput(BoardInputAction.IllegalMove, cellIndex))
-                        return;
-
-                    ShowIllegalMoveFeedback(cellIndex);
-                    InputPerformed?.Invoke(
-                        BoardInputAction.IllegalMove,
-                        cellIndex);
-                }
-            }
+            _dragActive = true;
+            _dragPointerId = pointerId;
+            _dragStartIndex = cellIndex;
+            _dragCurrentIndex = cellIndex;
+            InputPerformed?.Invoke(BoardInputAction.BeginRegion, cellIndex);
+            RenderAll();
         }
 
-        public void OnPointerEnterCell(int cellIndex)
+        public void OnPointerEnterCell(int cellIndex, int pointerId = -1)
         {
-            if (_inputLocked || !CellExists(cellIndex))
-                return;
-
-            if (_model.SelectedCellIndex == -1)
-                return;
-
-            if (allowDragOverwrite &&
-                _model.IsOverwriteCandidate(cellIndex))
+            if (_inputLocked || !_dragActive || pointerId != _dragPointerId ||
+                !CellExists(cellIndex) || cellIndex == _dragCurrentIndex)
             {
-                PerformDragOverwrite(cellIndex);
                 return;
             }
 
-            if (!_model.CanPaintCell(cellIndex))
-            {
-                if (_model.WouldPaintOverflow(cellIndex))
-                {
-                    if (!AllowsInput(BoardInputAction.IllegalMove, cellIndex))
-                        return;
-
-                    ShowIllegalMoveFeedback(cellIndex);
-                    InputPerformed?.Invoke(
-                        BoardInputAction.IllegalMove,
-                        cellIndex);
-                }
-
-                return;
-            }
-
-            if (!AllowsInput(BoardInputAction.DragPaint, cellIndex))
-                return;
-
-            _model.TryApplyToCell(cellIndex);
-
-            if (sfx != null)
-                sfx.PlayDraw(isDrag: true);
-
-            InputPerformed?.Invoke(
-                BoardInputAction.DragPaint,
-                cellIndex);
-            CheckSolved();
+            _dragCurrentIndex = cellIndex;
+            InputPerformed?.Invoke(BoardInputAction.UpdateRegion, cellIndex);
+            RenderAll();
         }
 
-        private bool PerformDragOverwrite(int cellIndex)
+        public void OnPointerUpCell(
+            int pointerId,
+            Vector2 screenPosition,
+            Camera eventCamera,
+            int releaseCellIndex)
         {
-            if (_inputLocked || !allowDragOverwrite ||
-                !CellExists(cellIndex))
+            if (!_dragActive || pointerId != _dragPointerId)
+                return;
+            if (!CellExists(releaseCellIndex) ||
+                (boardPanel != null && !RectTransformUtility.RectangleContainsScreenPoint(
+                    boardPanel, screenPosition, eventCamera)))
             {
-                return false;
+                CancelRegionDrag();
+                return;
             }
 
-            if (_model.CanOverwriteCell(cellIndex))
-            {
-                if (!AllowsInput(BoardInputAction.DragOverwrite, cellIndex) ||
-                    !_model.TryOverwriteCell(cellIndex))
-                {
-                    return false;
-                }
+            _dragCurrentIndex = releaseCellIndex;
+            int startIndex = _dragStartIndex;
+            int endIndex = _dragCurrentIndex;
+            bool wasTap = startIndex == endIndex;
+            _dragActive = false;
+            _dragPointerId = int.MinValue;
+            _dragStartIndex = -1;
+            _dragCurrentIndex = -1;
 
+            // A tap on an existing rectangle selects it. It never replaces the
+            // rectangle with a 1x1 region.
+            if (wasTap && _model.GetRegionIdAt(startIndex) >= 0)
+            {
+                _model.SelectRegionAt(startIndex);
+                InputPerformed?.Invoke(BoardInputAction.Select, startIndex);
+                RenderAll();
+                return;
+            }
+
+            if (!_model.CanCommitRegion(startIndex, endIndex))
+            {
+                RenderAll();
+                ShowIllegalMoveFeedback(endIndex);
+                InputPerformed?.Invoke(BoardInputAction.InvalidRegion, endIndex);
+                return;
+            }
+
+            int overlappedRegionCount = _model.CountOverlappedRegions(startIndex, endIndex);
+            BoardInputAction action = overlappedRegionCount > 0
+                ? BoardInputAction.OverrideRegion
+                : BoardInputAction.CommitRegion;
+            if (!AllowsInput(action, endIndex))
+            {
+                RenderAll();
+                return;
+            }
+
+            if (_model.TryCommitRegion(startIndex, endIndex))
+            {
                 if (sfx != null)
-                    sfx.PlayDraw(isDrag: true);
-
-                InputPerformed?.Invoke(
-                    BoardInputAction.DragOverwrite,
-                    cellIndex);
+                    sfx.PlayDraw(isDrag: !wasTap);
+                InputPerformed?.Invoke(action, endIndex);
                 CheckSolved();
-                return true;
             }
+            RenderAll();
+        }
 
-            if (!_model.WouldOverwriteOverflow(cellIndex))
-                return false;
-
-            // Reject the mutation while preserving the selected region, then
-            // flash the filled target before restoring its original color.
-
-            if (!AllowsInput(BoardInputAction.IllegalMove, cellIndex))
-                return false;
-
-            ShowIllegalMoveFeedback(cellIndex);
-            InputPerformed?.Invoke(
-                BoardInputAction.IllegalMove,
-                cellIndex);
-            return true;
+        public void CancelRegionDrag()
+        {
+            if (!_dragActive)
+                return;
+            _dragActive = false;
+            _dragPointerId = int.MinValue;
+            _dragStartIndex = -1;
+            _dragCurrentIndex = -1;
+            RenderAll();
         }
 
         public void OnDoubleTapCell(int cellIndex)
         {
-            if (_inputLocked || !CellExists(cellIndex)) return;
-            if (_model.Value[cellIndex] == 0) return;
-
-            // Hint-completed regions and regions already complete entirely
-            // from givens have no editable content.
-            if (_model.IsHintLockedCell(cellIndex) ||
-                _model.IsGivenOnlyCompleteComponentAt(cellIndex))
+            CancelRegionDrag();
+            if (_inputLocked || !CellExists(cellIndex) ||
+                _model.GetRegionIdAt(cellIndex) < 0 ||
+                !AllowsInput(BoardInputAction.RemoveRegion, cellIndex))
             {
                 return;
             }
 
-            BoardInputAction action = _model.IsAnchorCell(cellIndex)
-                        ? BoardInputAction.EraseRegion
-                : BoardInputAction.EraseCell;
-
-            if (!AllowsInput(action, cellIndex))
-                return;
-
-            bool erasedSomething;
-
-            if (_model.IsAnchorCell(cellIndex))
-            {
-                erasedSomething = _model.TryEraseRegionFromAnchor(cellIndex);
-            }
-            else
-            {
-                _model.TryRemoveFromCell(cellIndex);
-                erasedSomething = true;
-            }
-
-            if (erasedSomething)
+            if (_model.TryRemoveRegionAt(cellIndex))
             {
                 if (sfx != null)
                     sfx.PlayErase();
-
-                InputPerformed?.Invoke(action, cellIndex);
+                InputPerformed?.Invoke(BoardInputAction.RemoveRegion, cellIndex);
                 CheckSolved();
             }
         }
-
         public int SelectedCellIndex => _model.SelectedCellIndex;
-        public int SelectedComponentId => _model.SelectedComponentId;
+        public int SelectedComponentId => _model.SelectedRegionId;
 
         public bool IsAnchorCell(int idx) => _model.IsAnchorCell(idx);
         public int GivenNumberAt(int idx) => _model.GivenNumber[idx];
-
         public int ValueAt(int idx) => _model.Value[idx];
+        public int RegionIdAt(int idx) => _model.GetRegionIdAt(idx);
+        public bool IsCellAssigned(int idx) => _model.GetRegionIdAt(idx) >= 0;
+        public bool IsRegionValidAt(int idx) => _model.IsRegionValidAt(idx);
+        public bool IsRegionSelectedAt(int idx) => _model.IsRegionSelectedAt(idx);
+        public bool IsHintLockedRegionAt(int idx) => _model.IsHintLockedCell(idx);
+
+        public bool IsDraftCell(int index)
+        {
+            if (!_dragActive || index < 0 || index >= width * height)
+                return false;
+            int startX = _dragStartIndex % width;
+            int startY = _dragStartIndex / width;
+            int endX = _dragCurrentIndex % width;
+            int endY = _dragCurrentIndex / width;
+            int x = index % width;
+            int y = index / width;
+            return x >= Mathf.Min(startX, endX) && x <= Mathf.Max(startX, endX) &&
+                   y >= Mathf.Min(startY, endY) && y <= Mathf.Max(startY, endY);
+        }
+
+        public bool IsDraftNeighbor(int index, int dx, int dy)
+        {
+            int x = index % width + dx;
+            int y = index / width + dy;
+            if (x < 0 || x >= width || y < 0 || y >= height)
+                return false;
+            return IsDraftCell(y * width + x);
+        }
+
+        public bool DraftIsGeometricallyValid => _dragActive &&
+            _model.CanCommitRegion(_dragStartIndex, _dragCurrentIndex);
 
         public bool OverwriteTutorialCell(
             int sourceCellIndex,
@@ -1136,34 +1109,9 @@ namespace Shikaku.UI
             bool playFeedback = true,
             bool checkSolved = true)
         {
-            if (_model == null)
-                return false;
-
-            if (!_model.CanSelectCell(sourceCellIndex))
-                return false;
-
-            int sourceValue = _model.Value[sourceCellIndex];
-            _model.SelectCell(sourceCellIndex);
-
-            if (!_model.CanOverwriteCell(targetCellIndex))
-            {
-                _model.ClearSelection();
-                return false;
-            }
-
-            bool overwritten =
-                _model.TryOverwriteCell(targetCellIndex);
-
-            if (!overwritten)
-                return false;
-
-            if (playFeedback && sfx != null)
-                sfx.PlayDraw(isDrag: true);
-
-            if (checkSolved)
-                CheckSolved();
-
-            return _model.Value[targetCellIndex] == sourceValue;
+            // The old tutorial painted individual cells. Shikaku moves are
+            // rectangles, so this compatibility entry point is intentionally inert.
+            return false;
         }
 
         public bool RestoreTutorialCell(
@@ -1172,34 +1120,8 @@ namespace Shikaku.UI
             bool playFeedback = true,
             bool checkSolved = true)
         {
-            if (_model == null)
-                return false;
-
-            // Select the existing incomplete region.
-            if (!_model.CanSelectCell(sourceCellIndex))
-                return false;
-
-            _model.SelectCell(sourceCellIndex);
-
-            // Make sure the erased square can actually be restored.
-            if (!_model.CanPaintCell(targetCellIndex))
-            {
-                _model.ClearSelection();
-                return false;
-            }
-
-            // Restore the erased square without treating it as player input.
-            _model.TryApplyToCell(targetCellIndex);
-
-            if (playFeedback && sfx != null)
-                sfx.PlayDraw(isDrag: false);
-
-            if (checkSolved)
-                CheckSolved();
-
-            return _model.Value[targetCellIndex] != 0;
+            return false;
         }
-
         public bool ResetTutorialPuzzleState()
         {
             if (string.IsNullOrEmpty(puzzleId))
@@ -1209,6 +1131,7 @@ namespace Shikaku.UI
             _tutorialHighlights.Clear();
             _inputLocked = false;
             CellView.CancelPointerInput();
+            CancelRegionDrag();
             LoadPuzzleById(puzzleId);
 
             return _model != null;
@@ -1283,7 +1206,7 @@ namespace Shikaku.UI
                         continue;
 
                     foundPlayableCell = true;
-                    if (_model.Value[i] == 0)
+                    if (_model.GetRegionIdAt(i) < 0)
                         return false;
                 }
 
@@ -1293,6 +1216,7 @@ namespace Shikaku.UI
 
         private void LoadPuzzleById(string id)
         {
+            CancelRegionDrag();
             PuzzleData data = LoadPuzzleDataSmart(id);
             if (data == null) return;
 
@@ -1311,13 +1235,7 @@ namespace Shikaku.UI
             // ✅ make sure visuals match the new mask even if grid didn't rebuild
             RefreshHoleVisuals();
 
-            _solutionValues = (data.solution != null) ? data.solution.values : null;
-
-            if (_solutionValues != null && _solutionValues.Length != width * height)
-            {
-                Debug.LogWarning($"Solution length mismatch for {data.id}. Expected {width * height}, got {_solutionValues.Length}. Disabling hints.");
-                _solutionValues = null;
-            }
+            _solutionRegions = data.solution != null ? data.solution.regions : null;
 
             // Rebuild size after load (since board rect may change)
             StartCoroutine(EnsureSizedAndRendered());
@@ -1690,7 +1608,7 @@ namespace Shikaku.UI
                         Shikaku.Menu.GameSession.TimeTrialSolvedCount + 1;
 
                     Shikaku.Menu.GameSession.TimeTrialCompletedSquares =
-                        Shikaku.Menu.GameSession.TimeTrialCompletedSquares + (width * height);
+                        Shikaku.Menu.GameSession.TimeTrialCompletedSquares + _model.PlayableCellCount;
 
                     PlayerPrefs.Save();
 
@@ -1722,9 +1640,9 @@ namespace Shikaku.UI
             for (int i = 0; i < total; i++)
             {
                 if (!CellExists(i)) continue;
-                if (_model.Value[i] == 0) continue;
+                if (_model.GetRegionIdAt(i) < 0) continue;
 
-                if (_model.IsComponentCompleteAt(i) && _model.ComponentHasAnchorAt(i))
+                if (_model.IsRegionValidAt(i))
                     completed++;
             }
 
@@ -1763,9 +1681,7 @@ namespace Shikaku.UI
                 if (!CellExists(i))
                     continue;
 
-                // A value that is not an original anchor was placed by the player.
-                if (_model.Value[i] != 0 &&
-                    !_model.IsAnchorCell(i))
+                if (_model.GetRegionIdAt(i) >= 0)
                 {
                     count++;
                 }
@@ -1785,201 +1701,61 @@ namespace Shikaku.UI
 
         public void ShowHint()
         {
-            if (_inputLocked)
-                return;
-
-            if (_solutionValues == null ||
-                _solutionValues.Length != width * height)
+            if (_inputLocked || _model == null || _solutionRegions == null ||
+                _solutionRegions.Length == 0)
             {
-                Debug.Log("No solution data available for hints.");
+                Debug.Log("No canonical Shikaku solution regions are available for hints.");
                 return;
             }
 
-            if (_model == null)
-                return;
-
-            // Clear any old hint visual state.
-            _hintIndex = -1;
-            _hintKind = HintKind.None;
-            _hintTargetValue = 0;
-
-            List<int> target =
-    FindLargestUnsolvedSolutionPolyomino();
-
-            if (target == null || target.Count == 0)
+            CancelRegionDrag();
+            SolutionRegion target = FindLargestUnsolvedSolutionRectangle();
+            if (target == null)
             {
-                Debug.Log(
-                    "No unsolved solution polyomino found."
-                );
-
+                Debug.Log("No unsolved Shikaku solution rectangle found.");
                 return;
             }
 
-            // Complete the selected solution region.
-            _model.ForceSolveCellsFromSolution(
-                target,
-                _solutionValues
-            );
+            if (!_model.TryCommitSolutionRegion(target))
+                return;
 
-            // Render the completed region normally first.
             RenderAll();
-
-            // Restart the completion pulse with the longer hint duration
-            // on exactly the cells completed by this hint.
-            for (int i = 0; i < target.Count; i++)
+            for (int y = target.y; y < target.y + target.height; y++)
             {
-                int cellIndex = target[i];
-
-                if (cellIndex < 0 || cellIndex >= _cells.Length)
-                    continue;
-
-                CellView cell = _cells[cellIndex];
-
-                if (cell != null)
-                    cell.PlayHintCompletionPulse();
+                for (int x = target.x; x < target.x + target.width; x++)
+                {
+                    int index = y * width + x;
+                    if (_cells != null && index >= 0 && index < _cells.Length)
+                        _cells[index]?.PlayHintCompletionPulse();
+                }
             }
 
-            // Play only when a region was actually completed.
             if (sfx != null)
-            {
                 sfx.PlayDraw(isDrag: false);
-            }
-
             CheckSolved();
         }
 
-        private List<int> FindLargestUnsolvedSolutionPolyomino()
+        private SolutionRegion FindLargestUnsolvedSolutionRectangle()
         {
-            int total = width * height;
-
-            bool[] visited = new bool[total];
-
-            List<int> best = null;
-            int bestSize = 0;
-
-            for (int i = 0; i < total; i++)
+            SolutionRegion best = null;
+            int bestArea = -1;
+            for (int i = 0; i < _solutionRegions.Length; i++)
             {
-                if (visited[i]) continue;
-                if (!CellExists(i)) continue;
+                SolutionRegion region = _solutionRegions[i];
+                if (region == null || _model.IsSolutionRegionAlreadyCorrect(region))
+                    continue;
+                if (!_model.CanCommitRectangle(region.x, region.y, region.width, region.height))
+                    continue;
 
-                int solValue = _solutionValues[i];
-
-                if (solValue <= 0)
+                int area = region.width * region.height;
+                if (area > bestArea)
                 {
-                    visited[i] = true;
-                    continue;
+                    best = region;
+                    bestArea = area;
                 }
-
-                List<int> region =
-                    FloodSolutionRegion(i, solValue, visited);
-
-                // Include regions of size 2 and larger.
-                if (region.Count < 2) continue;
-
-                // Skip regions that are already completely correct.
-                if (IsSolutionRegionAlreadyCorrect(region, solValue))
-                    continue;
-
-                // Keep the largest incomplete or incorrect region found.
-                if (region.Count <= bestSize) continue;
-
-                best = region;
-                bestSize = region.Count;
             }
-
             return best;
         }
-
-        private List<int> FloodSolutionRegion(int startIndex, int solValue, bool[] visited)
-        {
-            List<int> cells = new List<int>();
-            Queue<int> q = new Queue<int>();
-
-            visited[startIndex] = true;
-            q.Enqueue(startIndex);
-
-            while (q.Count > 0)
-            {
-                int cur = q.Dequeue();
-                cells.Add(cur);
-
-                int x = cur % width;
-                int y = cur / width;
-
-                TryQueueSolutionNeighbor(cur - 1, x > 0, solValue, visited, q);
-                TryQueueSolutionNeighbor(cur + 1, x < width - 1, solValue, visited, q);
-                TryQueueSolutionNeighbor(cur - width, y > 0, solValue, visited, q);
-                TryQueueSolutionNeighbor(cur + width, y < height - 1, solValue, visited, q);
-            }
-
-            return cells;
-        }
-
-        private void TryQueueSolutionNeighbor(
-    int idx,
-    bool inside,
-    int solValue,
-    bool[] visited,
-    Queue<int> q)
-        {
-            if (!inside) return;
-            if (idx < 0 || idx >= width * height) return;
-            if (visited[idx]) return;
-            if (!CellExists(idx)) return;
-            if (_solutionValues[idx] != solValue) return;
-
-            visited[idx] = true;
-            q.Enqueue(idx);
-        }
-
-        private bool IsSolutionRegionAlreadyCorrect(List<int> region, int solValue)
-        {
-            if (region == null || region.Count == 0) return true;
-
-            bool[] inRegion = new bool[width * height];
-
-            for (int i = 0; i < region.Count; i++)
-            {
-                int idx = region[i];
-                inRegion[idx] = true;
-
-                if (_model.Value[idx] != solValue)
-                    return false;
-            }
-
-            // Also make sure there is not an extra same-value square touching this region.
-            // Example: solved 3-region has a wrong extra 3 attached to it.
-            for (int i = 0; i < region.Count; i++)
-            {
-                int idx = region[i];
-
-                int x = idx % width;
-                int y = idx / width;
-
-                if (HasWrongSameValueNeighbor(idx - 1, x > 0, solValue, inRegion)) return false;
-                if (HasWrongSameValueNeighbor(idx + 1, x < width - 1, solValue, inRegion)) return false;
-                if (HasWrongSameValueNeighbor(idx - width, y > 0, solValue, inRegion)) return false;
-                if (HasWrongSameValueNeighbor(idx + width, y < height - 1, solValue, inRegion)) return false;
-            }
-
-            return true;
-        }
-
-        private bool HasWrongSameValueNeighbor(
-    int idx,
-    bool inside,
-    int solValue,
-    bool[] inRegion)
-        {
-            if (!inside) return false;
-            if (idx < 0 || idx >= width * height) return false;
-            if (!CellExists(idx)) return false;
-            if (inRegion[idx]) return false;
-
-            return _model.Value[idx] == solValue;
-        }
-
-
         // Expose hint state for CellView
         public bool IsHintCell(int idx) => idx == _hintIndex;
         public bool HintIsWrongFilled => _hintKind == HintKind.WrongFilled;
@@ -2103,8 +1879,29 @@ namespace Shikaku.UI
                 cell?.SetDarkTheme(isDark);
         }
 
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                CancelRegionDrag();
+                CellView.CancelPointerInput();
+            }
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused)
+            {
+                CancelRegionDrag();
+                CellView.CancelPointerInput();
+            }
+        }
+
         private void OnDestroy()
         {
+            CancelRegionDrag();
+            if (_model != null)
+                _model.BoardChanged -= RenderAll;
             ThemeManager.Changed -= OnThemeChanged;
             AppSettings.Changed -= OnAnySettingChanged;
         }

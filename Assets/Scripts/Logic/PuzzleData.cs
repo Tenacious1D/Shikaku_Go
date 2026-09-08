@@ -7,6 +7,21 @@ namespace Shikaku.Logic
     {
         // row-major: index = y * width + x
         public int[] values;
+
+        // Canonical Shikaku ownership for each cell. Region ids preserve
+        // boundaries when two rectangles with the same area touch.
+        public int[] regionIds;
+        public SolutionRegion[] regions;
+    }
+
+    [Serializable]
+    public class SolutionRegion
+    {
+        public int x;
+        public int y;
+        public int width;
+        public int height;
+        public int area;
     }
 
     [Serializable]

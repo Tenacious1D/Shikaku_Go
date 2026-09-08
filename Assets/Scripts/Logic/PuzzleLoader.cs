@@ -112,7 +112,7 @@ namespace Shikaku.Logic
             dataOut.givens = entry.givens ?? new Given[0];
             dataOut.solution = entry.solution;
 
-            return dataOut;
+            return ValidateOrNull(dataOut, packKey);
         }
 
 
@@ -198,7 +198,7 @@ namespace Shikaku.Logic
                 }
 
                 if (string.IsNullOrEmpty(data.id)) data.id = nameForErrors;
-                return data;
+                return ValidateOrNull(data, nameForErrors);
             }
 
             // Pack
@@ -280,7 +280,137 @@ namespace Shikaku.Logic
             dataOut.givens = entry.givens ?? new Given[0];
             dataOut.solution = entry.solution;
 
-            return dataOut;
+            return ValidateOrNull(dataOut, nameForErrors);
+        }
+
+        public static bool ValidatePuzzleData(PuzzleData data, out string error)
+        {
+            error = null;
+            if (data == null) { error = "Puzzle data is null."; return false; }
+            if (data.width <= 0 || data.height <= 0)
+            {
+                error = "Puzzle width and height must be positive.";
+                return false;
+            }
+
+            int total = data.width * data.height;
+            bool[] exists = PuzzleModel.BuildExistsFromMask(data.width, data.height, data.mask);
+            if (!string.IsNullOrWhiteSpace(data.mask))
+            {
+                int bitCount = 0;
+                foreach (char character in data.mask)
+                    if (character == '0' || character == '1') bitCount++;
+                if (bitCount != total)
+                {
+                    error = $"Mask has {bitCount} cells; expected {total}.";
+                    return false;
+                }
+            }
+
+            var cluesByCell = new Dictionary<int, int>();
+            if (data.givens == null || data.givens.Length == 0)
+            {
+                error = "Puzzle has no clues.";
+                return false;
+            }
+            for (int i = 0; i < data.givens.Length; i++)
+            {
+                Given clue = data.givens[i];
+                if (clue == null || clue.v <= 0 || clue.x < 0 || clue.x >= data.width ||
+                    clue.y < 0 || clue.y >= data.height)
+                {
+                    error = $"Clue {i} is invalid.";
+                    return false;
+                }
+                int index = clue.y * data.width + clue.x;
+                if (!exists[index] || cluesByCell.ContainsKey(index))
+                {
+                    error = $"Clue {i} is masked or duplicates another clue.";
+                    return false;
+                }
+                cluesByCell.Add(index, clue.v);
+            }
+
+            if (data.solution == null) return true;
+            if (data.solution.values != null && data.solution.values.Length != total)
+            {
+                error = $"Solution values has {data.solution.values.Length} cells; expected {total}.";
+                return false;
+            }
+
+            SolutionRegion[] regions = data.solution.regions;
+            int[] regionIds = data.solution.regionIds;
+            if (regions == null || regions.Length == 0 || regionIds == null || regionIds.Length != total)
+            {
+                error = "Solution must contain regions and a full regionIds array.";
+                return false;
+            }
+
+            int[] ownedCounts = new int[regions.Length];
+            for (int i = 0; i < total; i++)
+            {
+                if (!exists[i])
+                {
+                    if (regionIds[i] >= 0)
+                    {
+                        error = $"Masked cell {i} belongs to a solution region.";
+                        return false;
+                    }
+                    continue;
+                }
+                if (regionIds[i] < 0 || regionIds[i] >= regions.Length)
+                {
+                    error = $"Cell {i} has invalid solution region id {regionIds[i]}.";
+                    return false;
+                }
+                ownedCounts[regionIds[i]]++;
+            }
+
+            for (int id = 0; id < regions.Length; id++)
+            {
+                SolutionRegion region = regions[id];
+                if (region == null || region.width <= 0 || region.height <= 0 ||
+                    region.x < 0 || region.y < 0 || region.x + region.width > data.width ||
+                    region.y + region.height > data.height || region.area != region.width * region.height ||
+                    ownedCounts[id] != region.area)
+                {
+                    error = $"Solution region {id} has invalid bounds or area.";
+                    return false;
+                }
+
+                int clueCount = 0;
+                int clueValue = 0;
+                for (int y = region.y; y < region.y + region.height; y++)
+                {
+                    for (int x = region.x; x < region.x + region.width; x++)
+                    {
+                        int index = y * data.width + x;
+                        if (!exists[index] || regionIds[index] != id)
+                        {
+                            error = $"Solution region {id} ownership is inconsistent.";
+                            return false;
+                        }
+                        if (cluesByCell.TryGetValue(index, out int clue))
+                        {
+                            clueCount++;
+                            clueValue = clue;
+                        }
+                    }
+                }
+                if (clueCount != 1 || clueValue != region.area)
+                {
+                    error = $"Solution region {id} must contain exactly one matching clue.";
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static PuzzleData ValidateOrNull(PuzzleData data, string nameForErrors)
+        {
+            if (ValidatePuzzleData(data, out string error)) return data;
+            Debug.LogError($"PuzzleLoader: Invalid Shikaku puzzle '{nameForErrors}': {error}");
+            return null;
         }
     }
 }

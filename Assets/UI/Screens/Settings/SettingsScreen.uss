@@ -1,0 +1,627 @@
+/* UI Toolkit Settings screen */
+.settings-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.settings-main-view {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.settings-content {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 920px;
+    min-height: 100%;
+    align-items: center;
+    padding-top: 88px;
+    padding-right: 38px;
+    padding-bottom: 32px;
+    padding-left: 38px;
+}
+
+.settings-back-button {
+    position: absolute;
+    left: 38px;
+    top: 63px;
+    width: 104px;
+    height: 108px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(241, 237, 221);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 8px;
+    border-left-width: 3px;
+    border-color: rgb(190, 182, 161);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+    transition-duration: 0.08s;
+    transition-property: translate;
+}
+
+.settings-back-button:active {
+    translate: 0 5px;
+    border-bottom-width: 4px;
+}
+
+.settings-back-icon {
+    width: 66px;
+    height: 66px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_back.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.settings-title-block {
+    flex-shrink: 0;
+    width: 650px;
+    height: 250px;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-title-row {
+    height: 155px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-title-icon {
+    width: 44px;
+    height: 44px;
+    margin-right: 25px;
+    margin-left: 25px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_settings.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(55, 53, 47);
+}
+
+.settings-title {
+    margin: 0;
+    padding: 0;
+    color: rgb(42, 42, 39);
+    font-size: 104px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 7px;
+    -unity-text-outline-color: rgb(247, 242, 225);
+}
+
+.privacy-preferences-title-block {
+    width: 820px;
+}
+
+.privacy-preferences-title {
+    font-size: 72px;
+    white-space: normal;
+}
+
+.privacy-preferences-title-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_settings.png");
+}
+
+.settings-title-ornament {
+    width: 470px;
+    height: 46px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-ornament-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: rgba(145, 134, 113, 0.45);
+}
+
+.settings-scroll-view {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 0;
+}
+
+.settings-scroll-view > .unity-scroll-view__content-viewport {
+    overflow: hidden;
+}
+
+.settings-scroll-view .unity-scroller {
+    display: none;
+}
+
+.settings-scroll-content {
+    width: 100%;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 42px;
+}
+
+.settings-section-card {
+    width: 100%;
+    max-width: 780px;
+    margin-bottom: 32px;
+    padding-top: 24px;
+    padding-right: 22px;
+    padding-bottom: 25px;
+    padding-left: 22px;
+    background-color: rgba(241, 235, 215, 0.96);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 9px;
+    border-left-width: 3px;
+    border-color: rgb(192, 183, 161);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.settings-section-heading-row {
+    height: 74px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.settings-section-accent {
+    width: 11px;
+    height: 52px;
+    margin-right: 20px;
+    background-color: rgb(226, 153, 22);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.settings-section-heading {
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    color: rgb(62, 53, 42);
+    font-size: 39px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.settings-control-row {
+    width: 100%;
+    min-height: 126px;
+    margin-bottom: 9px;
+    padding-right: 26px;
+    padding-left: 28px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(249, 245, 230, 0.73);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 3px;
+    border-left-width: 1px;
+    border-color: rgba(190, 179, 155, 0.62);
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+.settings-control-label {
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    color: rgb(61, 51, 39);
+    font-size: 42px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.settings-switch {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 160px;
+    height: 76px;
+    margin: 0;
+    padding: 0;
+}
+
+.settings-switch > .unity-toggle__input {
+    width: 160px;
+    height: 76px;
+    margin: 0;
+    padding: 0;
+    background-color: rgb(184, 180, 167);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 5px;
+    border-left-width: 2px;
+    border-color: rgb(148, 141, 124);
+    border-top-left-radius: 38px;
+    border-top-right-radius: 38px;
+    border-bottom-right-radius: 38px;
+    border-bottom-left-radius: 38px;
+    transition-duration: 0.14s;
+    transition-property: background-color;
+}
+
+.settings-switch > .unity-toggle__input > .unity-toggle__checkmark {
+    width: 62px;
+    height: 62px;
+    margin-top: 5px;
+    margin-left: 6px;
+    background-color: rgb(247, 243, 228);
+    background-image: none;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 4px;
+    border-left-width: 2px;
+    border-color: rgb(194, 184, 161);
+    border-top-left-radius: 31px;
+    border-top-right-radius: 31px;
+    border-bottom-right-radius: 31px;
+    border-bottom-left-radius: 31px;
+    transition-duration: 0.14s;
+    transition-property: translate;
+}
+
+.settings-switch:checked > .unity-toggle__input {
+    background-color: rgb(58, 139, 69);
+    border-color: rgb(38, 98, 48);
+}
+
+.settings-switch:checked > .unity-toggle__input > .unity-toggle__checkmark {
+    translate: 84px 0;
+}
+
+.settings-volume-row {
+    min-height: 145px;
+}
+
+.settings-volume-control {
+    flex-shrink: 0;
+    width: 430px;
+    align-items: stretch;
+}
+
+.settings-volume-value {
+    height: 42px;
+    margin: 0 10px 0 0;
+    padding: 0;
+    color: rgb(94, 77, 57);
+    font-size: 31px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-right;
+}
+
+.settings-volume-slider {
+    width: 100%;
+    height: 66px;
+    margin: 0;
+    padding: 0;
+}
+
+.settings-volume-slider > .unity-base-field__input {
+    margin: 0;
+    padding: 0;
+}
+
+.settings-volume-slider .unity-base-slider__drag-container {
+    height: 66px;
+}
+
+.settings-volume-slider .unity-base-slider__tracker {
+    height: 18px;
+    background-color: rgb(207, 199, 180);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 3px;
+    border-left-width: 2px;
+    border-color: rgb(171, 160, 137);
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    border-bottom-right-radius: 9px;
+    border-bottom-left-radius: 9px;
+}
+
+.settings-volume-slider .unity-base-slider__dragger {
+    width: 48px;
+    height: 48px;
+    background-color: rgb(247, 243, 228);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 6px;
+    border-left-width: 3px;
+    border-color: rgb(190, 179, 155);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    border-bottom-left-radius: 24px;
+}
+
+.settings-link-button {
+    width: 100%;
+    height: 112px;
+    margin: 0 0 9px 0;
+    padding: 0 28px;
+    flex-direction: row;
+    align-items: center;
+    color: rgb(61, 51, 39);
+    background-color: rgba(249, 245, 230, 0.73);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 3px;
+    border-left-width: 1px;
+    border-color: rgba(190, 179, 155, 0.62);
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+    transition-duration: 0.08s;
+    transition-property: translate, background-color;
+}
+
+.settings-link-button:hover {
+    background-color: rgb(250, 246, 231);
+}
+
+.settings-link-button:active {
+    translate: 0 2px;
+    border-bottom-width: 1px;
+}
+
+.settings-link-label {
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+    color: rgb(61, 51, 39);
+    font-size: 39px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.settings-link-chevron {
+    width: 54px;
+    margin: 0;
+    padding: 0;
+    color: rgb(169, 121, 37);
+    font-size: 59px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.settings-restore-status {
+    margin: 0 22px 14px 22px;
+    padding: 0;
+    color: rgb(112, 99, 80);
+    font-size: 26px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+.settings-footer {
+    width: 100%;
+    max-width: 780px;
+    min-height: 155px;
+    align-items: center;
+    justify-content: center;
+}
+
+.settings-version {
+    margin: 0 0 8px 0;
+    padding: 0;
+    color: rgb(84, 74, 61);
+    font-size: 30px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.settings-company {
+    margin: 0;
+    padding: 0;
+    color: rgb(121, 109, 91);
+    font-size: 27px;
+    -unity-text-align: middle-center;
+}
+
+.settings-appearance-row {
+    min-height: 126px;
+}
+
+.settings-appearance-dropdown {
+    flex-shrink: 0;
+    width: 250px;
+    height: 76px;
+    margin: 0;
+    color: rgb(67, 60, 50);
+    font-size: 29px;
+    -unity-font-style: bold;
+}
+
+.settings-appearance-dropdown > .unity-base-field__input {
+    padding-right: 18px;
+    padding-left: 22px;
+    background-color: rgb(241, 237, 221);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 5px;
+    border-left-width: 2px;
+    border-color: rgb(190, 182, 161);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+
+.settings-appearance-dropdown .unity-base-popup-field__text {
+    color: rgb(67, 60, 50);
+    -unity-font-style: bold;
+}
+
+.settings-appearance-dropdown .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: rgb(84, 76, 63);
+}
+
+.settings-appearance-copy {
+    flex-grow: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.settings-appearance-copy .settings-control-label {
+    flex-grow: 0;
+}
+
+.settings-appearance-note {
+    margin: 3px 0 0 0;
+    padding: 0;
+    color: rgb(124, 111, 92);
+    font-size: 23px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: normal;
+}
+
+.settings-notifications-row {
+    min-height: 160px;
+}
+
+.settings-notifications-note {
+    max-width: 440px;
+}
+
+.settings-notification-system-button {
+    margin-top: 0;
+}
+
+
+.settings-analytics-row {
+    min-height: 178px;
+}
+
+.settings-analytics-note {
+    max-width: 490px;
+}
+
+.settings-danger-button .settings-link-label,
+.settings-danger-button .settings-link-chevron {
+    color: rgb(153, 52, 54);
+}
+
+.settings-danger-button:disabled {
+    opacity: 0.48;
+}
+.settings-ad-report-modal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    padding: 38px;
+}
+
+.settings-ad-report-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(24, 21, 17, 0.78);
+    border-width: 0;
+}
+
+.settings-ad-report-card {
+    width: 100%;
+    max-width: 790px;
+    padding: 46px;
+    background-color: rgb(247, 243, 228);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 8px;
+    border-left-width: 3px;
+    border-color: rgb(190, 179, 155);
+    border-top-left-radius: 26px;
+    border-top-right-radius: 26px;
+    border-bottom-right-radius: 26px;
+    border-bottom-left-radius: 26px;
+}
+
+.settings-ad-report-title {
+    margin: 0 0 22px 0;
+    padding: 0;
+    color: rgb(42, 42, 39);
+    font-size: 58px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.settings-ad-report-copy {
+    margin: 0 0 30px 0;
+    padding: 0;
+    color: rgb(83, 72, 57);
+    font-size: 31px;
+    white-space: normal;
+    -unity-text-align: upper-left;
+}
+
+.settings-ad-report-action,
+.settings-ad-report-cancel-button {
+    width: 100%;
+    height: 94px;
+    margin: 0 0 13px 0;
+    padding: 0 22px;
+    color: rgb(56, 47, 35);
+    font-size: 35px;
+    -unity-font-style: bold;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 6px;
+    border-left-width: 2px;
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+.settings-ad-report-action:active,
+.settings-ad-report-cancel-button:active {
+    translate: 0 3px;
+    border-bottom-width: 3px;
+}
+
+.settings-ad-report-email-button {
+    background-color: rgb(236, 190, 82);
+    border-color: rgb(178, 126, 31);
+}
+
+.settings-ad-report-support-button {
+    background-color: rgb(235, 229, 211);
+    border-color: rgb(180, 169, 145);
+}
+
+.settings-ad-report-cancel-button {
+    margin-bottom: 0;
+    background-color: rgba(249, 245, 230, 0.3);
+    border-color: rgba(180, 169, 145, 0.7);
+}

@@ -1,0 +1,454 @@
+/* UI Toolkit Shop screen */
+
+.shop-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.shop-content {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 920px;
+    min-height: 100%;
+    align-items: center;
+    padding-top: 88px;
+    padding-right: 38px;
+    padding-bottom: 32px;
+    padding-left: 38px;
+}
+
+.shop-back-button {
+    position: absolute;
+    left: 38px;
+    top: 63px;
+    width: 104px;
+    height: 108px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(241, 237, 221);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 8px;
+    border-left-width: 3px;
+    border-color: rgb(190, 182, 161);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+    transition-duration: 0.08s;
+    transition-property: translate;
+}
+
+.shop-back-button:active {
+    translate: 0 5px;
+    border-bottom-width: 4px;
+}
+
+.shop-back-icon {
+    width: 66px;
+    height: 66px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_back.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.shop-title-block {
+    flex-shrink: 0;
+    width: 650px;
+    height: 250px;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-title-row {
+    height: 155px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-title-icon {
+    width: 44px;
+    height: 44px;
+    margin-right: 25px;
+    margin-left: 25px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_shop.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(55, 53, 47);
+}
+
+.shop-title {
+    margin: 0;
+    padding: 0;
+    color: rgb(42, 42, 39);
+    font-size: 108px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 7px;
+    -unity-text-outline-color: rgb(247, 242, 225);
+}
+
+.shop-title-ornament {
+    width: 470px;
+    height: 46px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.shop-ornament-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: rgba(145, 134, 113, 0.45);
+}
+
+.shop-balance-chip {
+    flex-shrink: 0;
+    width: 440px;
+    height: 108px;
+    margin-bottom: 28px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(245, 239, 220, 0.94);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 6px;
+    border-left-width: 3px;
+    border-color: rgb(205, 195, 171);
+    border-top-left-radius: 54px;
+    border-top-right-radius: 54px;
+    border-bottom-right-radius: 54px;
+    border-bottom-left-radius: 54px;
+}
+
+.shop-balance-icon {
+    width: 66px;
+    height: 66px;
+    margin-right: 18px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_hint.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(82, 70, 51);
+}
+
+.shop-balance-caption {
+    margin: 0 14px 0 0;
+    padding: 0;
+    color: rgb(92, 77, 57);
+    font-size: 34px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.shop-balance-value {
+    min-width: 70px;
+    margin: 0;
+    padding: 0;
+    color: rgb(52, 130, 65);
+    font-size: 48px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.shop-products {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 0;
+}
+
+.shop-products .unity-scroll-view__content-container {
+    width: 100%;
+    align-items: center;
+    padding-top: 4px;
+    padding-right: 12px;
+    padding-bottom: 42px;
+    padding-left: 12px;
+}
+
+.shop-products .unity-scroller--vertical {
+    display: none;
+}
+
+.shop-pack-card {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 780px;
+    height: 238px;
+    margin-bottom: 27px;
+    padding-top: 20px;
+    padding-right: 24px;
+    padding-bottom: 27px;
+    padding-left: 24px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(241, 235, 215, 0.97);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 9px;
+    border-left-width: 3px;
+    border-color: rgb(192, 183, 161);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.shop-pack-icon-shell {
+    flex-shrink: 0;
+    width: 145px;
+    height: 145px;
+    margin-right: 28px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(247, 242, 225);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 7px;
+    border-left-width: 3px;
+    border-color: rgb(197, 187, 164);
+    border-top-left-radius: 26px;
+    border-top-right-radius: 26px;
+    border-bottom-right-radius: 26px;
+    border-bottom-left-radius: 26px;
+}
+
+.shop-pack-hint-icon {
+    width: 102px;
+    height: 102px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_hint.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.shop-pack-quantity {
+    position: absolute;
+    right: -13px;
+    bottom: -10px;
+    min-width: 58px;
+    height: 58px;
+    margin: 0;
+    padding-right: 10px;
+    padding-left: 10px;
+    color: rgb(255, 250, 234);
+    font-size: 31px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    background-color: rgb(52, 140, 67);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 5px;
+    border-left-width: 2px;
+    border-color: rgb(35, 98, 47);
+    border-top-left-radius: 29px;
+    border-top-right-radius: 29px;
+    border-bottom-right-radius: 29px;
+    border-bottom-left-radius: 29px;
+}
+
+.shop-pack-25 .shop-pack-quantity {
+    background-color: rgb(42, 111, 176);
+    border-color: rgb(28, 78, 128);
+}
+
+.shop-pack-60 .shop-pack-quantity {
+    background-color: rgb(226, 153, 22);
+    border-color: rgb(166, 105, 12);
+}
+
+.shop-pack-copy {
+    flex-grow: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.shop-pack-title {
+    margin: 0 0 9px 0;
+    padding: 0;
+    color: rgb(61, 51, 39);
+    font-size: 48px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.shop-pack-price {
+    margin: 0;
+    padding: 0;
+    color: rgb(127, 107, 79);
+    font-size: 28px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.shop-buy-button {
+    flex-shrink: 0;
+    width: 190px;
+    height: 108px;
+    margin: 0 0 0 18px;
+    padding: 0;
+    color: rgb(255, 250, 234);
+    font-size: 38px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(49, 40, 29, 0.45);
+    background-color: rgb(52, 140, 67);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 9px;
+    border-left-width: 3px;
+    border-color: rgb(35, 98, 47);
+    border-top-left-radius: 19px;
+    border-top-right-radius: 19px;
+    border-bottom-right-radius: 19px;
+    border-bottom-left-radius: 19px;
+    transition-duration: 0.08s;
+    transition-property: translate;
+}
+
+.shop-buy-button:active {
+    translate: 0 5px;
+    border-bottom-width: 4px;
+}
+
+.shop-pack-25 .shop-buy-button {
+    background-color: rgb(42, 111, 176);
+    border-color: rgb(28, 78, 128);
+}
+
+.shop-pack-60 .shop-buy-button {
+    background-color: rgb(226, 153, 22);
+    border-color: rgb(166, 105, 12);
+}
+
+.shop-buy-button:disabled {
+    opacity: 0.52;
+}
+
+.shop-footnote {
+    width: 100%;
+    max-width: 730px;
+    min-height: 85px;
+    margin: 0;
+    padding-right: 18px;
+    padding-left: 18px;
+    color: rgb(120, 108, 89);
+    font-size: 25px;
+    -unity-text-align: upper-center;
+    white-space: normal;
+}
+
+.shop-purchase-status {
+    display: none;
+    width: 100%;
+    max-width: 730px;
+    min-height: 52px;
+    margin-top: -14px;
+    padding-right: 18px;
+    padding-left: 18px;
+    color: rgb(75, 100, 125);
+    font-size: 24px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    white-space: normal;
+}
+
+.shop-bundle-card {
+    border-color: rgb(190, 131, 22);
+}
+
+.shop-bundle-card .shop-pack-title {
+    font-size: 42px;
+}
+
+.shop-best-value-badge {
+    position: absolute;
+    top: 6px;
+    right: 20px;
+    width: 170px;
+    height: 38px;
+    margin: 0;
+    padding: 0;
+    color: rgb(73, 47, 8);
+    font-size: 20px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    background-color: rgb(247, 191, 61);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+.shop-bundle-icon-shell {
+    background-color: rgb(255, 238, 190);
+    border-color: rgb(190, 131, 22);
+}
+
+.shop-bundle-hint-icon {
+    position: absolute;
+    left: -5px;
+    bottom: -10px;
+    width: 48px;
+    height: 48px;
+    margin: 0;
+}
+
+.shop-bundle-icon-shell .shop-pack-quantity {
+    background-color: rgb(226, 153, 22);
+    border-color: rgb(166, 105, 12);
+}
+
+.shop-bundle-no-ads-label {
+    position: absolute;
+    top: 18px;
+    left: 0;
+    right: 0;
+    height: 84px;
+    margin: 0;
+    padding: 0;
+    color: rgb(131, 61, 23);
+    font-size: 34px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.shop-bundle-buy-button {
+    width: 170px;
+    margin-left: 10px;
+    background-color: rgb(226, 153, 22);
+    border-color: rgb(166, 105, 12);
+}
+
+.shop-remove-ads-icon-shell {
+    background-color: rgb(248, 224, 220);
+    border-color: rgb(185, 82, 72);
+}
+
+.shop-remove-ads-icon-label {
+    margin: 0;
+    padding: 0;
+    color: rgb(190, 62, 52);
+    font-size: 34px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.shop-remove-ads-description {
+    margin: 0 0 7px 0;
+    padding: 0;
+    color: rgb(92, 77, 57);
+    font-size: 23px;
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+
+.shop-remove-ads-buy-button {
+    background-color: rgb(196, 67, 57);
+    border-color: rgb(139, 44, 37);
+}

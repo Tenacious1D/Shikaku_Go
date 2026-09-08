@@ -1,0 +1,611 @@
+fileFormatVersion: 2
+guid: b80a4749e15b7ab4aa08cd834e179a66
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5472599067222778386
+    second: smoothbraingames_logo_0
+  - first:
+      213: 6426540363151572022
+    second: smoothbraingames_logo_1
+  - first:
+      213: -1632827045978334016
+    second: smoothbraingames_logo_2
+  - first:
+      213: -3472476906950153864
+    second: smoothbraingames_logo_3
+  - first:
+      213: -444828685539197784
+    second: smoothbraingames_logo_4
+  - first:
+      213: 7107386826753721411
+    second: smoothbraingames_logo_5
+  - first:
+      213: 423711062103820955
+    second: smoothbraingames_logo_6
+  - first:
+      213: -1521163328787530219
+    second: smoothbraingames_logo_7
+  - first:
+      213: -5071483579415776199
+    second: smoothbraingames_logo_8
+  - first:
+      213: -7163704901328539516
+    second: smoothbraingames_logo_9
+  - first:
+      213: 2359895108227891695
+    second: smoothbraingames_logo_10
+  - first:
+      213: 3720954320518050830
+    second: smoothbraingames_logo_11
+  - first:
+      213: -1445098561205494768
+    second: smoothbraingames_logo_12
+  - first:
+      213: -8192267942749909580
+    second: smoothbraingames_logo_13
+  - first:
+      213: -3578207507025059867
+    second: smoothbraingames_logo_14
+  - first:
+      213: -5806910908600295926
+    second: smoothbraingames_logo_15
+  - first:
+      213: -1132077751259729156
+    second: smoothbraingames_logo_16
+  - first:
+      213: 9202105416903881992
+    second: smoothbraingames_logo_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: smoothbraingames_logo_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 692
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 212a2f74bd392fb40800000000000000
+      internalID: 5472599067222778386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_1
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 565
+        width: 59
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63cfb583968af2950800000000000000
+      internalID: 6426540363151572022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_2
+      rect:
+        serializedVersion: 2
+        x: 790
+        y: 567
+        width: 86
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cc9fc8e3780759e0800000000000000
+      internalID: -1632827045978334016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_3
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 565
+        width: 60
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8792d7ea6a84fcfc0800000000000000
+      internalID: -3472476906950153864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_4
+      rect:
+        serializedVersion: 2
+        x: 941
+        y: 565
+        width: 60
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ac3884daa6a3d9f0800000000000000
+      internalID: -444828685539197784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_5
+      rect:
+        serializedVersion: 2
+        x: 999
+        y: 566
+        width: 42
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34442f199a282a260800000000000000
+      internalID: 7107386826753721411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_6
+      rect:
+        serializedVersion: 2
+        x: 1043
+        y: 566
+        width: 493
+        height: 458
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9a0a1057f251e500800000000000000
+      internalID: 423711062103820955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_7
+      rect:
+        serializedVersion: 2
+        x: 731
+        y: 476
+        width: 60
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51eb44e030eb3eae0800000000000000
+      internalID: -1521163328787530219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_8
+      rect:
+        serializedVersion: 2
+        x: 889
+        y: 533
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93432bced887e99b0800000000000000
+      internalID: -5071483579415776199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_9
+      rect:
+        serializedVersion: 2
+        x: 796
+        y: 476
+        width: 37
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4807690e858659c90800000000000000
+      internalID: -7163704901328539516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_10
+      rect:
+        serializedVersion: 2
+        x: 831
+        y: 474
+        width: 53
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe10b11091800c020800000000000000
+      internalID: 2359895108227891695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_11
+      rect:
+        serializedVersion: 2
+        x: 891
+        y: 476
+        width: 18
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e04fee37d3c73a330800000000000000
+      internalID: 3720954320518050830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_12
+      rect:
+        serializedVersion: 2
+        x: 917
+        y: 476
+        width: 52
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01c1be9d38af1fbe0800000000000000
+      internalID: -1445098561205494768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_13
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 415
+        width: 45
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bd4297e5b73f4e80800000000000000
+      internalID: -8192267942749909580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_14
+      rect:
+        serializedVersion: 2
+        x: 779
+        y: 415
+        width: 33
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ef92230b37a75ec0800000000000000
+      internalID: -3578207507025059867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_15
+      rect:
+        serializedVersion: 2
+        x: 818
+        y: 416
+        width: 51
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0ed9828b45b96fa0800000000000000
+      internalID: -5806910908600295926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_16
+      rect:
+        serializedVersion: 2
+        x: 872
+        y: 415
+        width: 36
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf27a02884d0a40f0800000000000000
+      internalID: -1132077751259729156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: smoothbraingames_logo_17
+      rect:
+        serializedVersion: 2
+        x: 909
+        y: 415
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 805f0403f1274bf70800000000000000
+      internalID: 9202105416903881992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      smoothbraingames_logo_0: 5472599067222778386
+      smoothbraingames_logo_1: 6426540363151572022
+      smoothbraingames_logo_10: 2359895108227891695
+      smoothbraingames_logo_11: 3720954320518050830
+      smoothbraingames_logo_12: -1445098561205494768
+      smoothbraingames_logo_13: -8192267942749909580
+      smoothbraingames_logo_14: -3578207507025059867
+      smoothbraingames_logo_15: -5806910908600295926
+      smoothbraingames_logo_16: -1132077751259729156
+      smoothbraingames_logo_17: 9202105416903881992
+      smoothbraingames_logo_2: -1632827045978334016
+      smoothbraingames_logo_3: -3472476906950153864
+      smoothbraingames_logo_4: -444828685539197784
+      smoothbraingames_logo_5: 7107386826753721411
+      smoothbraingames_logo_6: 423711062103820955
+      smoothbraingames_logo_7: -1521163328787530219
+      smoothbraingames_logo_8: -5071483579415776199
+      smoothbraingames_logo_9: -7163704901328539516
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

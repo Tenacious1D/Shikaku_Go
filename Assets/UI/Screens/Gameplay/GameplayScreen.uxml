@@ -1,0 +1,52 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Screens/Gameplay/GameplayScreen.uss"/>
+    <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
+    <ui:VisualElement name="gameplay-root" class="gameplay-root">
+        <ui:Button name="gameplay-background-button" class="gameplay-background"/>
+        <ui:VisualElement name="gameplay-safe-area" class="gameplay-safe-area" picking-mode="Ignore">
+            <ui:VisualElement class="gameplay-top-balance-spacer" picking-mode="Ignore"/>
+            <ui:VisualElement class="gameplay-header" picking-mode="Ignore">
+                <ui:Button name="gameplay-exit-button" class="gameplay-square-button"><ui:VisualElement class="gameplay-back-icon"/></ui:Button>
+                <ui:VisualElement class="gameplay-title-card" picking-mode="Ignore">
+                    <ui:Label name="gameplay-title" text="LEVEL 1" class="gameplay-title"/>
+                    <ui:Label name="gameplay-subtitle" text="3x3" class="gameplay-subtitle"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="gameplay-header-action-slot"><ui:Button name="gameplay-next-button" tooltip="Next Puzzle" class="gameplay-square-button gameplay-next-button screen-hidden"><ui:VisualElement class="gameplay-next-icon"/></ui:Button></ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="gameplay-title-ornament" picking-mode="Ignore">
+                <ui:VisualElement class="gameplay-ornament-line"/><ui:VisualElement class="gameplay-ornament-diamond"/><ui:VisualElement class="gameplay-ornament-line"/>
+            </ui:VisualElement>
+            <ui:VisualElement class="gameplay-status-card" picking-mode="Ignore">
+                <ui:VisualElement class="gameplay-stat"><ui:Label text="FILLED" class="gameplay-stat-caption"/><ui:Label name="gameplay-progress" text="0/0" class="gameplay-stat-value"/></ui:VisualElement>
+                <ui:VisualElement class="gameplay-stat-divider"/>
+                <ui:VisualElement class="gameplay-stat"><ui:Label text="TIME" class="gameplay-stat-caption"/><ui:Label name="gameplay-timer" text="0:00" class="gameplay-stat-value gameplay-timer"/></ui:VisualElement>
+                <ui:VisualElement name="gameplay-best-divider" class="gameplay-stat-divider"/>
+              <ui:VisualElement name="gameplay-best-stat" class="gameplay-stat">
+                <ui:Label text="BEST" class="gameplay-stat-caption"/>
+                <ui:VisualElement class="gameplay-best-value-row" picking-mode="Ignore">
+                  <ui:Label name="gameplay-best" text="&#x2014;" class="gameplay-stat-value"/>
+                  <ui:VisualElement name="gameplay-best-hint-icon" class="gameplay-best-hint-icon screen-hidden" picking-mode="Ignore"/>
+                </ui:VisualElement>
+              </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="gameplay-play-cluster" class="gameplay-play-cluster" picking-mode="Ignore">
+                <ui:VisualElement name="gameplay-board-slot" class="gameplay-board-slot" picking-mode="Ignore"/>
+                <ui:VisualElement name="gameplay-actions" class="gameplay-actions" picking-mode="Ignore">
+                    <ui:Button name="gameplay-hint-button" tooltip="Hint" class="gameplay-action-button gameplay-hint-button">
+                        <ui:VisualElement class="gameplay-action-icon gameplay-hint-icon"/>
+                        <ui:Label name="gameplay-hint-count-badge" text="0" class="gameplay-hint-badge gameplay-hint-count-badge screen-hidden" picking-mode="Ignore"/>
+                        <ui:VisualElement name="gameplay-hint-video-badge" class="gameplay-hint-badge gameplay-hint-video-badge screen-hidden" picking-mode="Ignore">
+                            <ui:VisualElement class="gameplay-hint-video-screen" picking-mode="Ignore"><ui:VisualElement class="ui-play-icon gameplay-hint-video-play" picking-mode="Ignore"/></ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:Button name="gameplay-reset-button" tooltip="Reset" class="gameplay-action-button gameplay-reset-button">
+                        <ui:VisualElement class="gameplay-action-icon gameplay-reset-icon"/>
+                    </ui:Button>
+                    <ui:Label name="gameplay-ad-status" text="Ad loading - try again shortly" class="gameplay-ad-status screen-hidden" picking-mode="Ignore"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="gameplay-flex-spacer" class="gameplay-flex-spacer" picking-mode="Ignore"/>
+            <ui:VisualElement name="gameplay-ad-spacer" class="gameplay-ad-spacer" picking-mode="Ignore"/>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

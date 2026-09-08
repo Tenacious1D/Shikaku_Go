@@ -1,0 +1,27 @@
+<dependencies>
+  <androidPackages>
+    <androidPackage spec="com.google.android.libraries.ads.mobile.sdk:ads-mobile-sdk:1.0.1">
+      <repositories>
+        <repository>https://maven.google.com/</repository>
+      </repositories>
+    </androidPackage>
+    <androidPackage spec="androidx.constraintlayout:constraintlayout:2.1.4">
+      <repositories>
+        <repository>https://maven.google.com/</repository>
+      </repositories>
+    </androidPackage>
+    <androidPackage spec="androidx.lifecycle:lifecycle-process:2.6.2">
+        <repositories>
+            <repository>https://maven.google.com/</repository>
+        </repositories>
+    </androidPackage>
+  </androidPackages>
+
+  <iosPods>
+    <iosPod name="Google-Mobile-Ads-SDK" version="~> 13.3">
+      <sources>
+        <source>https://github.com/CocoaPods/Specs</source>
+      </sources>
+    </iosPod>
+  </iosPods>
+</dependencies>

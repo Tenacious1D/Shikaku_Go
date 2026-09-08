@@ -1,0 +1,614 @@
+.screen-hidden {
+    display: none;
+}
+
+.daily-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+}
+
+.daily-content {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 920px;
+    min-height: 100%;
+    align-items: center;
+    padding-top: 88px;
+    padding-right: 38px;
+    padding-bottom: 44px;
+    padding-left: 38px;
+}
+
+.daily-square-button {
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(241, 237, 221);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 9px;
+    border-left-width: 3px;
+    border-color: rgb(190, 182, 161);
+    border-top-left-radius: 18px;
+    border-top-right-radius: 18px;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 18px;
+    color: rgb(66, 62, 53);
+    -unity-font-style: bold;
+    transition-duration: 0.08s;
+    transition-property: translate;
+}
+
+.daily-square-button:active {
+    translate: 0 5px;
+    border-bottom-width: 4px;
+}
+
+.daily-back-button {
+    position: absolute;
+    left: 38px;
+    top: 63px;
+    width: 104px;
+    height: 108px;
+    border-bottom-width: 8px;
+}
+
+.daily-back-icon {
+    width: 66px;
+    height: 66px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_back.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.daily-title-block {
+    width: 760px;
+    height: 220px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.daily-title {
+    height: 142px;
+    margin: 0;
+    padding: 0;
+    font-size: 88px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 7px;
+}
+
+.daily-title-gold {
+    margin-top: 0;
+    margin-left: 18px;
+    color: rgb(226, 153, 22);
+    -unity-text-outline-color: rgb(255, 239, 198);
+}
+
+.daily-title-ornament {
+    width: 460px;
+    height: 34px;
+    margin-top: -6px;
+    margin-bottom: 10px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.daily-ornament-line {
+    flex-grow: 1;
+    height: 2px;
+    background-color: rgba(145, 134, 113, 0.45);
+}
+
+.daily-info-row {
+    width: 100%;
+    max-width: 780px;
+    height: 95px;
+    margin-bottom: 30px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.daily-date-chip {
+    width: 430px;
+    height: 95px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(245, 239, 220, 0.92);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 6px;
+    border-left-width: 3px;
+    border-color: rgb(205, 195, 171);
+    border-top-left-radius: 52px;
+    border-top-right-radius: 52px;
+    border-bottom-right-radius: 52px;
+    border-bottom-left-radius: 52px;
+}
+
+.daily-date-icon {
+    width: 64px;
+    height: 64px;
+    margin-right: 22px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_daily.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(76, 66, 50);
+}
+
+.daily-date-label {
+    padding: 0;
+    color: rgb(61, 51, 39);
+    font-size: 43px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-streak-chip {
+    width: 284px;
+    height: 82px;
+    margin-left: 18px;
+    padding: 0 15px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(248, 239, 207, 0.96);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 6px;
+    border-left-width: 3px;
+    border-color: rgb(210, 157, 49);
+    border-top-left-radius: 41px;
+    border-top-right-radius: 41px;
+    border-bottom-right-radius: 41px;
+    border-bottom-left-radius: 41px;
+}
+
+.daily-streak-icon {
+    width: 39px;
+    height: 39px;
+    margin: 0 10px 0 0;
+    padding: 0;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_streak.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(220, 148, 24);
+}
+
+.daily-streak-count {
+    min-width: 43px;
+    margin: 0;
+    padding: 0;
+    color: rgb(52, 137, 67);
+    font-size: 43px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-streak-label {
+    width: 92px;
+    margin: 3px 0 0 9px;
+    padding: 0;
+    color: rgb(101, 79, 45);
+    font-size: 20px;
+    white-space: normal;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.daily-play-button {
+    width: 100%;
+    max-width: 750px;
+    height: 170px;
+    margin: 0 0 22px 0;
+    padding: 0;
+
+    background-color: rgb(218, 157, 31);
+
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 12px;
+    border-left-width: 3px;
+
+    border-color: rgb(166, 108, 18);
+
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+
+    transition-duration: 0.08s;
+    transition-property: translate;
+}
+
+.daily-play-button:active {
+    translate: 0 6px;
+    border-bottom-width: 6px;
+}
+
+.daily-play-inner {
+    flex-grow: 1;
+    margin: 10px;
+    padding-right: 18px;
+    padding-left: 24px;
+    flex-direction: row;
+    align-items: center;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-color: rgba(255, 255, 255, 0.34);
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+.daily-play-icon-box {
+    width: 84px;
+    flex-shrink: 0;
+    height: 84px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(244, 240, 224);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 6px;
+    border-left-width: 2px;
+    border-color: rgb(201, 191, 168);
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    border-bottom-left-radius: 15px;
+}
+
+.daily-play-icon {
+    width: 43px;
+    height: 50px;
+    margin-left: 7px;
+    -unity-background-image-tint-color: rgb(176, 119, 20);
+}
+
+.daily-play-divider {
+    width: 2px;
+    flex-shrink: 0;
+    height: 96px;
+    margin-right: 24px;
+    margin-left: 24px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.daily-play-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    padding: 0;
+    color: rgb(250, 246, 230);
+    font-size: 46px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(54, 45, 32, 0.55);
+}
+
+.daily-calendar-card {
+    width: 100%;
+    max-width: 780px;
+    height: 720px;
+    padding-top: 20px;
+    padding-right: 18px;
+    padding-bottom: 22px;
+    padding-left: 18px;
+    background-color: rgba(241, 235, 215, 0.96);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 10px;
+    border-left-width: 3px;
+    border-color: rgb(192, 183, 161);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+
+.daily-month-row {
+    width: 100%;
+    height: 112px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 14px;
+    padding-left: 14px;
+}
+
+.daily-month-button {
+    width: 98px;
+    height: 92px;
+    font-size: 58px;
+}
+
+.daily-month-button:disabled {
+    opacity: 0.32;
+}
+
+.daily-month-title {
+    flex-grow: 1;
+    padding: 0;
+    color: rgb(59, 49, 37);
+    font-size: 50px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-weekday-row {
+    width: 100%;
+    height: 66px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.daily-weekday {
+    flex-grow: 1;
+    flex-basis: 0;
+    padding: 0;
+    color: rgb(92, 75, 56);
+    font-size: 27px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-calendar-grid {
+    flex-grow: 1;
+    width: 100%;
+}
+
+.daily-calendar-row {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-height: 0;
+    width: 100%;
+    flex-direction: row;
+}
+
+.daily-calendar-cell {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+    margin: 2px;
+}
+
+.daily-calendar-blank {
+    background-color: rgba(226, 217, 197, 0);
+}
+
+.daily-day-button {
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    color: rgb(60, 49, 37);
+    font-size: 40px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    background-color: rgba(246, 240, 220, 0.72);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 2px;
+    border-left-width: 1px;
+    border-color: rgba(190, 179, 155, 0.55);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.daily-day-button:hover {
+    background-color: rgb(249, 244, 226);
+}
+
+.daily-day-button:active {
+    translate: 0 2px;
+    border-bottom-width: 1px;
+}
+
+.daily-day-future,
+.daily-day-unavailable {
+    color: rgba(103, 98, 86, 0.64);
+    background-color: rgba(205, 198, 181, 0.6);
+    border-color: rgba(178, 168, 148, 0.55);
+}
+
+.daily-day-today {
+    color: rgb(255, 250, 231);
+    background-color: rgb(58, 145, 72);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 6px;
+    border-left-width: 3px;
+    border-color: rgb(228, 166, 42);
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(45, 56, 36, 0.7);
+}
+
+.daily-day-completed {
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 5px;
+    border-left-width: 3px;
+
+    border-top-color: rgb(218, 157, 31);
+    border-right-color: rgb(218, 157, 31);
+    border-bottom-color: rgb(176, 119, 20);
+    border-left-color: rgb(218, 157, 31);
+}
+
+.daily-complete-mark {
+    position: absolute;
+    right: 5px;
+    top: 3px;
+    font-size: 20px;
+    -unity-font-style: bold;
+}
+
+/* Easy completed */
+.daily-complete-easy {
+    color: rgb(43, 128, 55);
+}
+
+/* Medium completed */
+.daily-complete-medium {
+    color: rgb(52, 112, 190);
+}
+
+/* Hard completed */
+.daily-complete-hard {
+    color: rgb(186, 56, 58);
+}
+
+/* Easy + Medium + Hard completed */
+.daily-complete-gold {
+    color: rgb(218, 157, 31);
+}
+
+.daily-modal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.daily-modal-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(38, 33, 27, 0.64);
+    border-width: 0;
+    border-radius: 0;
+}
+
+.daily-modal-card {
+    width: 690px;
+    min-height: 760px;
+    padding-top: 58px;
+    padding-right: 55px;
+    padding-bottom: 55px;
+    padding-left: 55px;
+    align-items: center;
+    background-color: rgb(243, 237, 217);
+    border-top-width: 4px;
+    border-right-width: 4px;
+    border-bottom-width: 12px;
+    border-left-width: 4px;
+    border-color: rgb(181, 169, 143);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+    border-bottom-left-radius: 28px;
+}
+
+.daily-modal-close {
+    position: absolute;
+    right: 20px;
+    top: 18px;
+    width: 70px;
+    height: 70px;
+    margin: 0;
+    padding: 0;
+    color: rgb(82, 72, 58);
+    font-size: 47px;
+    -unity-font-style: bold;
+    background-color: rgba(225, 216, 194, 0.78);
+    border-width: 0;
+    border-top-left-radius: 35px;
+    border-top-right-radius: 35px;
+    border-bottom-right-radius: 35px;
+    border-bottom-left-radius: 35px;
+}
+
+.daily-modal-title {
+    margin-bottom: 6px;
+    padding: 0;
+    color: rgb(56, 47, 36);
+    font-size: 61px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-modal-date {
+    margin-bottom: 26px;
+    padding: 0;
+    color: rgb(132, 107, 72);
+    font-size: 36px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-modal-prompt {
+    margin-bottom: 24px;
+    padding: 0;
+    color: rgb(104, 92, 74);
+    font-size: 29px;
+    -unity-text-align: middle-center;
+}
+
+.daily-difficulty-button {
+    width: 100%;
+    height: 126px;
+    margin-bottom: 22px;
+    padding: 0;
+    color: rgb(255, 250, 234);
+    font-size: 43px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(49, 40, 29, 0.5);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 9px;
+    border-left-width: 3px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+.daily-difficulty-button:active {
+    translate: 0 5px;
+    border-bottom-width: 4px;
+}
+
+.daily-easy-button {
+    background-color: rgb(61, 145, 73);
+    border-color: rgb(38, 103, 49);
+}
+
+.daily-medium-button {
+    background-color: rgb(52, 112, 190);
+    border-color: rgb(32, 76, 135);
+}
+
+.daily-hard-button {
+    background-color: rgb(186, 56, 58);
+    border-color: rgb(132, 38, 41);
+}
+
+.daily-difficulty-complete {
+    border-top-color: rgb(255, 241, 167);
+    border-right-color: rgb(255, 241, 167);
+    border-left-color: rgb(255, 241, 167);
+}

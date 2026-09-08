@@ -1,0 +1,751 @@
+.ui-play-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_play.png");
+    -unity-background-scale-mode: scale-to-fit;
+}
+/* Shared dark-paper theme. Applied by ThemeManager to each UIDocument root. */
+
+.theme-dark .screen-root,
+.theme-dark.screen-root {
+    background-color: rgb(34, 32, 29);
+    background-image: url("project://database/Assets/Art/UI/Backgrounds/shikaku_dark_paper_seamless.png");
+}
+
+.theme-dark .brand-title-dark,
+.theme-dark .daily-title-dark,
+.theme-dark .settings-title,
+.theme-dark .shop-title,
+.theme-dark .time-trial-title-dark,
+.theme-dark .free-play-title-dark,
+.theme-dark .gameplay-title {
+    color: rgb(240, 234, 220);
+    -unity-text-outline-color: rgb(34, 32, 29);
+}
+
+.theme-dark .brand-title-gold,
+.theme-dark .daily-title-gold {
+    -unity-text-outline-color: rgb(72, 55, 29);
+}
+
+.theme-dark .time-trial-title-blue {
+    color: rgb(82, 153, 216);
+    -unity-text-outline-color: rgb(29, 43, 55);
+}
+
+.theme-dark .free-play-title-green {
+    color: rgb(78, 166, 91);
+    -unity-text-outline-color: rgb(28, 51, 33);
+}
+
+.theme-dark .tagline,
+.theme-dark .time-trial-subtitle,
+.theme-dark .free-play-level-subtitle,
+.theme-dark .settings-company,
+.theme-dark .shop-footnote {
+    color: rgb(181, 171, 153);
+}
+
+.theme-dark .tagline-rule,
+.theme-dark .daily-ornament-line,
+.theme-dark .settings-ornament-line,
+.theme-dark .shop-ornament-line,
+.theme-dark .time-trial-ornament-line,
+.theme-dark .free-play-ornament-line,
+.theme-dark .gameplay-ornament-line,
+.theme-dark .gameplay-modal-line {
+    background-color: rgba(191, 178, 151, 0.42);
+}
+
+.theme-dark .secondary-menu-button,
+.theme-dark .daily-square-button,
+.theme-dark .settings-back-button,
+.theme-dark .shop-back-button,
+.theme-dark .time-trial-back-button,
+.theme-dark .free-play-back-button,
+.theme-dark .adventure-back-button,
+.theme-dark .gameplay-square-button,
+.theme-dark .gameplay-action-button,
+.theme-dark .gameplay-hint-button,
+.theme-dark .gameplay-reset-button {
+    background-color: rgb(58, 54, 48);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .secondary-button-label,
+.theme-dark .daily-square-button,
+.theme-dark .gameplay-action-icon {
+    color: rgb(239, 232, 217);
+}
+
+.theme-dark .secondary-button-icon,
+.theme-dark .secondary-menu-button .icon-shop,
+.theme-dark .secondary-menu-button .icon-settings,
+.theme-dark .daily-back-icon,
+.theme-dark .settings-back-icon,
+.theme-dark .shop-back-icon,
+.theme-dark .time-trial-back-icon,
+.theme-dark .free-play-back-icon,
+.theme-dark .adventure-back-icon,
+.theme-dark .gameplay-back-icon,
+.theme-dark .gameplay-next-icon,
+.theme-dark .gameplay-action-icon,
+.theme-dark .settings-title-icon,
+.theme-dark .shop-title-icon,
+.theme-dark .time-trial-title-icon,
+.theme-dark .time-trial-ornament-icon,
+.theme-dark .free-play-title-icon,
+.theme-dark .free-play-ornament-icon {
+    -unity-background-image-tint-color: rgb(245, 240, 228);
+}
+
+/* Daily */
+.theme-dark .daily-date-chip,
+.theme-dark .daily-streak-chip,
+.theme-dark .daily-calendar-card,
+.theme-dark .daily-modal-card {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .daily-date-icon {
+    -unity-background-image-tint-color: rgb(245, 240, 228);
+}
+
+.theme-dark .daily-date-label,
+.theme-dark .daily-streak-label,
+.theme-dark .daily-month-title,
+.theme-dark .daily-weekday,
+.theme-dark .daily-modal-title {
+    color: rgb(239, 232, 217);
+}
+
+.theme-dark .daily-streak-chip {
+    border-color: rgb(151, 111, 42);
+}
+
+.theme-dark .daily-streak-count {
+    color: rgb(102, 190, 109);
+}
+
+.theme-dark .daily-streak-icon {
+    -unity-background-image-tint-color: rgb(236, 168, 45);
+}
+
+.theme-dark .daily-day-button {
+    color: rgb(231, 223, 207);
+    background-color: rgb(61, 57, 50);
+    border-color: rgb(94, 86, 73);
+}
+
+.theme-dark .daily-day-button:hover {
+    background-color: rgb(70, 65, 57);
+}
+
+.theme-dark .daily-day-completed {
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 5px;
+    border-left-width: 3px;
+
+    border-top-color: rgb(218, 157, 31);
+    border-right-color: rgb(218, 157, 31);
+    border-bottom-color: rgb(176, 119, 20);
+    border-left-color: rgb(218, 157, 31);
+}
+
+.theme-dark .daily-day-today {
+    background-color: rgb(58, 145, 72);
+    border-color: rgb(228, 166, 42);
+}
+
+.theme-dark .daily-day-future,
+.theme-dark .daily-day-unavailable {
+    color: rgba(184, 176, 159, 0.5);
+    background-color: rgba(48, 45, 40, 0.72);
+    border-color: rgba(83, 77, 67, 0.62);
+}
+
+.theme-dark .daily-modal-close {
+    color: rgb(220, 211, 193);
+    background-color: rgb(61, 57, 50);
+}
+
+.theme-dark .daily-modal-date,
+.theme-dark .daily-modal-prompt {
+    color: rgb(185, 172, 151);
+}
+
+/* Settings */
+.theme-dark .settings-section-card {
+    background-color: rgba(48, 45, 40, 0.98);
+    border-color: rgb(88, 81, 69);
+}
+
+.theme-dark .settings-control-row,
+.theme-dark .settings-link-button {
+    background-color: rgba(61, 57, 50, 0.94);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .settings-link-button:hover {
+    background-color: rgb(69, 64, 56);
+}
+
+.theme-dark .settings-section-heading,
+.theme-dark .settings-control-label,
+.theme-dark .settings-link-label,
+.theme-dark .settings-version {
+    color: rgb(238, 231, 216);
+}
+
+.theme-dark .settings-restore-status {
+    color: rgb(200, 186, 163);
+}
+
+.theme-dark .settings-volume-value {
+    color: rgb(200, 186, 163);
+}
+
+.theme-dark .settings-switch > .unity-toggle__input {
+    background-color: rgb(78, 74, 67);
+    border-color: rgb(104, 97, 84);
+}
+
+.theme-dark .settings-switch > .unity-toggle__input > .unity-toggle__checkmark,
+.theme-dark .settings-volume-slider .unity-base-slider__dragger {
+    background-color: rgb(219, 211, 194);
+    border-color: rgb(139, 128, 108);
+}
+
+.theme-dark .settings-volume-slider .unity-base-slider__tracker {
+    background-color: rgb(42, 40, 36);
+    border-color: rgb(87, 80, 69);
+}
+
+.theme-dark .settings-appearance-note {
+    color: rgb(183, 174, 157);
+}
+
+.theme-dark .settings-appearance-dropdown > .unity-base-field__input {
+    background-color: rgb(58, 54, 48);
+    border-color: rgb(104, 97, 84);
+}
+
+.theme-dark .settings-appearance-dropdown .unity-base-popup-field__text {
+    color: rgb(238, 231, 216);
+}
+
+.theme-dark .settings-appearance-dropdown .unity-base-popup-field__arrow {
+    -unity-background-image-tint-color: rgb(219, 211, 194);
+}
+
+.theme-dark .settings-danger-button .settings-link-label,
+.theme-dark .settings-danger-button .settings-link-chevron {
+    color: rgb(237, 132, 133);
+}
+
+.theme-dark .privacy-welcome-screen {
+    background-color: rgb(31, 29, 26);
+    background-image: none;
+}
+
+.theme-dark .privacy-welcome-title,
+.theme-dark .privacy-welcome-analytics-title {
+    color: rgb(238, 231, 216);
+}
+
+.theme-dark .privacy-welcome-legal-copy,
+.theme-dark .privacy-welcome-analytics-note {
+    color: rgb(196, 185, 166);
+}
+
+.theme-dark .privacy-welcome-link-button {
+    color: rgb(232, 184, 94);
+}
+
+.theme-dark .privacy-welcome-link-divider {
+    background-color: rgba(166, 153, 131, 0.62);
+}
+
+.theme-dark .privacy-welcome-analytics-card {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .analytics-modal-card {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .analytics-modal-title {
+    color: rgb(238, 231, 216);
+}
+
+.theme-dark .analytics-modal-copy {
+    color: rgb(196, 185, 166);
+}
+
+.theme-dark .analytics-secondary-button {
+    color: rgb(238, 231, 216);
+    background-color: rgb(61, 57, 50);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .streak-restore-decline-button {
+    color: rgb(207, 174, 144);
+}
+
+.theme-dark .streak-restore-status {
+    color: rgb(180, 166, 143);
+}
+
+.theme-dark .analytics-policy-button {
+    color: rgb(226, 172, 80);
+}
+
+/* Shop */
+.theme-dark .shop-balance-chip,
+.theme-dark .shop-pack-card {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .shop-pack-icon-shell {
+    background-color: rgb(64, 59, 51);
+    border-color: rgb(101, 92, 77);
+}
+
+.theme-dark .shop-balance-icon,
+.theme-dark .shop-pack-hint-icon {
+    -unity-background-image-tint-color: rgb(227, 216, 196);
+}
+
+.theme-dark .shop-balance-caption,
+.theme-dark .shop-pack-price {
+    color: rgb(188, 175, 153);
+}
+
+.theme-dark .shop-pack-title {
+    color: rgb(239, 232, 217);
+}
+
+.theme-dark .shop-bundle-card {
+    border-color: rgb(178, 126, 35);
+}
+
+.theme-dark .shop-bundle-icon-shell {
+    background-color: rgb(80, 63, 35);
+    border-color: rgb(156, 107, 26);
+}
+
+.theme-dark .shop-bundle-no-ads-label {
+    color: rgb(247, 202, 111);
+}
+
+.theme-dark .shop-best-value-badge {
+    color: rgb(49, 34, 10);
+    background-color: rgb(224, 159, 35);
+}
+
+/* Time Trial */
+.theme-dark .time-trial-board-badge,
+.theme-dark .time-trial-play-shell {
+    background-color: rgb(226, 218, 200);
+    border-color: rgb(137, 126, 106);
+}
+
+.theme-dark .time-trial-board-label {
+    color: rgb(52, 49, 43);
+}
+
+.theme-dark .time-trial-play-icon {
+    -unity-background-image-tint-color: rgb(52, 49, 43);
+}
+
+/* Free Play and level selector */
+.theme-dark .free-play-category,
+.theme-dark .free-play-level-grid-panel {
+    background-color: rgba(48, 45, 40, 0.98);
+    border-color: rgb(88, 81, 69);
+}
+
+.theme-dark .free-play-size-button,
+.theme-dark .free-play-level-button {
+    background-color: rgb(61, 57, 50);
+    border-color: rgb(94, 86, 73);
+}
+
+.theme-dark .free-play-size-progress,
+.theme-dark .free-play-size-arrow,
+.theme-dark .free-play-level-number {
+    color: rgb(237, 229, 214);
+}
+
+.theme-dark .free-play-level-progress-chip {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .free-play-level-progress {
+    color: rgb(136, 191, 132);
+}
+
+.theme-dark .free-play-level-title {
+    -unity-text-outline-color: rgb(29, 48, 32);
+}
+
+.theme-dark .free-play-level-next {
+    background-color: rgb(62, 72, 51);
+    border-color: rgb(171, 128, 35);
+}
+
+.theme-dark .free-play-level-locked {
+    background-color: rgba(48, 45, 40, 0.72);
+    border-color: rgba(82, 76, 66, 0.72);
+}
+
+.theme-dark .free-play-level-locked .free-play-level-number,
+.theme-dark .free-play-level-locked-label {
+    color: rgba(183, 174, 157, 0.46);
+}
+
+/* Adventure map and chapter selector */
+.theme-dark .adventure-subtitle {
+    color: rgb(191, 180, 161);
+}
+
+.theme-dark .adventure-title,
+.theme-dark .adventure-level-title {
+    -unity-text-outline-color: rgb(55, 31, 30);
+}
+
+.theme-dark .adventure-progress-chip {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .adventure-progress-label {
+    color: rgb(220, 184, 151);
+}
+
+.theme-dark .adventure-chapter-button,
+.theme-dark .adventure-level-button {
+    background-color: rgb(61, 57, 50);
+    border-color: rgb(94, 86, 73);
+}
+
+.theme-dark .adventure-chapter-title,
+.theme-dark .adventure-chapter-progress,
+.theme-dark .adventure-chapter-state,
+.theme-dark .adventure-level-number {
+    color: rgb(237, 229, 214);
+}
+
+.theme-dark .adventure-chapter-state-play {
+    -unity-background-image-tint-color: rgb(236, 168, 45);
+}
+.theme-dark .adventure-chapter-current,
+.theme-dark .adventure-level-next {
+    background-color: rgb(77, 62, 42);
+    border-color: rgb(190, 135, 35);
+}
+
+.theme-dark .adventure-chapter-complete {
+    background-color: rgb(50, 69, 49);
+    border-color: rgb(76, 150, 79);
+}
+
+.theme-dark .adventure-chapter-locked,
+.theme-dark .adventure-level-locked {
+    background-color: rgba(48, 45, 40, 0.72);
+    border-color: rgba(82, 76, 66, 0.72);
+}
+
+.theme-dark .adventure-chapter-locked .adventure-chapter-title,
+.theme-dark .adventure-chapter-locked .adventure-chapter-progress,
+.theme-dark .adventure-chapter-locked .adventure-chapter-state,
+.theme-dark .adventure-level-locked .adventure-level-number,
+.theme-dark .adventure-level-locked-label {
+    color: rgba(183, 174, 157, 0.46);
+}
+
+.theme-dark .adventure-level-grid-panel {
+    background-color: rgba(48, 45, 40, 0.98);
+    border-color: rgb(88, 81, 69);
+}
+
+.theme-dark .adventure-route-dash {
+    background-color: rgba(218, 205, 179, 0.24);
+}
+
+.theme-dark .adventure-route-dash-active {
+    background-color: rgba(228, 215, 187, 0.64);
+}
+
+/* Gameplay UI Toolkit HUD and dialogs */
+.theme-dark .gameplay-background,
+.theme-dark .gameplay-background:hover,
+.theme-dark .gameplay-background:active,
+.theme-dark .gameplay-background:focus {
+    background-color: rgb(34, 32, 29);
+    background-image: url("project://database/Assets/Art/UI/Backgrounds/shikaku_dark_paper_seamless.png");
+}
+
+.theme-dark .gameplay-status-card,
+.theme-dark .gameplay-modal-card {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .gameplay-not-quite-warning {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(105, 96, 81);
+}
+
+.theme-dark .gameplay-not-quite-title {
+    color: rgb(239, 111, 105);
+}
+
+.theme-dark .gameplay-not-quite-message {
+    color: rgb(232, 224, 207);
+}
+
+.theme-dark .gameplay-hint-idle-glow {
+    background-color: rgb(76, 65, 43);
+    border-top-color: rgb(255, 208, 70);
+    border-right-color: rgb(255, 208, 70);
+    border-bottom-color: rgb(195, 126, 14);
+    border-left-color: rgb(255, 208, 70);
+}
+
+.theme-dark .gameplay-streak-celebration {
+    background-color: rgb(54, 49, 40);
+    border-color: rgb(151, 111, 42);
+}
+
+.theme-dark .gameplay-streak-celebration-title,
+.theme-dark .gameplay-streak-celebration-days {
+    color: rgb(207, 191, 157);
+}
+
+.theme-dark .gameplay-streak-celebration-star {
+    -unity-background-image-tint-color: rgb(236, 168, 45);
+}
+
+.theme-dark .gameplay-streak-celebration-number {
+    color: rgb(102, 190, 109);
+}
+
+.theme-dark .gameplay-streak-celebration-reward {
+    color: rgb(112, 201, 119);
+}
+
+.theme-dark .gameplay-stat-caption {
+    color: rgb(173, 162, 143);
+}
+
+.theme-dark .gameplay-stat-value,
+.theme-dark .gameplay-modal-title {
+    color: rgb(239, 232, 217);
+}
+
+.theme-dark .gameplay-stat-divider {
+    background-color: rgba(190, 176, 150, 0.34);
+}
+
+.theme-dark .gameplay-modal-message {
+    color: rgb(194, 182, 161);
+}
+
+.theme-dark .gameplay-secondary-button {
+    color: rgb(238, 231, 216);
+    background-color: rgb(62, 58, 51);
+    border-color: rgb(96, 88, 74);
+}
+
+.theme-dark .gameplay-modal-backdrop,
+.theme-dark .gameplay-modal-backdrop:hover,
+.theme-dark .gameplay-modal-backdrop:active,
+.theme-dark .gameplay-modal-backdrop:focus {
+    background-color: rgba(10, 9, 8, 0.76);
+}
+
+.theme-dark .gameplay-tutorial-shade {
+    background-color: rgba(5, 5, 4, 0.26);
+}
+
+.theme-dark .gameplay-tutorial-card {
+    background-color: rgba(48, 45, 40, 0.99);
+    border-color: rgb(96, 88, 74);
+}
+
+.theme-dark .gameplay-tutorial-title {
+    color: rgb(239, 232, 217);
+}
+
+.theme-dark .gameplay-tutorial-message {
+    color: rgb(202, 190, 169);
+}
+
+.theme-dark .gameplay-tutorial-action-bubble,
+.theme-dark .gameplay-tutorial-action-tail {
+    background-color: rgb(49, 62, 45);
+    border-color: rgb(91, 144, 82);
+}
+
+.theme-dark .gameplay-tutorial-action {
+    color: rgb(180, 222, 172);
+}
+
+.theme-dark .gameplay-tutorial-nav {
+    color: rgb(238, 231, 216);
+    background-color: rgb(62, 58, 51);
+    border-color: rgb(96, 88, 74);
+}
+
+.theme-dark .gameplay-tutorial-dot {
+    background-color: rgb(102, 94, 80);
+}
+
+.theme-dark .gameplay-tutorial-dot-active {
+    background-color: rgb(82, 164, 88);
+}
+
+
+/* Dark artwork swaps: tint multiplies source RGB, so black source
+   pixels require white silhouette assets before they can be recolored. */
+.theme-dark .secondary-menu-button .icon-shop,
+.theme-dark .shop-title-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_shop_white.png");
+}
+
+.theme-dark .secondary-menu-button .icon-settings,
+.theme-dark .settings-title-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_settings_white.png");
+}
+
+.theme-dark .daily-back-icon,
+.theme-dark .settings-back-icon,
+.theme-dark .shop-back-icon,
+.theme-dark .time-trial-back-icon,
+.theme-dark .free-play-back-icon,
+.theme-dark .adventure-back-icon,
+.theme-dark .gameplay-back-icon,
+.theme-dark .gameplay-next-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_back_white.png");
+}
+
+.theme-dark .time-trial-title-icon,
+.theme-dark .time-trial-ornament-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_time_trial_white.png");
+}
+
+.theme-dark .free-play-title-icon,
+.theme-dark .free-play-ornament-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_free_play_white.png");
+}
+
+.theme-dark .adventure-ornament-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_adventure_white.png");
+}
+
+.theme-dark .daily-date-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_daily_white.png");
+}
+
+.theme-dark .shop-balance-icon,
+.theme-dark .shop-pack-hint-icon,
+.theme-dark .gameplay-hint-icon,
+.theme-dark .gameplay-best-hint-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_hint_white.png");
+}
+
+.theme-dark .gameplay-hint-video-badge {
+    background-color: rgb(67, 62, 54);
+    border-color: rgb(105, 96, 81);
+}
+
+.theme-dark .gameplay-hint-video-screen {
+    border-color: rgb(239, 232, 217);
+}
+
+.theme-dark .gameplay-hint-video-play {
+    -unity-background-image-tint-color: rgb(239, 232, 217);
+}
+
+.theme-dark .gameplay-reset-icon,
+.theme-dark .gameplay-reset-modal-icon {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_reset_white.png");
+}
+.theme-dark .free-play-pack-button {
+    background-color: rgb(55, 51, 44);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .free-play-pack-name,
+.theme-dark .free-play-pack-arrow,
+.theme-dark .free-play-context-title,
+.theme-dark .free-play-level-pack-label,
+.theme-dark .free-play-subtitle {
+    color: rgb(240, 234, 220);
+}
+
+.theme-dark .free-play-pack-progress {
+    color: rgb(190, 180, 160);
+}
+
+.theme-dark .free-play-pack-number {
+    color: rgba(205, 194, 173, 0.48);
+}
+
+.theme-dark .free-play-context-title {
+    -unity-text-outline-color: rgb(28, 51, 33);
+}
+
+.theme-dark .free-play-size-button {
+    background-color: rgb(61, 57, 50);
+    border-color: rgb(94, 86, 73);
+}
+
+.theme-dark .free-play-level-blue .free-play-level-title {
+    -unity-text-outline-color: rgb(27, 43, 57);
+}
+
+.theme-dark .free-play-level-red .free-play-level-title {
+    -unity-text-outline-color: rgb(56, 29, 29);
+}
+
+.theme-dark .shop-remove-ads-icon-shell {
+    background-color: rgb(84, 45, 42);
+    border-color: rgb(145, 70, 63);
+}
+
+.theme-dark .shop-remove-ads-icon-label {
+    color: rgb(245, 194, 187);
+}
+
+.theme-dark .shop-remove-ads-description {
+    color: rgb(210, 199, 180);
+}
+.theme-dark .settings-ad-report-card {
+    background-color: rgb(48, 45, 40);
+    border-color: rgb(88, 81, 69);
+}
+
+.theme-dark .settings-ad-report-title {
+    color: rgb(238, 231, 216);
+}
+
+.theme-dark .settings-ad-report-copy {
+    color: rgb(196, 185, 166);
+}
+
+.theme-dark .settings-ad-report-support-button,
+.theme-dark .settings-ad-report-cancel-button {
+    color: rgb(238, 231, 216);
+    background-color: rgb(61, 57, 50);
+    border-color: rgb(91, 83, 71);
+}
+
+.theme-dark .settings-ad-report-email-button {
+    color: rgb(49, 38, 18);
+}

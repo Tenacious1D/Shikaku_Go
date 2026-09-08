@@ -1,0 +1,759 @@
+.screen-root {
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    background-color: rgb(244, 238, 220);
+    background-image: url("project://database/Assets/Art/UI/Backgrounds/shikaku_warm_stone_paper_seamless.png");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.safe-area {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 920px;
+    min-height: 100%;
+    align-items: center;
+    padding-top: 54px;
+    padding-right: 48px;
+    padding-bottom: 54px;
+    padding-left: 48px;
+}
+.brand-section {
+    width: 100%;
+    height: 470px;
+    align-items: center;
+    justify-content: flex-start;
+}
+.brand-mark {
+    position: relative;
+    width: 190px;
+    height: 150px;
+    margin-bottom: 5px;
+}
+.brand-mark-row {
+    width: 100%;
+    height: 100px;
+
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    margin-bottom: 10px;
+}
+/* =========================================================
+   SCATTERED HOME LOGO
+   ========================================================= */
+
+.brand-mark-scatter {
+    width: 540px;
+    height: 175px;
+
+    position: relative;
+    flex-shrink: 0;
+
+    margin-bottom: 5px;
+}
+
+
+/* ---------------------------------------------------------
+   BASE TILE
+   --------------------------------------------------------- */
+
+.brand-logo-tile {
+    width: 76px;
+    height: 76px;
+
+    position: absolute;
+
+    justify-content: center;
+    align-items: center;
+
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 7px;
+    border-left-width: 3px;
+
+    border-top-left-radius: 13px;
+    border-top-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    border-bottom-right-radius: 13px;
+}
+
+
+/* ---------------------------------------------------------
+   NUMBER
+   --------------------------------------------------------- */
+
+.brand-logo-number {
+    margin: 0;
+    padding: 0;
+
+    color: rgb(255, 250, 238);
+
+    font-size: 43px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+
+    -unity-text-outline-width: 1px;
+    -unity-text-outline-color: rgba(50, 45, 40, 0.35);
+}
+
+
+/* =========================================================
+   SCATTER POSITIONS
+   ========================================================= */
+
+/* Blank - low left */
+.scatter-blank {
+    left: 18px;
+    top: 72px;
+    rotate: -8deg;
+}
+
+/* Grey 1 - high */
+.scatter-one {
+    left: 102px;
+    top: 22px;
+    rotate: 6deg;
+}
+
+/* Red 2 - lower */
+.scatter-two {
+    left: 190px;
+    top: 66px;
+    rotate: -5deg;
+}
+
+/* Green 3 - high */
+.scatter-three {
+    left: 278px;
+    top: 16px;
+    rotate: 7deg;
+}
+
+/* Blue 4 - lower */
+.scatter-four {
+    left: 366px;
+    top: 70px;
+    rotate: -7deg;
+}
+
+/* Gold 5 - high right */
+.scatter-five {
+    left: 450px;
+    top: 25px;
+    rotate: 5deg;
+}
+.brand-logo-tile-blank {
+    background-color: rgb(245, 241, 226);
+
+    border-top-color: rgb(218, 212, 194);
+    border-right-color: rgb(218, 212, 194);
+    border-left-color: rgb(218, 212, 194);
+    border-bottom-color: rgb(192, 184, 162);
+}
+.brand-logo-tile-grey {
+    background-color: rgb(126, 126, 121);
+
+    border-top-color: rgb(105, 105, 101);
+    border-right-color: rgb(105, 105, 101);
+    border-left-color: rgb(105, 105, 101);
+    border-bottom-color: rgb(78, 78, 75);
+}
+.brand-logo-tile-red {
+    background-color: rgb(190, 52, 56);
+
+    border-top-color: rgb(155, 40, 44);
+    border-right-color: rgb(155, 40, 44);
+    border-left-color: rgb(155, 40, 44);
+    border-bottom-color: rgb(125, 29, 34);
+}
+.brand-logo-tile-green {
+    background-color: rgb(52, 140, 67);
+
+    border-top-color: rgb(39, 110, 52);
+    border-right-color: rgb(39, 110, 52);
+    border-left-color: rgb(39, 110, 52);
+    border-bottom-color: rgb(27, 82, 39);
+}
+.brand-logo-tile-blue {
+    background-color: rgb(52, 112, 190);
+
+    border-top-color: rgb(38, 86, 153);
+    border-right-color: rgb(38, 86, 153);
+    border-left-color: rgb(38, 86, 153);
+    border-bottom-color: rgb(27, 63, 116);
+}
+.brand-logo-tile-gold {
+    background-color: rgb(218, 157, 31);
+
+    border-top-color: rgb(181, 124, 20);
+    border-right-color: rgb(181, 124, 20);
+    border-left-color: rgb(181, 124, 20);
+    border-bottom-color: rgb(144, 92, 13);
+}
+.brand-title-row {
+    width: 100%;
+    height: 150px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.brand-title {
+    margin-right: -2px;
+    margin-left: -2px;
+    padding: 0;
+    font-size: 112px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 3px;
+}
+.brand-title-dark {
+    color: rgb(42, 42, 39);
+    -unity-text-outline-color: rgb(245, 241, 226);
+	margin-right: 22px;
+}
+.brand-title-gold {
+    color: rgb(226, 153, 22);
+    -unity-text-outline-color: rgb(255, 239, 198);
+}
+.tagline-row {
+    width: 100%;
+    height: 78px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.tagline {
+    flex-shrink: 0;
+    margin-right: 24px;
+    margin-left: 24px;
+    color: rgb(126, 121, 109);
+    font-size: 25px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+.tagline-rule {
+    flex-grow: 1;
+    max-width: 76px;
+    height: 2px;
+    background-color: rgba(126, 121, 109, 0.72);
+}
+.primary-actions {
+    width: 100%;
+    align-items: center;
+}
+.menu-button {
+    margin: 0;
+    padding: 0;
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 11px;
+    border-left-width: 3px;
+    white-space: normal;
+    transition-duration: 0.08s;
+    transition-property: translate, background-color;
+    transition-timing-function: ease-out;
+}
+.menu-button:active {
+    translate: 0 6px;
+    border-bottom-width: 5px;
+}
+.menu-button:focus {
+    border-top-color: rgb(255, 247, 215);
+    border-right-color: rgb(255, 247, 215);
+    border-left-color: rgb(255, 247, 215);
+}
+.main-menu-button {
+    width: 100%;
+    max-width: 760px;
+    height: 172px;
+    margin-bottom: 25px;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    border-bottom-left-radius: 25px;
+}
+.menu-button-inner {
+    flex-grow: 1;
+    margin: 10px;
+    flex-direction: row;
+    align-items: center;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-left-width: 2px;
+    border-color: rgba(255, 255, 255, 0.35);
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+    padding-right: 31px;
+    padding-left: 31px;
+}
+.menu-button-icon {
+    flex-shrink: 0;
+    width: 115px;
+    height: 115px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+.menu-button-divider {
+    flex-shrink: 0;
+    width: 2px;
+    height: 93px;
+    margin-right: 42px;
+    margin-left: 22px;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.menu-button-label {
+    flex-grow: 1;
+    padding: 0;
+    color: rgb(250, 246, 230);
+    font-size: 61px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(54, 45, 32, 0.55);
+}
+.adventure-button {
+    background-color: rgb(188, 51, 55);
+    border-color: rgb(133, 38, 41);
+}
+.free-play-button {
+    background-color: rgb(58, 139, 69);
+    border-color: rgb(38, 98, 48);
+}
+.time-trial-button {
+    background-color: rgb(42, 111, 176);
+    border-color: rgb(28, 78, 128);
+}
+.daily-button {
+    background-color: rgb(228, 151, 22);
+    border-color: rgb(166, 105, 12);
+}
+.icon-adventure {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_adventure_white.png");
+}
+.icon-free-play {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_free_play_white.png");
+}
+.icon-time-trial {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_time_trial_white.png");
+}
+.icon-daily {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_daily_white.png");
+}
+.secondary-actions {
+    width: 100%;
+    max-width: 570px;
+    height: 255px;
+    margin-top: 24px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.secondary-menu-button {
+    width: 245px;
+    height: 235px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(239, 235, 219);
+    border-color: rgb(188, 181, 161);
+    border-top-left-radius: 23px;
+    border-top-right-radius: 23px;
+    border-bottom-right-radius: 23px;
+    border-bottom-left-radius: 23px;
+}
+.secondary-button-icon {
+    width: 116px;
+    height: 116px;
+    margin-bottom: 5px;
+    -unity-background-scale-mode: scale-to-fit;
+}
+.secondary-button-label {
+    padding: 0;
+    color: rgb(63, 62, 57);
+    font-size: 37px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+.icon-shop {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_shop.png");
+}
+.icon-settings {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_settings.png");
+}
+
+/* First-run welcome and privacy acknowledgment */
+.privacy-welcome-screen {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: 46px;
+    padding-right: 38px;
+    padding-bottom: 46px;
+    padding-left: 38px;
+    align-items: center;
+    background-color: rgb(244, 238, 220);
+    background-image: url("project://database/Assets/Art/UI/Backgrounds/shikaku_warm_stone_paper_seamless.png");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.privacy-welcome-scroll {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 860px;
+}
+
+.privacy-welcome-scroll > .unity-scroll-view__content-viewport {
+    overflow: hidden;
+}
+
+.privacy-welcome-scroll .unity-scroller {
+    display: none;
+}
+
+.privacy-welcome-content {
+    width: 100%;
+    min-height: 100%;
+    padding-top: 50px;
+    padding-right: 24px;
+    padding-bottom: 50px;
+    padding-left: 24px;
+    align-items: center;
+    justify-content: center;
+}
+
+.privacy-welcome-brand-mark {
+    width: 112px;
+    height: 112px;
+    margin-bottom: 26px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(226, 153, 22);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 8px;
+    border-left-width: 3px;
+    border-color: rgb(166, 105, 12);
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+    border-bottom-right-radius: 22px;
+    border-bottom-left-radius: 22px;
+    rotate: -4deg;
+}
+
+.privacy-welcome-brand-number {
+    margin: 0;
+    padding: 0;
+    color: rgb(255, 250, 238);
+    font-size: 67px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 2px;
+    -unity-text-outline-color: rgba(50, 45, 40, 0.35);
+}
+
+.privacy-welcome-title {
+    margin: 0 0 30px 0;
+    padding: 0;
+    color: rgb(42, 42, 39);
+    font-size: 64px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.privacy-welcome-legal-copy {
+    max-width: 730px;
+    margin: 0 0 19px 0;
+    padding: 0;
+    color: rgb(92, 81, 65);
+    font-size: 29px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.privacy-welcome-legal-links {
+    height: 68px;
+    margin-bottom: 40px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.privacy-welcome-link-button {
+    height: 64px;
+    margin: 0 17px;
+    padding: 0 8px;
+    color: rgb(132, 99, 45);
+    font-size: 27px;
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}
+
+.privacy-welcome-link-divider {
+    width: 2px;
+    height: 31px;
+    background-color: rgba(145, 134, 113, 0.55);
+}
+
+.privacy-welcome-analytics-card {
+    width: 100%;
+    min-height: 218px;
+    margin-bottom: 34px;
+    padding-top: 31px;
+    padding-right: 31px;
+    padding-bottom: 31px;
+    padding-left: 36px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(249, 245, 230, 0.92);
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 7px;
+    border-left-width: 2px;
+    border-color: rgb(190, 179, 155);
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+    border-bottom-left-radius: 24px;
+}
+
+.privacy-welcome-analytics-copy {
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: 25px;
+}
+
+.privacy-welcome-analytics-title {
+    margin: 0 0 12px 0;
+    padding: 0;
+    color: rgb(61, 51, 39);
+    font-size: 37px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: normal;
+}
+
+.privacy-welcome-analytics-note {
+    margin: 0;
+    padding: 0;
+    color: rgb(104, 91, 72);
+    font-size: 25px;
+    -unity-text-align: middle-left;
+    white-space: normal;
+}
+
+.privacy-welcome-toggle {
+    margin-left: 12px;
+}
+
+.privacy-welcome-continue-button {
+    width: 100%;
+    height: 118px;
+    margin: 0;
+    padding: 0;
+    color: rgb(250, 246, 230);
+    font-size: 39px;
+    -unity-font-style: bold;
+    background-color: rgb(58, 139, 69);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 9px;
+    border-left-width: 3px;
+    border-color: rgb(38, 98, 48);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
+    transition-duration: 0.08s;
+    transition-property: translate;
+}
+
+.privacy-welcome-continue-button:active {
+    translate: 0 5px;
+    border-bottom-width: 4px;
+}
+
+/* Shared privacy dialogs */
+.analytics-modal {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.analytics-modal-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(24, 22, 18, 0.66);
+}
+
+.analytics-modal-card {
+    width: 82%;
+    max-width: 790px;
+    min-height: 520px;
+    padding-top: 49px;
+    padding-right: 48px;
+    padding-bottom: 38px;
+    padding-left: 48px;
+    align-items: stretch;
+    justify-content: center;
+    background-color: rgb(247, 242, 225);
+    border-top-width: 3px;
+    border-right-width: 3px;
+    border-bottom-width: 10px;
+    border-left-width: 3px;
+    border-color: rgb(188, 178, 154);
+    border-top-left-radius: 28px;
+    border-top-right-radius: 28px;
+    border-bottom-right-radius: 28px;
+    border-bottom-left-radius: 28px;
+}
+
+.analytics-delete-card {
+    min-height: 430px;
+}
+
+.rate-modal-card {
+    min-height: 480px;
+}
+
+.streak-restore-card {
+    min-height: 690px;
+}
+
+.streak-restore-copy {
+    margin-bottom: 24px;
+}
+
+.rate-modal-icon {
+    width: 82px;
+    height: 82px;
+    margin: 0 0 20px 0;
+    align-self: center;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_streak.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(218, 145, 27);
+}
+
+.analytics-modal-title {
+    margin: 0 0 27px 0;
+    padding: 0;
+    color: rgb(54, 48, 39);
+    font-size: 49px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.analytics-modal-copy {
+    margin: 0 0 35px 0;
+    padding: 0;
+    color: rgb(92, 81, 65);
+    font-size: 29px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.analytics-modal-actions {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.analytics-modal-button {
+    flex-grow: 1;
+    height: 105px;
+    margin: 0 9px;
+    padding: 0 14px;
+    color: rgb(250, 246, 230);
+    font-size: 32px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 7px;
+    border-left-width: 2px;
+    border-top-left-radius: 17px;
+    border-top-right-radius: 17px;
+    border-bottom-right-radius: 17px;
+    border-bottom-left-radius: 17px;
+}
+
+.streak-restore-actions {
+    flex-direction: column;
+}
+
+.streak-restore-button {
+    flex-grow: 0;
+    width: 100%;
+    height: 92px;
+    margin-top: 7px;
+    margin-right: 0;
+    margin-bottom: 7px;
+    margin-left: 0;
+}
+
+.streak-restore-decline-button {
+    color: rgb(117, 91, 67);
+}
+
+.streak-restore-status {
+    min-height: 31px;
+    margin-top: 11px;
+    padding: 0;
+    color: rgb(117, 101, 78);
+    font-size: 23px;
+    -unity-text-align: middle-center;
+    white-space: normal;
+}
+
+.analytics-primary-button {
+    background-color: rgb(58, 139, 69);
+    border-color: rgb(38, 98, 48);
+}
+
+.analytics-secondary-button {
+    color: rgb(61, 51, 39);
+    background-color: rgb(239, 235, 219);
+    border-color: rgb(188, 181, 161);
+}
+
+.analytics-danger-button {
+    background-color: rgb(188, 51, 55);
+    border-color: rgb(133, 38, 41);
+}
+
+.analytics-modal-button:active {
+    translate: 0 4px;
+    border-bottom-width: 3px;
+}
+
+.analytics-policy-button {
+    height: 62px;
+    margin-top: 18px;
+    padding: 0;
+    color: rgb(132, 99, 45);
+    font-size: 25px;
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+}

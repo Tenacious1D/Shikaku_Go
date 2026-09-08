@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d79a1691b0a23c4dad23fa6e12c051e, type: 3}
+  m_Name: DefaultPalette
+  m_EditorClassIdentifier: Assembly-CSharp::Shikaku.UI.PuzzlePalette
+  numberColors:
+  - {r: 0.9607844, g: 0.9529412, b: 0.92941177, a: 1}
+  - {r: 0.3325092, g: 0.34092125, b: 0.3506981, a: 1}
+  - {r: 0.6641667, g: 0.25633332, b: 0.3006667, a: 1}
+  - {r: 0.22416666, g: 0.5396667, b: 0.31400004, a: 1}
+  - {r: 0.21083334, g: 0.423, b: 0.6406667, a: 1}
+  - {r: 0.70901084, g: 0.53457, b: 0.12359774, a: 1}
+  - {r: 0.42416668, g: 0.313, b: 0.66733336, a: 1}
+  - {r: 0.1575, g: 0.52633333, b: 0.47733334, a: 1}
+  - {r: 0.72700006, g: 0.36333334, b: 0.15433335, a: 1}
+  - {r: 0.47416666, g: 0.36233336, b: 0.24733335, a: 1}
+  - {r: 0.4925, g: 0.20533492, b: 0.23713198, a: 1}
+  - {r: 0.29728597, g: 0.66441464, b: 0.40766233, a: 1}
+  - {r: 0.26416665, g: 0.49633336, b: 0.7073333, a: 1}
+  - {r: 0.556651, g: 0.41436857, b: 0.07476584, a: 1}
+  - {r: 0.34416667, g: 0.25633335, b: 0.56400007, a: 1}
+  - {r: 0.13083334, g: 0.41966668, b: 0.42733335, a: 1}
+  - {r: 0.6275, g: 0.30966666, b: 0.13433334, a: 1}

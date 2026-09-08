@@ -1,0 +1,649 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Screens/Home/HomeScreen.uss?fileID=7433441132597879392&amp;guid=63dca16cc79e0c74e9ae7986b13d0239&amp;type=3#HomeScreen"/>
+    <Style src="project://database/Assets/UI/Screens/Daily/DailyScreen.uss?fileID=7433441132597879392&amp;guid=d42d1ae413d84cfba05ac997bd7d6798&amp;type=3#DailyScreen"/>
+    <Style src="project://database/Assets/UI/Screens/Settings/SettingsScreen.uss?fileID=7433441132597879392&amp;guid=687c082bfcd04c638b5d32d2087df603&amp;type=3#SettingsScreen"/>
+    <Style src="project://database/Assets/UI/Screens/Shop/ShopScreen.uss?fileID=7433441132597879392&amp;guid=dc90cf6219fa4f2ab82cad7360875a7e&amp;type=3#ShopScreen"/>
+    <Style src="project://database/Assets/UI/Screens/TimeTrial/TimeTrialScreen.uss?fileID=7433441132597879392&amp;guid=9ea13d6e0d884c63a1c6b298271df7da&amp;type=3#TimeTrialScreen"/>
+    <Style src="project://database/Assets/UI/Screens/FreePlay/FreePlayScreen.uss?fileID=7433441132597879392&amp;guid=1fbf38c383f84187a3c8da1ce16201fe&amp;type=3#FreePlayScreen"/>
+    <Style src="project://database/Assets/UI/Screens/Adventure/AdventureScreen.uss"/>
+    <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
+    <ui:VisualElement name="screen-root" class="screen-root">
+        <ui:VisualElement name="safe-area" class="safe-area">
+            <ui:VisualElement name="brand-section" class="brand-section">
+              <ui:VisualElement name="brand-mark" class="brand-mark-scatter">
+                <ui:VisualElement class="brand-logo-tile brand-logo-tile-blank scatter-blank"/>
+                <ui:VisualElement class="brand-logo-tile brand-logo-tile-grey scatter-one">
+                  <ui:Label text="1" class="brand-logo-number"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="brand-logo-tile brand-logo-tile-red scatter-two">
+                  <ui:Label text="2" class="brand-logo-number"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="brand-logo-tile brand-logo-tile-green scatter-three">
+                  <ui:Label text="3" class="brand-logo-number"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="brand-logo-tile brand-logo-tile-blue scatter-four">
+                  <ui:Label text="4" class="brand-logo-number"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="brand-logo-tile brand-logo-tile-gold scatter-five">
+                  <ui:Label text="5" class="brand-logo-number"/>
+                </ui:VisualElement>
+              </ui:VisualElement>
+                <ui:VisualElement class="brand-title-row">
+                    <ui:Label text="Shikaku" class="brand-title brand-title-dark"/>
+                    <ui:Label text="Go" class="brand-title brand-title-gold"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="tagline-row">
+                    <ui:VisualElement class="tagline-rule"/>
+                    <ui:Label text="CONNECT NUMBERS. SOLVE PUZZLES." class="tagline"/>
+                    <ui:VisualElement class="tagline-rule"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="primary-actions" class="primary-actions">
+                <ui:Button name="adventure-button" class="menu-button main-menu-button adventure-button">
+                    <ui:VisualElement class="menu-button-inner">
+                        <ui:VisualElement class="menu-button-icon icon-adventure"/>
+                        <ui:VisualElement class="menu-button-divider"/>
+                        <ui:Label text="Adventure" class="menu-button-label"/>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="free-play-button" class="menu-button main-menu-button free-play-button">
+                    <ui:VisualElement class="menu-button-inner">
+                        <ui:VisualElement class="menu-button-icon icon-free-play"/>
+                        <ui:VisualElement class="menu-button-divider"/>
+                        <ui:Label text="Free Play" class="menu-button-label"/>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="time-trial-button" class="menu-button main-menu-button time-trial-button">
+                    <ui:VisualElement class="menu-button-inner">
+                        <ui:VisualElement class="menu-button-icon icon-time-trial"/>
+                        <ui:VisualElement class="menu-button-divider"/>
+                        <ui:Label text="Time Trial" class="menu-button-label"/>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="daily-button" class="menu-button main-menu-button daily-button">
+                    <ui:VisualElement class="menu-button-inner">
+                        <ui:VisualElement class="menu-button-icon icon-daily"/>
+                        <ui:VisualElement class="menu-button-divider"/>
+                        <ui:Label text="Daily Puzzles" class="menu-button-label"/>
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="secondary-actions" class="secondary-actions">
+                <ui:Button name="shop-button" class="menu-button secondary-menu-button">
+                    <ui:VisualElement class="secondary-button-icon icon-shop"/>
+                    <ui:Label text="Shop" class="secondary-button-label"/>
+                </ui:Button>
+                <ui:Button name="settings-button" class="menu-button secondary-menu-button">
+                    <ui:VisualElement class="secondary-button-icon icon-settings"/>
+                    <ui:Label text="Settings" class="secondary-button-label"/>
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="daily-screen" class="daily-screen screen-hidden">
+            <ui:Button name="daily-back-button" class="daily-square-button daily-back-button">
+                <ui:VisualElement class="daily-back-icon"/>
+            </ui:Button>
+            <ui:VisualElement class="daily-content">
+                <ui:VisualElement class="daily-title-block">
+                    <ui:Label text="Daily" class="daily-title daily-title-dark"/>
+                    <ui:Label text="Puzzles" class="daily-title daily-title-gold"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="daily-title-ornament">
+                    <ui:VisualElement class="daily-ornament-line"/>
+                    <ui:VisualElement class="daily-date-icon"/>
+                    <ui:VisualElement class="daily-ornament-line"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="daily-info-row">
+                    <ui:VisualElement class="daily-date-chip">
+                        <ui:Label name="daily-today-date" text="July 29, 2026" class="daily-date-label"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="daily-streak-chip" picking-mode="Ignore">
+                        <ui:VisualElement class="daily-streak-icon" picking-mode="Ignore"/>
+                        <ui:Label name="daily-streak-count" text="0" class="daily-streak-count" picking-mode="Ignore"/>
+                        <ui:Label text="DAY STREAK" class="daily-streak-label" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="daily-play-today-button" class="daily-play-button">
+                    <ui:VisualElement class="daily-play-inner">
+                        <ui:VisualElement class="daily-play-icon-box">
+                            <ui:VisualElement class="ui-play-icon daily-play-icon" picking-mode="Ignore"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="daily-play-divider"/>
+                        <ui:Label text="Play Today&#8217;s Puzzle" class="daily-play-label"/>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:VisualElement class="daily-calendar-card">
+                    <ui:VisualElement class="daily-month-row">
+                        <ui:Button name="daily-previous-month-button" text="&#8592;" class="daily-square-button daily-month-button"/>
+                        <ui:Label name="daily-month-title" text="July 2026" class="daily-month-title"/>
+                        <ui:Button name="daily-next-month-button" text="&#8594;" class="daily-square-button daily-month-button"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="daily-weekday-row">
+                        <ui:Label text="Sun" class="daily-weekday"/>
+                        <ui:Label text="Mon" class="daily-weekday"/>
+                        <ui:Label text="Tue" class="daily-weekday"/>
+                        <ui:Label text="Wed" class="daily-weekday"/>
+                        <ui:Label text="Thu" class="daily-weekday"/>
+                        <ui:Label text="Fri" class="daily-weekday"/>
+                        <ui:Label text="Sat" class="daily-weekday"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="daily-calendar-grid" class="daily-calendar-grid"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="daily-difficulty-modal" class="daily-modal screen-hidden">
+                <ui:Button name="daily-modal-dismiss-button" class="daily-modal-backdrop"/>
+                <ui:VisualElement class="daily-modal-card">
+                    <ui:Button name="daily-modal-close-button" text="&#215;" class="daily-modal-close"/>
+                    <ui:Label name="daily-modal-title" text="Today&#8217;s Puzzles" class="daily-modal-title"/>
+                    <ui:Label name="daily-modal-date" text="July 29, 2026" class="daily-modal-date"/>
+                    <ui:Label text="Choose a difficulty" class="daily-modal-prompt"/>
+                    <ui:Button name="daily-easy-button" text="Easy" class="daily-difficulty-button daily-easy-button"/>
+                    <ui:Button name="daily-medium-button" text="Medium" class="daily-difficulty-button daily-medium-button"/>
+                    <ui:Button name="daily-hard-button" text="Hard" class="daily-difficulty-button daily-hard-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="settings-screen" class="settings-screen screen-hidden">
+            <ui:VisualElement name="settings-main-view" class="settings-main-view">
+            <ui:VisualElement class="settings-content">
+                <ui:VisualElement class="settings-title-block">
+                    <ui:VisualElement class="settings-title-row">
+                        <ui:Label text="Settings" class="settings-title"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="settings-title-ornament">
+                        <ui:VisualElement class="settings-ornament-line"/>
+                        <ui:VisualElement class="settings-title-icon"/>
+                        <ui:VisualElement class="settings-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:ScrollView name="settings-scroll-view" mode="Vertical" class="settings-scroll-view">
+                    <ui:VisualElement class="settings-scroll-content">
+                        <ui:VisualElement class="settings-section-card">
+                            <ui:VisualElement class="settings-section-heading-row">
+                                <ui:VisualElement class="settings-section-accent"/>
+                                <ui:Label text="GAMEPLAY" class="settings-section-heading"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="settings-control-row settings-appearance-row">
+                                <ui:Label text="Appearance" class="settings-control-label"/>
+                                <ui:DropdownField name="settings-appearance-dropdown" class="settings-appearance-dropdown"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="settings-control-row">
+                                <ui:Label text="Color Labels" class="settings-control-label"/>
+                                <ui:Toggle name="settings-color-labels-toggle" class="settings-switch"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="settings-control-row">
+                                <ui:Label text="Vibration" class="settings-control-label"/>
+                                <ui:Toggle name="settings-vibration-toggle" class="settings-switch"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="settings-control-row settings-volume-row">
+                                <ui:Label text="Volume" class="settings-control-label"/>
+                                <ui:VisualElement class="settings-volume-control">
+                                    <ui:Label name="settings-volume-value" text="10" class="settings-volume-value"/>
+                                    <ui:SliderInt name="settings-volume-slider" low-value="0" high-value="10" value="10" show-input-field="false" class="settings-volume-slider"/>
+                                </ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="settings-section-card">
+                            <ui:VisualElement class="settings-section-heading-row">
+                                <ui:VisualElement class="settings-section-accent"/>
+                                <ui:Label text="HELP" class="settings-section-heading"/>
+                            </ui:VisualElement>
+                            <ui:Button name="settings-how-to-play-button" class="settings-link-button settings-template-button">
+                                <ui:Label text="How To Play" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-achievements-button" class="settings-link-button">
+                                <ui:Label text="Achievements" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-email-support-button" class="settings-link-button">
+                                <ui:Label text="Email Support" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-report-ad-button" class="settings-link-button settings-report-ad-button">
+                                <ui:Label text="Report an Ad" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-restore-purchases-button" class="settings-link-button">
+                                <ui:Label text="Restore Purchases" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Label name="settings-restore-purchases-status" class="settings-restore-status"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="settings-section-card">
+                            <ui:VisualElement class="settings-section-heading-row">
+                                <ui:VisualElement class="settings-section-accent"/>
+                                <ui:Label text="PRIVACY" class="settings-section-heading"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="settings-control-row settings-notifications-row">
+                                <ui:VisualElement class="settings-appearance-copy">
+                                    <ui:Label text="Notifications" class="settings-control-label"/>
+                                </ui:VisualElement>
+                                <ui:Toggle name="settings-notifications-toggle" class="settings-switch"/>
+                            </ui:VisualElement>
+                            <ui:Button name="settings-notification-system-button" class="settings-link-button settings-notification-system-button" style="display: none;">
+                                <ui:Label text="Open Notification Settings" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-privacy-preferences-button" class="settings-link-button">
+                                <ui:Label text="Privacy Preferences" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-privacy-policy-button" class="settings-link-button">
+                                <ui:Label text="Privacy Policy" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-terms-button" class="settings-link-button">
+                                <ui:Label text="Terms of Service" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="settings-section-card">
+                            <ui:VisualElement class="settings-section-heading-row">
+                                <ui:VisualElement class="settings-section-accent"/>
+                                <ui:Label text="ABOUT" class="settings-section-heading"/>
+                            </ui:VisualElement>
+                            <ui:Button name="settings-website-button" class="settings-link-button">
+                                <ui:Label text="Website" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                            <ui:Button name="settings-rate-button" class="settings-link-button settings-template-button">
+                                <ui:Label text="Rate Shikaku Go" class="settings-link-label"/>
+                                <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                            </ui:Button>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="settings-footer">
+                            <ui:Label name="settings-version-label" text="Version 1.0" class="settings-version"/>
+                            <ui:Label text="Smooth Brain Games LLC" class="settings-company"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:Button name="settings-back-button" class="settings-back-button">
+                <ui:VisualElement class="settings-back-icon"/>
+            </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="privacy-preferences-view" class="settings-main-view screen-hidden">
+                <ui:VisualElement class="settings-content">
+                    <ui:VisualElement class="settings-title-block privacy-preferences-title-block">
+                        <ui:VisualElement class="settings-title-row">
+                            <ui:Label text="Privacy Preferences" class="settings-title privacy-preferences-title"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="settings-title-ornament">
+                            <ui:VisualElement class="settings-ornament-line"/>
+                            <ui:VisualElement class="settings-title-icon privacy-preferences-title-icon"/>
+                            <ui:VisualElement class="settings-ornament-line"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:ScrollView name="privacy-preferences-scroll-view" mode="Vertical" class="settings-scroll-view">
+                        <ui:VisualElement class="settings-scroll-content">
+                            <ui:VisualElement class="settings-section-card">
+                                <ui:VisualElement class="settings-section-heading-row">
+                                    <ui:VisualElement class="settings-section-accent"/>
+                                    <ui:Label text="PRIVACY" class="settings-section-heading"/>
+                                </ui:VisualElement>
+                                <ui:VisualElement class="settings-control-row settings-analytics-row">
+                                    <ui:VisualElement class="settings-appearance-copy">
+                                        <ui:Label text="Usage Analytics" class="settings-control-label"/>
+                                        <ui:Label text="Share optional gameplay and app usage analytics to help improve Shikaku Go. No name or email is collected." class="settings-appearance-note settings-analytics-note"/>
+                                    </ui:VisualElement>
+                                    <ui:Toggle name="privacy-preferences-analytics-toggle" class="settings-switch"/>
+                                </ui:VisualElement>
+                                <ui:Button name="privacy-preferences-ad-choices-button" class="settings-link-button" style="display: none;">
+                                    <ui:Label text="Ad Privacy Choices" class="settings-link-label"/>
+                                    <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                                </ui:Button>
+                                <ui:Button name="privacy-preferences-delete-analytics-button" class="settings-link-button settings-danger-button">
+                                    <ui:Label text="Delete Analytics Data" class="settings-link-label"/>
+                                    <ui:Label text="&#8250;" class="settings-link-chevron"/>
+                                </ui:Button>
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:ScrollView>
+                </ui:VisualElement>
+                <ui:Button name="privacy-preferences-back-button" class="settings-back-button">
+                    <ui:VisualElement class="settings-back-icon"/>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="settings-ad-report-modal" class="settings-ad-report-modal screen-hidden">
+                <ui:Button name="settings-ad-report-backdrop-button" class="settings-ad-report-backdrop"/>
+                <ui:VisualElement class="settings-ad-report-card">
+                    <ui:Label text="Report an Ad" class="settings-ad-report-title"/>
+                    <ui:Label text="If an ad is offensive, misleading, or otherwise inappropriate, email us the captured ad details. Please attach a screenshot if you can." class="settings-ad-report-copy"/>
+                    <ui:Button name="settings-ad-report-email-button" text="Email Report" class="settings-ad-report-action settings-ad-report-email-button"/>
+                    <ui:Button name="settings-ad-report-support-page-button" text="Open Support Page" class="settings-ad-report-action settings-ad-report-support-button"/>
+                    <ui:Button name="settings-ad-report-cancel-button" text="Cancel" class="settings-ad-report-cancel-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="shop-screen" class="shop-screen screen-hidden">
+            <ui:VisualElement class="shop-content">
+                <ui:VisualElement class="shop-title-block">
+                    <ui:VisualElement class="shop-title-row">
+                        <ui:Label text="Shop" class="shop-title"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="shop-title-ornament">
+                        <ui:VisualElement class="shop-ornament-line"/>
+                        <ui:VisualElement class="shop-title-icon"/>
+                        <ui:VisualElement class="shop-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="shop-balance-chip">
+                    <ui:VisualElement class="shop-balance-icon"/>
+                    <ui:Label text="Your Hints" class="shop-balance-caption"/>
+                    <ui:Label name="shop-hint-balance" text="0" class="shop-balance-value"/>
+                </ui:VisualElement>
+                <ui:ScrollView name="shop-products-scroll" mode="Vertical" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="shop-products">
+                    <ui:VisualElement name="shop-bundle-card" class="shop-pack-card shop-bundle-card">
+                        <ui:Label text="BEST VALUE" class="shop-best-value-badge"/>
+                        <ui:VisualElement class="shop-pack-icon-shell shop-bundle-icon-shell">
+                            <ui:Label text="NO&#10;ADS" class="shop-bundle-no-ads-label"/>
+                            <ui:VisualElement class="shop-pack-hint-icon shop-bundle-hint-icon"/>
+                            <ui:Label text="30" class="shop-pack-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="shop-pack-copy">
+                            <ui:Label text="Banner-Free Bundle" class="shop-pack-title"/>
+                            <ui:Label text="Remove banner ads + 30 hints" class="shop-remove-ads-description"/>
+                            <ui:Label name="shop-bundle-price" text="Loading..." class="shop-pack-price"/>
+                        </ui:VisualElement>
+                        <ui:Button name="shop-buy-bundle-button" text="Buy" class="shop-buy-button shop-bundle-buy-button"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="shop-remove-ads-card" class="shop-pack-card shop-remove-ads-card">
+                        <ui:VisualElement class="shop-pack-icon-shell shop-remove-ads-icon-shell">
+                            <ui:Label text="NO&#10;ADS" class="shop-remove-ads-icon-label"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="shop-pack-copy">
+                            <ui:Label text="Remove Ads" class="shop-pack-title"/>
+                            <ui:Label text="No banner ads" class="shop-remove-ads-description"/>
+                            <ui:Label name="shop-remove-ads-price" text="Loading..." class="shop-pack-price"/>
+                        </ui:VisualElement>
+                        <ui:Button name="shop-buy-remove-ads-button" text="Buy" class="shop-buy-button shop-remove-ads-buy-button"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="shop-pack-card shop-pack-10">
+                        <ui:VisualElement class="shop-pack-icon-shell">
+                            <ui:VisualElement class="shop-pack-hint-icon"/>
+                            <ui:Label text="10" class="shop-pack-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="shop-pack-copy">
+                            <ui:Label text="10 Hints" class="shop-pack-title"/>
+                            <ui:Label name="shop-ten-price" text="$0.99" class="shop-pack-price"/>
+                        </ui:VisualElement>
+                        <ui:Button name="shop-buy-ten-button" text="Buy" class="shop-buy-button"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="shop-pack-card shop-pack-25">
+                        <ui:VisualElement class="shop-pack-icon-shell">
+                            <ui:VisualElement class="shop-pack-hint-icon"/>
+                            <ui:Label text="25" class="shop-pack-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="shop-pack-copy">
+                            <ui:Label text="25 Hints" class="shop-pack-title"/>
+                            <ui:Label name="shop-twenty-five-price" text="$1.99" class="shop-pack-price"/>
+                        </ui:VisualElement>
+                        <ui:Button name="shop-buy-twenty-five-button" text="Buy" class="shop-buy-button"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="shop-pack-card shop-pack-60">
+                        <ui:VisualElement class="shop-pack-icon-shell">
+                            <ui:VisualElement class="shop-pack-hint-icon"/>
+                            <ui:Label text="60" class="shop-pack-quantity"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="shop-pack-copy">
+                            <ui:Label text="60 Hints" class="shop-pack-title"/>
+                            <ui:Label name="shop-sixty-price" text="$3.99" class="shop-pack-price"/>
+                        </ui:VisualElement>
+                        <ui:Button name="shop-buy-sixty-button" text="Buy" class="shop-buy-button"/>
+                    </ui:VisualElement>
+                    <ui:Label text="Purchases are processed by your device store. Remove Ads purchases can be restored; bundle hints are granted once." class="shop-footnote"/>
+                    <ui:Label name="shop-purchase-status" class="shop-purchase-status"/>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:Button name="shop-back-button" class="shop-back-button">
+                <ui:VisualElement class="shop-back-icon"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement name="time-trial-screen" class="time-trial-screen screen-hidden">
+            <ui:VisualElement class="time-trial-content">
+                <ui:VisualElement class="time-trial-title-block">
+                    <ui:VisualElement class="time-trial-title-row">
+                        <ui:Label text="Time" class="time-trial-title-dark"/>
+                        <ui:Label text="Trial" class="time-trial-title-blue"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="time-trial-title-ornament">
+                        <ui:VisualElement class="time-trial-ornament-line"/>
+                        <ui:VisualElement class="time-trial-ornament-icon"/>
+                        <ui:VisualElement class="time-trial-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Complete as many squares as you can before time runs out." class="time-trial-subtitle"/>
+                <ui:Button name="time-trial-sprint-button" class="time-trial-mode-button time-trial-sprint">
+                    <ui:VisualElement class="time-trial-mode-inner">
+                        <ui:VisualElement class="time-trial-board-badge"><ui:Label text="3&#215;3" class="time-trial-board-label"/></ui:VisualElement>
+                        <ui:VisualElement class="time-trial-mode-divider"/>
+                        <ui:VisualElement class="time-trial-mode-copy">
+                            <ui:Label text="Sprint" class="time-trial-mode-name"/>
+                            <ui:Label text="30 seconds" class="time-trial-mode-time"/>
+                            <ui:Label name="time-trial-sprint-best" text="Best: --" class="time-trial-mode-best"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="time-trial-play-shell"><ui:VisualElement class="ui-play-icon time-trial-play-icon" picking-mode="Ignore"/></ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="time-trial-quick-button" class="time-trial-mode-button time-trial-quick">
+                    <ui:VisualElement class="time-trial-mode-inner">
+                        <ui:VisualElement class="time-trial-board-badge"><ui:Label text="4&#215;4" class="time-trial-board-label"/></ui:VisualElement>
+                        <ui:VisualElement class="time-trial-mode-divider"/>
+                        <ui:VisualElement class="time-trial-mode-copy">
+                            <ui:Label text="Quick" class="time-trial-mode-name"/>
+                            <ui:Label text="60 seconds" class="time-trial-mode-time"/>
+                            <ui:Label name="time-trial-quick-best" text="Best: --" class="time-trial-mode-best"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="time-trial-play-shell"><ui:VisualElement class="ui-play-icon time-trial-play-icon" picking-mode="Ignore"/></ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="time-trial-classic-button" class="time-trial-mode-button time-trial-classic">
+                    <ui:VisualElement class="time-trial-mode-inner">
+                        <ui:VisualElement class="time-trial-board-badge"><ui:Label text="5&#215;5" class="time-trial-board-label"/></ui:VisualElement>
+                        <ui:VisualElement class="time-trial-mode-divider"/>
+                        <ui:VisualElement class="time-trial-mode-copy">
+                            <ui:Label text="Classic" class="time-trial-mode-name"/>
+                            <ui:Label text="90 seconds" class="time-trial-mode-time"/>
+                            <ui:Label name="time-trial-classic-best" text="Best: --" class="time-trial-mode-best"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="time-trial-play-shell"><ui:VisualElement class="ui-play-icon time-trial-play-icon" picking-mode="Ignore"/></ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="time-trial-expert-button" class="time-trial-mode-button time-trial-expert">
+                    <ui:VisualElement class="time-trial-mode-inner">
+                        <ui:VisualElement class="time-trial-board-badge"><ui:Label text="6&#215;6" class="time-trial-board-label"/></ui:VisualElement>
+                        <ui:VisualElement class="time-trial-mode-divider"/>
+                        <ui:VisualElement class="time-trial-mode-copy">
+                            <ui:Label text="Expert" class="time-trial-mode-name"/>
+                            <ui:Label text="120 seconds" class="time-trial-mode-time"/>
+                            <ui:Label name="time-trial-expert-best" text="Best: --" class="time-trial-mode-best"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="time-trial-play-shell"><ui:VisualElement class="ui-play-icon time-trial-play-icon" picking-mode="Ignore"/></ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:Button name="time-trial-back-button" class="time-trial-back-button">
+                <ui:VisualElement class="time-trial-back-icon"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement name="free-play-screen" class="free-play-screen screen-hidden">
+            <ui:VisualElement name="free-play-pack-view" class="free-play-view">
+                <ui:VisualElement class="free-play-title-block">
+                    <ui:VisualElement class="free-play-title-row">
+                        <ui:Label text="Free" class="free-play-title-dark"/>
+                        <ui:Label text="Play" class="free-play-title-green"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="free-play-title-ornament">
+                        <ui:VisualElement class="free-play-ornament-line"/>
+                        <ui:VisualElement class="free-play-ornament-icon"/>
+                        <ui:VisualElement class="free-play-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Choose a puzzle pack" class="free-play-subtitle"/>
+                <ui:ScrollView name="free-play-pack-scroll" mode="Vertical" class="free-play-scroll-view free-play-pack-scroll">
+                    <ui:VisualElement name="free-play-pack-list" class="free-play-pack-list"/>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement name="free-play-size-view" class="free-play-view screen-hidden">
+                <ui:VisualElement class="free-play-context-header">
+                    <ui:Label name="free-play-size-pack-title" text="Classical 1" class="free-play-context-title"/>
+                    <ui:VisualElement class="free-play-title-ornament">
+                        <ui:VisualElement class="free-play-ornament-line"/>
+                        <ui:VisualElement class="free-play-ornament-icon"/>
+                        <ui:VisualElement class="free-play-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Choose a board size" class="free-play-subtitle"/>
+                <ui:ScrollView name="free-play-size-scroll" mode="Vertical" class="free-play-scroll-view">
+                    <ui:VisualElement name="free-play-size-list" class="free-play-size-list"/>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement name="free-play-level-view" class="free-play-view screen-hidden">
+                <ui:VisualElement class="free-play-level-header">
+                    <ui:Label name="free-play-level-title" text="5&#215;5" class="free-play-level-title"/>
+                    <ui:Label name="free-play-level-pack-label" text="Classical 1" class="free-play-level-pack-label"/>
+                    <ui:VisualElement class="free-play-title-ornament">
+                        <ui:VisualElement class="free-play-ornament-line"/>
+                        <ui:VisualElement class="free-play-ornament-icon"/>
+                        <ui:VisualElement class="free-play-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="free-play-level-progress-chip">
+                    <ui:Label name="free-play-level-progress" text="0 of 50 completed" class="free-play-level-progress"/>
+                </ui:VisualElement>
+                <ui:Button name="free-play-continue-button" class="free-play-continue-button">
+                    <ui:VisualElement class="free-play-continue-icon">
+                        <ui:VisualElement class="ui-play-icon free-play-continue-icon-label" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                    <ui:Label name="free-play-continue-label" text="Continue &#8226; Puzzle 1" class="free-play-continue-label"/>
+                </ui:Button>
+                <ui:ScrollView name="free-play-level-scroll" mode="Vertical" class="free-play-scroll-view">
+                    <ui:VisualElement class="free-play-level-scroll-content">
+                        <ui:VisualElement name="free-play-level-grid" class="free-play-level-grid"/>
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:Button name="free-play-back-button" class="free-play-back-button">
+                <ui:VisualElement class="free-play-back-icon"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement name="adventure-screen" class="adventure-screen screen-hidden">
+            <ui:VisualElement name="adventure-map-view" class="adventure-view">
+                <ui:VisualElement class="adventure-title-block">
+                    <ui:Label text="Adventure" class="adventure-title"/>
+                    <ui:VisualElement class="adventure-title-ornament">
+                        <ui:VisualElement class="adventure-ornament-line"/>
+                        <ui:VisualElement class="adventure-ornament-icon"/>
+                        <ui:VisualElement class="adventure-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Choose a chapter" class="adventure-subtitle"/>
+                <ui:VisualElement class="adventure-progress-chip">
+                    <ui:Label name="adventure-map-progress" text="0 of 10 chapters completed" class="adventure-progress-label"/>
+                </ui:VisualElement>
+                <ui:ScrollView name="adventure-map-scroll" mode="Vertical" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="adventure-scroll-view">
+                    <ui:VisualElement class="adventure-map-content">
+                        <ui:VisualElement name="adventure-map-root" class="adventure-map-root"/>
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement name="adventure-level-view" class="adventure-view screen-hidden">
+                <ui:VisualElement class="adventure-level-header">
+                    <ui:Label name="adventure-level-title" text="Chapter 1" class="adventure-level-title"/>
+                    <ui:VisualElement class="adventure-title-ornament">
+                        <ui:VisualElement class="adventure-ornament-line"/>
+                        <ui:VisualElement class="adventure-ornament-icon"/>
+                        <ui:VisualElement class="adventure-ornament-line"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Label text="Choose a puzzle" class="adventure-subtitle"/>
+                <ui:VisualElement class="adventure-progress-chip adventure-level-progress-chip">
+                    <ui:Label name="adventure-level-progress" text="0 of 15 completed" class="adventure-progress-label"/>
+                </ui:VisualElement>
+                <ui:Button name="adventure-continue-button" class="adventure-continue-button">
+                    <ui:VisualElement class="adventure-continue-icon">
+                        <ui:VisualElement class="ui-play-icon adventure-continue-icon-label" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                    <ui:Label name="adventure-continue-label" text="Continue &#8226; Puzzle 1" class="adventure-continue-label"/>
+                </ui:Button>
+                <ui:ScrollView name="adventure-level-scroll" mode="Vertical" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="adventure-scroll-view">
+                    <ui:VisualElement class="adventure-level-scroll-content">
+                        <ui:VisualElement name="adventure-level-grid" class="adventure-level-grid"/>
+                    </ui:VisualElement>
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:Button name="adventure-back-button" class="adventure-back-button">
+                <ui:VisualElement class="adventure-back-icon"/>
+            </ui:Button>
+        </ui:VisualElement>
+        <ui:VisualElement name="privacy-welcome-screen" class="privacy-welcome-screen screen-hidden">
+            <ui:ScrollView mode="Vertical" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden" class="privacy-welcome-scroll">
+                <ui:VisualElement class="privacy-welcome-content">
+                    <ui:VisualElement class="privacy-welcome-brand-mark">
+                        <ui:Label text="1" class="privacy-welcome-brand-number"/>
+                    </ui:VisualElement>
+                    <ui:Label text="Welcome to Shikaku Go" class="privacy-welcome-title"/>
+                    <ui:Label text="By continuing, you agree to our Terms of Service and acknowledge our Privacy Policy." class="privacy-welcome-legal-copy"/>
+                    <ui:VisualElement class="privacy-welcome-legal-links">
+                        <ui:Button name="privacy-welcome-terms-button" text="Terms of Service" class="privacy-welcome-link-button"/>
+                        <ui:VisualElement class="privacy-welcome-link-divider"/>
+                        <ui:Button name="privacy-welcome-privacy-policy-button" text="Privacy Policy" class="privacy-welcome-link-button"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="privacy-welcome-analytics-card">
+                        <ui:VisualElement class="privacy-welcome-analytics-copy">
+                            <ui:Label text="Help improve Shikaku Go" class="privacy-welcome-analytics-title"/>
+                            <ui:Label text="Share optional usage analytics to help improve Shikaku Go. No name or email is collected." class="privacy-welcome-analytics-note"/>
+                        </ui:VisualElement>
+                        <ui:Toggle name="privacy-welcome-analytics-toggle" class="settings-switch privacy-welcome-toggle"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="privacy-welcome-analytics-card">
+                        <ui:VisualElement class="privacy-welcome-analytics-copy">
+                            <ui:Label text="Allow notifications" class="privacy-welcome-analytics-title"/>
+                            <ui:Label text="Receive an optional puzzle reminder at 6:00 PM local time. You can change this later in Settings." class="privacy-welcome-analytics-note"/>
+                        </ui:VisualElement>
+                        <ui:Toggle name="privacy-welcome-notifications-toggle" class="settings-switch privacy-welcome-toggle"/>
+                    </ui:VisualElement>
+                    <ui:Button name="privacy-welcome-continue-button" text="Continue" class="privacy-welcome-continue-button"/>
+                </ui:VisualElement>
+            </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="analytics-delete-modal" class="analytics-modal screen-hidden">
+            <ui:VisualElement class="analytics-modal-backdrop"/>
+            <ui:VisualElement class="analytics-modal-card analytics-delete-card">
+                <ui:Label text="Delete Analytics Data?" class="analytics-modal-title"/>
+                <ui:Label text="This asks Unity Analytics to delete the usage data associated with this installation and turns analytics off. The request is retried automatically if you are offline." class="analytics-modal-copy"/>
+                <ui:VisualElement class="analytics-modal-actions">
+                    <ui:Button name="analytics-delete-cancel-button" text="Cancel" class="analytics-modal-button analytics-secondary-button"/>
+                    <ui:Button name="analytics-delete-confirm-button" text="Delete Data" class="analytics-modal-button analytics-danger-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="streak-restore-modal" class="analytics-modal screen-hidden">
+            <ui:VisualElement class="analytics-modal-backdrop"/>
+            <ui:VisualElement class="analytics-modal-card streak-restore-card">
+                <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore"/>
+                <ui:Label text="Save Your Streak" class="analytics-modal-title"/>
+                <ui:Label name="streak-restore-copy" text="Restore your streak, then complete a puzzle today to continue it." class="analytics-modal-copy streak-restore-copy"/>
+                <ui:VisualElement class="analytics-modal-actions streak-restore-actions">
+                    <ui:Button name="streak-restore-ad-button" text="Watch Ad" class="analytics-modal-button analytics-primary-button streak-restore-button"/>
+                    <ui:Button name="streak-restore-hint-button" text="Use 1 Hint" class="analytics-modal-button analytics-secondary-button streak-restore-button"/>
+                    <ui:Button name="streak-restore-decline-button" text="Let Streak End" class="analytics-modal-button analytics-secondary-button streak-restore-button streak-restore-decline-button"/>
+                </ui:VisualElement>
+                <ui:Label name="streak-restore-status" text="" class="streak-restore-status"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="rate-prompt-modal" class="analytics-modal screen-hidden">
+            <ui:VisualElement class="analytics-modal-backdrop"/>
+            <ui:VisualElement class="analytics-modal-card rate-modal-card">
+                <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore"/>
+                <ui:Label text="Rate Shikaku Go" class="analytics-modal-title"/>
+                <ui:Label text="You&#8217;ve reached a 3-day streak! If you&#8217;re enjoying Shikaku Go, would you take a moment to rate it?" class="analytics-modal-copy"/>
+                <ui:VisualElement class="analytics-modal-actions">
+                    <ui:Button name="rate-prompt-later-button" text="Not Now" class="analytics-modal-button analytics-secondary-button"/>
+                    <ui:Button name="rate-prompt-rate-button" text="Rate Shikaku Go" class="analytics-modal-button analytics-primary-button"/>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

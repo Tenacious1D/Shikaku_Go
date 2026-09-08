@@ -1,0 +1,12 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Ads/BannerDock.uss?fileID=7433441132597879392&amp;guid=b4ee5a332abf42c4a6b7b6041561160c&amp;type=3#BannerDock"/>
+    <ui:VisualElement name="banner-dock-root" class="banner-dock-root screen-hidden" picking-mode="Ignore">
+        <ui:VisualElement name="banner-dock-surface" class="banner-dock-surface" picking-mode="Ignore"/>
+        <ui:Button name="banner-dock-remove-ads-button" tooltip="Remove Ads" class="banner-dock-remove-ads-button">
+            <ui:VisualElement class="banner-dock-remove-ads-icon" picking-mode="Ignore">
+                <ui:VisualElement class="banner-dock-remove-ads-stroke banner-dock-remove-ads-stroke-forward" picking-mode="Ignore"/>
+                <ui:VisualElement class="banner-dock-remove-ads-stroke banner-dock-remove-ads-stroke-back" picking-mode="Ignore"/>
+            </ui:VisualElement>
+        </ui:Button>
+    </ui:VisualElement>
+</ui:UXML>

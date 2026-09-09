@@ -37,6 +37,38 @@ namespace Shikaku.Logic
         }
     }
 
+    public readonly struct ShikakuRegionEvaluation
+    {
+        public bool GeometryAllowed { get; }
+        public int X { get; }
+        public int Y { get; }
+        public int Width { get; }
+        public int Height { get; }
+        public int Area => Width * Height;
+        public int ClueCount { get; }
+        public int ClueValue { get; }
+        public bool IsRuleValid =>
+            GeometryAllowed && ClueCount == 1 && ClueValue == Area;
+
+        internal ShikakuRegionEvaluation(
+            bool geometryAllowed,
+            int x,
+            int y,
+            int width,
+            int height,
+            int clueCount,
+            int clueValue)
+        {
+            GeometryAllowed = geometryAllowed;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            ClueCount = clueCount;
+            ClueValue = clueValue;
+        }
+    }
+
     /// <summary>
     /// Region-based Shikaku board state. Clues and the mask are immutable;
     /// player moves are complete axis-aligned rectangles committed atomically.
@@ -251,6 +283,64 @@ namespace Shikaku.Logic
         {
             return TryNormalizeBounds(startIndex, endIndex, out int x, out int y, out int w, out int h) &&
                    CanCommitRectangle(x, y, w, h);
+        }
+
+        public ShikakuRegionEvaluation EvaluateRegionCandidate(
+            int startIndex,
+            int endIndex)
+        {
+            if (!TryNormalizeBounds(
+                    startIndex,
+                    endIndex,
+                    out int x,
+                    out int y,
+                    out int regionWidth,
+                    out int regionHeight))
+            {
+                return default;
+            }
+
+            bool geometryAllowed =
+                CanCommitRectangle(x, y, regionWidth, regionHeight);
+            int clueCount = 0;
+            int clueValue = 0;
+
+            if (geometryAllowed)
+            {
+                for (int row = y; row < y + regionHeight; row++)
+                {
+                    for (int column = x;
+                         column < x + regionWidth;
+                         column++)
+                    {
+                        int clue = GivenNumber[row * Width + column];
+                        if (clue <= 0)
+                            continue;
+
+                        clueCount++;
+                        clueValue = clue;
+                    }
+                }
+            }
+
+            return new ShikakuRegionEvaluation(
+                geometryAllowed,
+                x,
+                y,
+                regionWidth,
+                regionHeight,
+                clueCount,
+                clueCount == 1 ? clueValue : 0);
+        }
+
+        internal void CopyRegionsTo(List<ShikakuRegion> destination)
+        {
+            if (destination == null)
+                throw new ArgumentNullException(nameof(destination));
+
+            destination.Clear();
+            foreach (ShikakuRegion region in _regions.Values)
+                destination.Add(region);
         }
 
         public bool CanCommitRectangle(int x, int y, int regionWidth, int regionHeight)

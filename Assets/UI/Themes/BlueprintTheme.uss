@@ -1,0 +1,1941 @@
+/* Blueprint Workshop shared visual language. Loaded after the legacy screen sheets. */
+.screen-root,
+.gameplay-background {
+    background-color: rgb(236, 245, 246);
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Backgrounds/whiteprint_grid.png");
+    -unity-background-scale-mode: scale-and-crop;
+}
+
+.blueprint-eyebrow {
+    margin-bottom: 8px;
+    color: rgb(55, 101, 132);
+    font-size: 20px;
+    letter-spacing: 5px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.brand-section {
+    height: 405px;
+}
+
+.brand-mark-scatter {
+    width: 470px;
+    height: 142px;
+    margin-bottom: 0;
+}
+
+.brand-logo-tile {
+    border-radius: 8px;
+    border-bottom-width: 5px;
+}
+
+.scatter-blank { left: 22px; top: 68px; width: 112px; height: 62px; rotate: 0deg; }
+.scatter-one { left: 22px; top: 18px; width: 112px; height: 50px; rotate: 0deg; }
+.scatter-two { left: 134px; top: 18px; width: 72px; height: 112px; rotate: 0deg; }
+.scatter-three { left: 206px; top: 18px; width: 118px; height: 62px; rotate: 0deg; }
+.scatter-four { left: 206px; top: 80px; width: 118px; height: 50px; rotate: 0deg; }
+.scatter-five { left: 324px; top: 18px; width: 124px; height: 112px; rotate: 0deg; }
+
+.brand-title-row {
+    height: 116px;
+}
+
+.brand-title {
+    font-size: 96px;
+    -unity-text-outline-width: 1px;
+}
+
+.tagline-row {
+    height: 54px;
+}
+
+.tagline {
+    font-size: 21px;
+    letter-spacing: 2px;
+}
+
+.primary-actions {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 820px;
+    justify-content: center;
+}
+
+.main-menu-button {
+    min-height: 142px;
+    margin-bottom: 18px;
+    background-color: rgba(249, 244, 228, 0.98);
+    border-color: rgb(111, 154, 181);
+    border-bottom-width: 7px;
+    border-radius: 18px;
+}
+
+.main-menu-button:hover {
+    background-color: rgb(243, 251, 252);
+}
+
+.menu-button-inner {
+    padding-right: 24px;
+    padding-left: 24px;
+}
+
+.menu-button-copy {
+    flex-grow: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.menu-button-label {
+    font-size: 43px;
+    -unity-text-align: middle-left;
+}
+
+.menu-button-note {
+    margin-top: 2px;
+    color: rgb(55, 101, 132);
+    font-size: 20px;
+    letter-spacing: 1px;
+    -unity-text-align: middle-left;
+}
+
+.menu-button-divider {
+    background-color: rgba(55, 101, 132, 0.28);
+}
+
+.adventure-button { border-left-color: rgb(48, 139, 103); border-left-width: 10px; }
+.free-play-button { border-left-color: rgb(34, 139, 181); border-left-width: 10px; }
+.time-trial-button { border-left-color: rgb(196, 59, 69); border-left-width: 10px; }
+.daily-button { border-left-color: rgb(230, 169, 29); border-left-width: 10px; }
+
+.secondary-menu-button,
+.daily-square-button,
+.settings-back-button,
+.shop-back-button,
+.time-trial-back-button,
+.free-play-back-button,
+.adventure-back-button,
+.gameplay-square-button {
+    background-color: rgba(247, 242, 225, 0.98);
+    border-color: rgb(111, 154, 181);
+    border-bottom-width: 6px;
+    border-radius: 15px;
+}
+
+.blueprint-tablet-layout .primary-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.blueprint-tablet-layout .main-menu-button {
+    width: 48.5%;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+/* Shared field-guide pages */
+.daily-title,
+.settings-title,
+.shop-title,
+.time-trial-title-dark,
+.time-trial-title-blue,
+.free-play-title-dark,
+.free-play-title-green,
+.adventure-title {
+    font-size: 76px;
+    -unity-text-outline-width: 1px;
+}
+
+.daily-calendar-card,
+.settings-section-card,
+.shop-pack-card,
+.time-trial-mode-button,
+.free-play-pack-button,
+.free-play-size-button,
+.free-play-level-grid-panel,
+.adventure-chapter-button,
+.adventure-level-grid-panel,
+.gameplay-status-card,
+.gameplay-modal-card,
+.daily-modal-card,
+.settings-ad-report-card,
+.analytics-modal-card,
+.privacy-welcome-card {
+    background-color: rgba(249, 244, 228, 0.97);
+    border-color: rgb(122, 165, 188);
+    border-bottom-width: 6px;
+    border-radius: 18px;
+}
+
+.settings-section-card {
+    border-left-width: 6px;
+    border-left-color: rgb(48, 139, 103);
+}
+
+.settings-section-heading,
+.shop-balance-caption,
+.gameplay-stat-caption {
+    color: rgb(65, 103, 128);
+    letter-spacing: 2px;
+}
+
+.settings-section-accent {
+    background-color: rgb(230, 169, 29);
+}
+
+.settings-link-button,
+.settings-control-row {
+    border-bottom-color: rgba(73, 119, 146, 0.24);
+}
+
+.adventure-map-root {
+    padding: 28px;
+    background-color: rgba(226, 241, 244, 0.74);
+    border-width: 2px;
+    border-color: rgba(34, 139, 181, 0.38);
+    border-radius: 22px;
+}
+
+.adventure-route-dash,
+.adventure-route-dash-active {
+    background-color: rgb(196, 59, 69);
+}
+
+.adventure-chapter-current,
+.free-play-level-next,
+.adventure-level-next,
+.daily-day-today {
+    border-color: rgb(230, 169, 29);
+}
+
+.adventure-chapter-complete,
+.free-play-level-completed,
+.adventure-level-completed,
+.daily-day-completed {
+    background-color: rgb(218, 238, 232);
+    border-color: rgb(48, 139, 103);
+}
+
+.free-play-pack-emblem,
+.free-play-size-badge,
+.time-trial-board-badge,
+.shop-pack-icon-shell,
+.shop-bundle-icon-shell {
+    background-color: rgb(221, 237, 241);
+    border-color: rgb(105, 151, 178);
+}
+
+.daily-calendar-card {
+    border-top-color: rgb(230, 169, 29);
+    border-top-width: 8px;
+}
+
+.daily-complete-mark,
+.adventure-level-checkmark,
+.free-play-level-checkmark {
+    -unity-background-image-tint-color: rgb(48, 139, 103);
+}
+
+.time-trial-sprint { border-left-width: 8px; border-left-color: rgb(48, 139, 103); }
+.time-trial-quick { border-left-width: 8px; border-left-color: rgb(34, 139, 181); }
+.time-trial-classic { border-left-width: 8px; border-left-color: rgb(230, 169, 29); }
+.time-trial-expert { border-left-width: 8px; border-left-color: rgb(196, 59, 69); }
+
+.shop-bundle-card {
+    border-top-width: 8px;
+    border-top-color: rgb(230, 169, 29);
+}
+
+.shop-best-value-badge {
+    background-color: rgb(230, 169, 29);
+}
+
+/* Gameplay floor plan */
+.gameplay-title {
+    font-size: 50px;
+    -unity-text-outline-width: 1px;
+}
+
+.gameplay-subtitle {
+    color: rgb(20, 116, 161);
+    font-size: 27px;
+}
+
+.gameplay-title-ornament {
+    margin-bottom: 3px;
+}
+
+.gameplay-ornament-diamond {
+    background-color: rgb(196, 59, 69);
+}
+
+.gameplay-status-card {
+    height: 94px;
+    background-color: rgba(249, 244, 228, 0.94);
+}
+
+.gameplay-action-button {
+    background-color: rgba(249, 244, 228, 0.98);
+    border-color: rgb(111, 154, 181);
+    border-bottom-width: 7px;
+    border-radius: 18px;
+}
+
+.gameplay-hint-button {
+    border-top-color: rgb(230, 169, 29);
+}
+
+.gameplay-reset-button {
+    border-top-color: rgb(196, 59, 69);
+}
+
+.gameplay-not-quite-warning {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(249, 244, 228, 0.98);
+    border-color: rgb(196, 59, 69);
+    border-left-width: 7px;
+}
+
+.gameplay-tutorial-card {
+    background-color: rgba(249, 244, 228, 0.99);
+    border-color: rgb(111, 154, 181);
+    border-top-width: 7px;
+    border-top-color: rgb(230, 169, 29);
+}
+
+.gameplay-tutorial-guide-tile {
+    background-color: rgb(230, 169, 29);
+    border-color: rgb(151, 93, 12);
+    border-radius: 9px;
+}
+
+.gameplay-tutorial-dot-active {
+    background-color: rgb(196, 59, 69);
+}
+
+.gameplay-solved-card {
+    border-top-width: 9px;
+    border-top-color: rgb(48, 139, 103);
+}
+
+.gameplay-solved-check {
+    color: rgb(48, 139, 103);
+}
+
+.gameplay-primary-button,
+.daily-play-button,
+.adventure-continue-button,
+.free-play-continue-button,
+.privacy-welcome-continue-button,
+.analytics-primary-button {
+    background-color: rgb(32, 130, 92);
+    border-color: rgb(20, 91, 66);
+}
+
+.gameplay-danger-button,
+.analytics-danger-button,
+.settings-danger-button {
+    background-color: rgb(190, 56, 65);
+    border-color: rgb(132, 35, 43);
+}
+
+/* Rivet sprite sheet slices */
+.rivet {
+    flex-shrink: 0;
+    width: 148px;
+    height: 148px;
+    align-self: center;
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.rivet-small {
+    width: 92px;
+    height: 92px;
+}
+
+.rivet-welcome {
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Rivet/rivet-sprite-sheet.png?fileID=701000001&guid=4b7c2e6f8a1d4f3a9c5b7e2d1f6048aa&type=3#rivet_welcome");
+}
+
+.rivet-teach {
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Rivet/rivet-sprite-sheet.png?fileID=701000002&guid=4b7c2e6f8a1d4f3a9c5b7e2d1f6048aa&type=3#rivet_teach");
+}
+
+.rivet-inspect {
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Rivet/rivet-sprite-sheet.png?fileID=701000003&guid=4b7c2e6f8a1d4f3a9c5b7e2d1f6048aa&type=3#rivet_inspect");
+}
+
+.rivet-hint {
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Rivet/rivet-sprite-sheet.png?fileID=701000004&guid=4b7c2e6f8a1d4f3a9c5b7e2d1f6048aa&type=3#rivet_hint");
+}
+
+.rivet-celebrate {
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Rivet/rivet-sprite-sheet.png?fileID=701000005&guid=4b7c2e6f8a1d4f3a9c5b7e2d1f6048aa&type=3#rivet_celebrate");
+}
+
+.rivet-concerned {
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Rivet/rivet-sprite-sheet.png?fileID=701000006&guid=4b7c2e6f8a1d4f3a9c5b7e2d1f6048aa&type=3#rivet_concerned");
+}
+
+.gameplay-tutorial-heading .rivet {
+    margin-right: 10px;
+}
+
+.gameplay-not-quite-warning .rivet {
+    margin-right: 12px;
+}
+
+.theme-dark.screen-root,
+.theme-dark .screen-root,
+.theme-dark .gameplay-background,
+.gameplay-background.theme-dark {
+    background-color: rgb(7, 29, 53);
+    background-image: url("project://database/Assets/Art/UI/Blueprint/Backgrounds/blueprint_grid.png");
+}
+
+.theme-dark .main-menu-button,
+.theme-dark .secondary-menu-button,
+.theme-dark .daily-calendar-card,
+.theme-dark .settings-section-card,
+.theme-dark .shop-pack-card,
+.theme-dark .time-trial-mode-button,
+.theme-dark .free-play-pack-button,
+.theme-dark .free-play-size-button,
+.theme-dark .free-play-level-grid-panel,
+.theme-dark .adventure-chapter-button,
+.theme-dark .adventure-level-grid-panel,
+.theme-dark .gameplay-status-card,
+.theme-dark .gameplay-action-button,
+.theme-dark .gameplay-modal-card,
+.theme-dark .daily-modal-card,
+.theme-dark .settings-ad-report-card,
+.theme-dark .analytics-modal-card,
+.theme-dark .privacy-welcome-card,
+.theme-dark .gameplay-not-quite-warning,
+.theme-dark .gameplay-tutorial-card {
+    background-color: rgba(14, 49, 82, 0.98);
+    border-color: rgb(63, 132, 166);
+}
+
+.theme-dark .menu-button-note,
+.theme-dark .blueprint-eyebrow,
+.theme-dark .settings-section-heading,
+.theme-dark .shop-balance-caption,
+.theme-dark .gameplay-stat-caption {
+    color: rgb(175, 215, 227);
+}
+
+.theme-dark .adventure-map-root {
+    background-color: rgba(8, 42, 70, 0.72);
+    border-color: rgba(76, 184, 210, 0.5);
+}
+
+.theme-dark .adventure-chapter-complete,
+.theme-dark .free-play-level-completed,
+.theme-dark .adventure-level-completed,
+.theme-dark .daily-day-completed {
+    background-color: rgb(19, 70, 75);
+    border-color: rgb(74, 174, 141);
+}
+/* Blueprint drafting details */
+.brand-logo-tile {
+    background-color: rgb(230, 244, 247);
+    border-color: rgb(24, 87, 132);
+    border-width: 3px;
+    border-bottom-width: 5px;
+}
+
+.scatter-two,
+.scatter-four {
+    background-color: rgb(53, 154, 194);
+}
+
+.scatter-three {
+    background-color: rgb(244, 188, 43);
+}
+
+.main-menu-button,
+.daily-calendar-card,
+.settings-section-card,
+.shop-pack-card,
+.time-trial-mode-button,
+.free-play-pack-button,
+.free-play-size-button,
+.free-play-level-grid-panel,
+.adventure-chapter-button,
+.adventure-level-grid-panel,
+.gameplay-status-card,
+.gameplay-modal-card,
+.daily-modal-card,
+.settings-ad-report-card,
+.analytics-modal-card,
+.privacy-welcome-card {
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-left-width: 2px;
+}
+
+.gameplay-board-slot {
+    background-color: rgba(221, 239, 243, 0.7);
+    border-width: 2px;
+    border-color: rgba(32, 112, 156, 0.35);
+    border-radius: 14px;
+    padding: 8px;
+}
+
+.gameplay-stat-divider,
+.gameplay-ornament-line,
+.gameplay-modal-line {
+    background-color: rgba(44, 116, 153, 0.35);
+}
+
+.gameplay-ad-spacer {
+    border-top-width: 1px;
+    border-top-color: rgba(55, 101, 132, 0.22);
+}
+
+.theme-dark .brand-logo-tile {
+    background-color: rgb(11, 51, 84);
+    border-color: rgb(105, 207, 225);
+}
+
+.theme-dark .scatter-two,
+.theme-dark .scatter-four {
+    background-color: rgb(24, 112, 153);
+}
+
+.theme-dark .scatter-three {
+    background-color: rgb(210, 150, 28);
+}
+
+.theme-dark .gameplay-board-slot {
+    background-color: rgba(5, 27, 49, 0.8);
+    border-color: rgba(96, 199, 222, 0.45);
+}
+
+.theme-dark .gameplay-stat-divider,
+.theme-dark .gameplay-ornament-line,
+.theme-dark .gameplay-modal-line,
+.theme-dark .gameplay-ad-spacer {
+    background-color: rgba(100, 193, 214, 0.35);
+    border-color: rgba(100, 193, 214, 0.24);
+}
+
+/* Blueprint home action composition */
+.primary-actions {
+    flex-grow: 0;
+    width: 100%;
+    max-width: 820px;
+    align-items: stretch;
+    justify-content: flex-start;
+}
+
+.home-feature-row {
+    width: 100%;
+    height: 300px;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: space-between;
+}
+
+.home-adventure-feature {
+    width: 51.5%;
+    height: 300px;
+    min-height: 300px;
+    margin: 0;
+    background-color: rgba(222, 240, 244, 0.98);
+    border-left-width: 10px;
+    border-left-color: rgb(34, 139, 181);
+}
+
+.home-adventure-feature .menu-button-inner {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 9px;
+    padding: 20px;
+}
+
+.home-adventure-feature .menu-button-icon {
+    width: 108px;
+    height: 108px;
+}
+
+.home-adventure-feature .menu-button-divider {
+    width: 72%;
+    height: 2px;
+    margin-top: 16px;
+    margin-right: 0;
+    margin-bottom: 14px;
+    margin-left: 0;
+}
+
+.home-adventure-feature .menu-button-copy {
+    flex-grow: 0;
+    width: 100%;
+    align-items: center;
+}
+
+.home-adventure-feature .menu-button-label,
+.home-adventure-feature .menu-button-note {
+    -unity-text-align: middle-center;
+}
+
+.home-adventure-feature .menu-button-label {
+    font-size: 47px;
+}
+
+.home-adventure-feature .menu-button-note {
+    margin-top: 6px;
+    font-size: 18px;
+}
+
+.home-compact-stack {
+    width: 45.5%;
+    height: 300px;
+    justify-content: space-between;
+}
+
+.home-compact-button {
+    width: 100%;
+    height: 142px;
+    min-height: 142px;
+    margin: 0;
+}
+
+.home-compact-button .menu-button-inner {
+    margin: 7px;
+    padding-right: 12px;
+    padding-left: 12px;
+}
+
+.home-compact-button .menu-button-icon {
+    width: 58px;
+    height: 58px;
+}
+
+.home-compact-button .menu-button-divider {
+    height: 68px;
+    margin-right: 13px;
+    margin-left: 10px;
+}
+
+.home-compact-button .menu-button-label {
+    font-size: 31px;
+}
+
+.home-compact-button .menu-button-note {
+    font-size: 14px;
+    letter-spacing: 0;
+    white-space: normal;
+}
+
+.home-daily-wide {
+    width: 100%;
+    height: 126px;
+    min-height: 126px;
+    margin-top: 17px;
+    margin-bottom: 0;
+    background-color: rgba(255, 248, 219, 0.98);
+}
+
+.home-daily-wide .menu-button-inner {
+    margin: 7px;
+}
+
+.home-daily-wide .menu-button-icon {
+    width: 70px;
+    height: 70px;
+}
+
+.home-daily-wide .menu-button-divider {
+    height: 68px;
+    margin-right: 24px;
+    margin-left: 18px;
+}
+
+.home-daily-wide .menu-button-label {
+    font-size: 38px;
+}
+
+.home-daily-wide .menu-button-note {
+    font-size: 16px;
+}
+
+.menu-button-label {
+    color: rgb(13, 58, 99);
+    -unity-text-outline-width: 0px;
+}
+
+.menu-button-icon {
+    -unity-background-image-tint-color: rgb(13, 58, 99);
+}
+
+.secondary-actions {
+    margin-top: 22px;
+}
+
+.secondary-menu-button {
+    background-color: rgba(244, 250, 250, 0.98);
+}
+
+.blueprint-tablet-layout .primary-actions {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    max-width: 920px;
+}
+
+.blueprint-tablet-layout .main-menu-button {
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.blueprint-tablet-layout .home-adventure-feature {
+    width: 51.5%;
+}
+
+.blueprint-tablet-layout .home-compact-button,
+.blueprint-tablet-layout .home-daily-wide {
+    width: 100%;
+}
+
+.theme-dark .menu-button-label,
+.theme-dark .secondary-button-label {
+    color: rgb(231, 245, 248);
+    -unity-text-outline-width: 0px;
+}
+
+.theme-dark .menu-button-icon {
+    -unity-background-image-tint-color: rgb(231, 245, 248);
+}
+
+.theme-dark .home-adventure-feature {
+    background-color: rgba(16, 62, 94, 0.98);
+    border-left-color: rgb(76, 184, 210);
+}
+
+.theme-dark .home-daily-wide {
+    background-color: rgba(57, 62, 55, 0.98);
+}
+
+.theme-dark .secondary-menu-button {
+    background-color: rgba(14, 49, 82, 0.98);
+}
+
+/* Home width guard */
+.home-adventure-feature { max-width: 51.5%; }
+.home-compact-button,
+.home-daily-wide { max-width: 100%; }
+
+/* Expanded home canvas and custom mode marks */
+.safe-area {
+    max-width: 1080px;
+    padding-right: 32px;
+    padding-bottom: 34px;
+    padding-left: 32px;
+}
+
+.primary-actions {
+    max-width: 1016px;
+}
+
+.home-feature-row {
+    height: 620px;
+}
+
+.home-adventure-feature,
+.blueprint-tablet-layout .home-adventure-feature {
+    width: 55%;
+    max-width: 55%;
+    height: 620px;
+    min-height: 620px;
+}
+
+.home-adventure-feature .menu-button-icon {
+    width: 178px;
+    height: 178px;
+}
+
+.home-adventure-feature .menu-button-divider {
+    margin-top: 25px;
+    margin-bottom: 23px;
+}
+
+.home-adventure-feature .menu-button-label {
+    font-size: 59px;
+}
+
+.home-adventure-feature .menu-button-note {
+    margin-top: 10px;
+    font-size: 22px;
+}
+
+.home-compact-stack {
+    width: 42.5%;
+    height: 620px;
+}
+
+.home-compact-button {
+    height: 298px;
+    min-height: 298px;
+}
+
+.home-compact-button .menu-button-inner {
+    margin: 9px;
+    padding-right: 19px;
+    padding-left: 19px;
+}
+
+.home-compact-button .menu-button-icon {
+    width: 91px;
+    height: 91px;
+}
+
+.home-compact-button .menu-button-divider {
+    height: 112px;
+    margin-right: 20px;
+    margin-left: 16px;
+}
+
+.home-compact-button .menu-button-label {
+    font-size: 41px;
+}
+
+.home-compact-button .menu-button-note {
+    margin-top: 5px;
+    font-size: 18px;
+}
+
+.home-daily-wide {
+    height: 190px;
+    min-height: 190px;
+    margin-top: 18px;
+}
+
+.home-daily-wide .menu-button-icon {
+    width: 104px;
+    height: 104px;
+}
+
+.home-daily-wide .menu-button-divider {
+    height: 102px;
+    margin-right: 31px;
+    margin-left: 24px;
+}
+
+.home-daily-wide .menu-button-label {
+    font-size: 49px;
+}
+
+.home-daily-wide .menu-button-note {
+    font-size: 20px;
+}
+
+.secondary-actions {
+    width: 100%;
+    max-width: 1016px;
+    height: 300px;
+    margin-top: 24px;
+}
+
+.secondary-menu-button {
+    width: 48.5%;
+    height: 284px;
+}
+
+.secondary-button-icon {
+    width: 126px;
+    height: 126px;
+    margin-bottom: 10px;
+}
+
+.secondary-button-label {
+    font-size: 41px;
+}
+
+.icon-adventure {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_adventure_tower.png");
+}
+
+.icon-free-play {
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_free_play_shikaku.png");
+}
+
+/* Free Play Plan Archive */
+.free-play-screen {
+    align-items: center;
+}
+
+.free-play-view {
+    width: 100%;
+    max-width: 1080px;
+    min-height: 100%;
+    padding-top: 62px;
+    padding-right: 32px;
+    padding-bottom: 30px;
+    padding-left: 32px;
+    align-items: stretch;
+}
+
+.free-play-back-button {
+    left: 36px;
+    top: 72px;
+    width: 94px;
+    height: 94px;
+    background-color: rgb(239, 247, 247);
+    border-width: 2px;
+    border-bottom-width: 5px;
+    border-color: rgb(47, 119, 158);
+    border-radius: 5px;
+}
+
+.free-play-back-icon {
+    width: 54px;
+    height: 54px;
+    -unity-background-image-tint-color: rgb(18, 82, 126);
+}
+
+.free-play-drawing-header {
+    flex-shrink: 0;
+    width: 100%;
+    height: 268px;
+    padding-top: 18px;
+    padding-right: 22px;
+    padding-bottom: 18px;
+    padding-left: 132px;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: rgba(239, 248, 249, 0.94);
+    border-width: 2px;
+    border-left-width: 7px;
+    border-color: rgb(78, 145, 178);
+    border-left-color: rgb(27, 132, 177);
+    border-radius: 4px;
+}
+
+.free-play-header-index {
+    flex-shrink: 0;
+    height: 33px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.free-play-header-kicker,
+.free-play-header-sheet,
+.free-play-meta-caption,
+.free-play-section-label,
+.free-play-pack-caption,
+.free-play-pack-tab-label,
+.free-play-size-caption,
+.free-play-size-sheet,
+.free-play-level-plan-label,
+.free-play-level-sheet-label,
+.free-play-continue-caption,
+.free-play-continue-action {
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+.free-play-header-kicker,
+.free-play-header-sheet {
+    margin: 0;
+    padding: 0;
+    color: rgb(47, 101, 136);
+    font-size: 19px;
+}
+
+.free-play-header-sheet {
+    color: rgb(18, 116, 161);
+    letter-spacing: 1px;
+}
+
+.free-play-drawing-title,
+.free-play-context-title {
+    margin: 4px 0 2px 0;
+    padding: 0;
+    color: rgb(13, 58, 99);
+    font-size: 61px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    -unity-text-outline-width: 0;
+    white-space: nowrap;
+}
+
+.free-play-context-title {
+    font-size: 50px;
+}
+
+.free-play-header-rule {
+    flex-shrink: 0;
+    width: 100%;
+    height: 2px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    background-color: rgba(32, 112, 156, 0.55);
+}
+
+.free-play-header-meta {
+    flex-grow: 1;
+    min-height: 58px;
+    flex-direction: row;
+    align-items: stretch;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-color: rgba(32, 112, 156, 0.42);
+}
+
+.free-play-meta-field {
+    flex-grow: 1;
+    min-width: 0;
+    padding-top: 7px;
+    padding-right: 12px;
+    padding-bottom: 5px;
+    padding-left: 12px;
+    justify-content: center;
+    border-right-width: 1px;
+    border-right-color: rgba(32, 112, 156, 0.42);
+}
+
+
+.free-play-meta-caption {
+    margin: 0 0 2px 0;
+    padding: 0;
+    color: rgb(74, 119, 145);
+    font-size: 13px;
+}
+
+.free-play-meta-value {
+    margin: 0;
+    padding: 0;
+    color: rgb(19, 71, 108);
+    font-size: 20px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+}
+
+.free-play-meta-accent {
+    color: rgb(35, 137, 93);
+}
+
+.free-play-section-label {
+    flex-shrink: 0;
+    height: 54px;
+    margin: 14px 0 0 0;
+    padding: 0 4px;
+    color: rgb(35, 94, 130);
+    font-size: 22px;
+    -unity-text-align: middle-left;
+}
+
+.free-play-scroll-view {
+    flex-grow: 1;
+    width: 100%;
+    min-height: 0;
+}
+
+.free-play-pack-scroll {
+    margin-top: 0;
+}
+
+.free-play-pack-list,
+.free-play-size-list,
+.free-play-level-grid {
+    width: 100%;
+    max-width: none;
+    padding-top: 4px;
+    padding-bottom: 38px;
+    align-items: stretch;
+}
+/* Project binders */
+.free-play-pack-button {
+    flex-shrink: 0;
+    width: 100%;
+    height: 202px;
+    margin: 0 0 18px 0;
+    padding-top: 37px;
+    padding-right: 22px;
+    padding-bottom: 16px;
+    padding-left: 20px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(250, 247, 233, 0.98);
+    border-width: 2px;
+    border-left-width: 7px;
+    border-color: rgb(102, 153, 179);
+    border-left-color: rgb(27, 132, 177);
+    border-radius: 4px;
+    overflow: hidden;
+    transition-duration: 0.08s;
+    transition-property: translate, background-color;
+}
+
+.free-play-pack-button:hover {
+    background-color: rgb(244, 251, 251);
+}
+
+.free-play-pack-button:active {
+    translate: 0 3px;
+    border-bottom-width: 2px;
+}
+
+.free-play-pack-tab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 174px;
+    height: 30px;
+    padding-left: 15px;
+    justify-content: center;
+    background-color: rgb(27, 132, 177);
+}
+
+.free-play-pack-tab-label {
+    margin: 0;
+    padding: 0;
+    color: rgb(245, 252, 252);
+    font-size: 14px;
+    -unity-text-align: middle-left;
+}
+
+.free-play-plan-preview {
+    flex-shrink: 0;
+    position: relative;
+    width: 164px;
+    height: 122px;
+    margin-right: 24px;
+    background-color: rgb(223, 241, 244);
+    border-width: 3px;
+    border-color: rgb(24, 96, 141);
+    overflow: hidden;
+}
+
+.free-play-plan-wall {
+    position: absolute;
+    background-color: rgb(24, 96, 141);
+}
+
+.free-play-plan-wall-v1 {
+    left: 44%;
+    top: 0;
+    width: 3px;
+    height: 66%;
+}
+
+.free-play-plan-wall-v2 {
+    left: 70%;
+    top: 42%;
+    width: 3px;
+    height: 58%;
+}
+
+.free-play-plan-wall-h1 {
+    left: 0;
+    top: 42%;
+    width: 100%;
+    height: 3px;
+}
+
+.free-play-plan-wall-h2 {
+    left: 44%;
+    top: 66%;
+    width: 56%;
+    height: 3px;
+}
+
+.free-play-plan-preview-2 .free-play-plan-wall-v1 {
+    left: 36%;
+    height: 100%;
+}
+
+.free-play-plan-preview-2 .free-play-plan-wall-v2 {
+    left: 72%;
+    top: 0;
+    height: 42%;
+}
+
+.free-play-plan-preview-2 .free-play-plan-wall-h1 {
+    top: 55%;
+}
+
+.free-play-plan-preview-3 .free-play-plan-wall-v1 {
+    left: 54%;
+    height: 100%;
+}
+
+.free-play-plan-preview-3 .free-play-plan-wall-v2 {
+    left: 27%;
+    top: 0;
+    height: 42%;
+}
+
+.free-play-plan-preview-3 .free-play-plan-wall-h2 {
+    left: 0;
+    width: 54%;
+    top: 70%;
+}
+
+.free-play-plan-marker {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    color: rgb(17, 76, 116);
+    font-size: 17px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.free-play-plan-marker-one {
+    left: 13%;
+    top: 8%;
+}
+
+.free-play-plan-marker-two {
+    right: 12%;
+    bottom: 7%;
+}
+
+.free-play-pack-copy {
+    flex-grow: 1;
+    min-width: 0;
+    height: 126px;
+    justify-content: center;
+}
+
+.free-play-pack-caption {
+    margin: 0 0 1px 0;
+    padding: 0;
+    color: rgb(64, 112, 139);
+    font-size: 14px;
+    -unity-text-align: middle-left;
+}
+
+.free-play-pack-name {
+    margin: 0 0 6px 0;
+    padding: 0;
+    color: rgb(15, 61, 99);
+    font-size: 36px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+}
+
+.free-play-pack-progress {
+    margin: 0 0 7px 0;
+    padding: 0;
+    color: rgb(59, 103, 128);
+    font-size: 18px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    letter-spacing: 1px;
+}
+
+.free-play-pack-progress-track {
+    width: 100%;
+    height: 9px;
+    background-color: rgb(202, 222, 228);
+    border-width: 1px;
+    border-color: rgb(101, 146, 168);
+}
+
+.free-play-pack-progress-fill {
+    height: 100%;
+    background-color: rgb(42, 153, 117);
+}
+
+.free-play-pack-arrow {
+    flex-shrink: 0;
+    width: 96px;
+    margin: 0 0 0 18px;
+    padding: 0;
+    color: rgb(20, 107, 151);
+    font-size: 17px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+}
+/* Floor-plate selection */
+.free-play-size-list {
+    padding-top: 2px;
+}
+
+.free-play-size-row {
+    flex-shrink: 0;
+    width: 100%;
+    height: 318px;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.free-play-size-button,
+.free-play-size-card-blank {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+    height: 298px;
+    margin-top: 0;
+    margin-right: 9px;
+    margin-bottom: 20px;
+    margin-left: 9px;
+}
+
+.free-play-size-card-blank {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.free-play-size-button {
+    padding-top: 14px;
+    padding-right: 16px;
+    padding-bottom: 15px;
+    padding-left: 16px;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: rgba(250, 247, 233, 0.98);
+    border-width: 2px;
+    border-top-width: 6px;
+    border-color: rgb(101, 153, 179);
+    border-top-color: rgb(27, 132, 177);
+    border-radius: 4px;
+    transition-duration: 0.08s;
+    transition-property: translate, background-color;
+}
+
+.free-play-size-button:hover {
+    background-color: rgb(244, 251, 251);
+}
+
+.free-play-size-button:active {
+    translate: 0 3px;
+    border-bottom-width: 2px;
+}
+
+.free-play-size-heading {
+    flex-shrink: 0;
+    width: 100%;
+    height: 28px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.free-play-size-caption,
+.free-play-size-sheet {
+    margin: 0;
+    padding: 0;
+    color: rgb(59, 105, 133);
+    font-size: 13px;
+}
+
+.free-play-size-sheet {
+    color: rgb(19, 113, 158);
+    letter-spacing: 1px;
+}
+
+.free-play-size-preview {
+    flex-shrink: 0;
+    position: relative;
+    width: 172px;
+    height: 152px;
+    margin-top: 6px;
+    margin-right: auto;
+    margin-bottom: 9px;
+    margin-left: auto;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(225, 242, 244);
+    border-width: 3px;
+    border-color: rgb(23, 94, 138);
+    overflow: hidden;
+}
+
+.free-play-size-grid-line {
+    position: absolute;
+    background-color: rgba(31, 116, 158, 0.34);
+}
+
+.free-play-size-grid-vertical {
+    top: 0;
+    width: 2px;
+    height: 100%;
+}
+
+.free-play-size-grid-horizontal {
+    left: 0;
+    width: 100%;
+    height: 2px;
+}
+
+.free-play-size-badge {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding-top: 6px;
+    padding-right: 13px;
+    padding-bottom: 6px;
+    padding-left: 13px;
+    color: rgb(10, 60, 99);
+    background-color: rgba(239, 248, 249, 0.93);
+    border-width: 2px;
+    border-color: rgb(29, 111, 153);
+    border-radius: 2px;
+    font-size: 38px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    -unity-text-outline-width: 0;
+}
+
+.free-play-size-progress {
+    margin: 0 0 7px 0;
+    padding: 0;
+    color: rgb(53, 99, 126);
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+}
+
+.free-play-size-progress-track {
+    flex-shrink: 0;
+    width: 100%;
+    height: 8px;
+    background-color: rgb(202, 222, 228);
+    border-width: 1px;
+    border-color: rgb(101, 146, 168);
+}
+
+.free-play-size-progress-fill {
+    height: 100%;
+    background-color: rgb(42, 153, 117);
+}
+/* Plan index */
+.free-play-level-header {
+    height: 238px;
+}
+
+.free-play-level-meta {
+    flex-grow: 1;
+}
+
+.free-play-progress-field {
+    flex-grow: 2;
+}
+
+.free-play-level-title,
+.free-play-level-progress,
+.free-play-level-pack-label {
+    color: rgb(19, 71, 108);
+    -unity-text-outline-width: 0;
+}
+
+.free-play-level-title {
+    font-size: 23px;
+}
+
+.free-play-level-progress {
+    font-size: 20px;
+}
+
+.free-play-continue-button {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: none;
+    height: 112px;
+    margin-top: 15px;
+    margin-right: 0;
+    margin-bottom: 4px;
+    margin-left: 0;
+    padding-top: 11px;
+    padding-right: 20px;
+    padding-bottom: 14px;
+    padding-left: 16px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: rgb(255, 244, 199);
+    border-width: 2px;
+    border-left-width: 9px;
+    border-color: rgb(176, 128, 20);
+    border-left-color: rgb(231, 169, 26);
+    border-radius: 4px;
+    transition-duration: 0.08s;
+    transition-property: translate, background-color;
+}
+
+.free-play-continue-button:hover {
+    background-color: rgb(255, 248, 218);
+}
+
+.free-play-continue-button:active {
+    translate: 0 3px;
+    border-bottom-width: 2px;
+}
+
+.free-play-continue-marker {
+    flex-shrink: 0;
+    width: 60px;
+    height: 60px;
+    margin-right: 18px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(23, 99, 143);
+    border-radius: 2px;
+}
+
+.free-play-continue-marker-label {
+    margin: 0 0 0 3px;
+    padding: 0;
+    color: rgb(247, 252, 252);
+    font-size: 25px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.free-play-continue-copy {
+    flex-grow: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.free-play-continue-caption {
+    margin: 0 0 1px 0;
+    padding: 0;
+    color: rgb(123, 91, 15);
+    font-size: 13px;
+    -unity-text-align: middle-left;
+}
+
+.free-play-continue-label {
+    margin: 0;
+    padding: 0;
+    color: rgb(38, 64, 77);
+    font-size: 31px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    -unity-text-outline-width: 0;
+}
+
+.free-play-continue-action {
+    flex-shrink: 0;
+    margin: 0 4px 0 14px;
+    padding: 0;
+    color: rgb(20, 105, 148);
+    font-size: 17px;
+    -unity-text-align: middle-center;
+}
+
+.free-play-level-section-label {
+    height: 46px;
+    margin-top: 5px;
+}
+
+.free-play-level-scroll-content {
+    width: 100%;
+    padding-top: 0;
+    padding-bottom: 38px;
+    align-items: stretch;
+}
+
+.free-play-level-grid-panel {
+    width: 100%;
+    margin: 0 0 28px 0;
+    padding-top: 13px;
+    padding-right: 11px;
+    padding-bottom: 15px;
+    padding-left: 11px;
+    background-color: rgba(225, 241, 244, 0.82);
+    border-width: 2px;
+    border-color: rgba(48, 124, 162, 0.62);
+    border-radius: 3px;
+}
+
+.free-play-level-row {
+    width: 100%;
+    height: 143px;
+    flex-direction: row;
+}
+
+.free-play-level-cell {
+    flex-grow: 1;
+    flex-basis: 0;
+    min-width: 0;
+    margin: 5px;
+}
+
+.free-play-level-blank {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.free-play-level-button {
+    position: relative;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(250, 248, 237);
+    border-width: 2px;
+    border-color: rgb(92, 145, 172);
+    border-radius: 2px;
+    overflow: hidden;
+    transition-duration: 0.07s;
+    transition-property: translate, background-color;
+}
+
+.free-play-level-button:hover {
+    background-color: rgb(242, 250, 250);
+}
+
+.free-play-level-button:active {
+    translate: 0 3px;
+    border-bottom-width: 2px;
+}
+
+.free-play-level-title-strip {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 26px;
+    padding-right: 6px;
+    padding-left: 6px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(218, 237, 241);
+    border-bottom-width: 1px;
+    border-bottom-color: rgb(91, 146, 173);
+}
+
+.free-play-level-plan-label,
+.free-play-level-sheet-label {
+    margin: 0;
+    padding: 0;
+    color: rgb(48, 101, 132);
+    font-size: 10px;
+    letter-spacing: 1px;
+}
+
+.free-play-level-sheet-label {
+    color: rgb(19, 111, 155);
+}
+
+.free-play-level-number {
+    margin: 15px 0 0 0;
+    padding: 0;
+    color: rgb(17, 65, 101);
+    font-size: 42px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.free-play-level-next {
+    background-color: rgb(255, 249, 221);
+    border-width: 3px;
+    border-color: rgb(229, 168, 27);
+}
+
+.free-play-level-next .free-play-level-title-strip {
+    background-color: rgb(251, 231, 167);
+    border-bottom-color: rgb(205, 145, 18);
+}
+
+.free-play-level-next-label,
+.free-play-level-ready-label,
+.free-play-level-locked-label {
+    position: absolute;
+    bottom: 8px;
+    margin: 0;
+    padding: 0;
+    color: rgb(140, 97, 10);
+    font-size: 11px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+}
+
+.free-play-level-ready-label {
+    color: rgb(53, 105, 132);
+}
+
+.free-play-level-corner {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+}
+
+.free-play-level-corner-top {
+    left: 3px;
+    top: 29px;
+    border-top-width: 4px;
+    border-left-width: 4px;
+    border-color: rgb(229, 168, 27);
+}
+
+.free-play-level-corner-bottom {
+    right: 3px;
+    bottom: 3px;
+    border-right-width: 4px;
+    border-bottom-width: 4px;
+    border-color: rgb(229, 168, 27);
+}
+.free-play-level-completed {
+    background-color: rgb(226, 243, 235);
+    border-color: rgb(52, 143, 105);
+}
+
+.free-play-level-completed .free-play-level-title-strip {
+    background-color: rgb(204, 233, 218);
+    border-bottom-color: rgb(52, 143, 105);
+}
+
+.free-play-level-approved-stamp {
+    position: absolute;
+    bottom: 9px;
+    margin: 0;
+    padding-top: 2px;
+    padding-right: 4px;
+    padding-bottom: 2px;
+    padding-left: 4px;
+    color: rgb(34, 132, 91);
+    border-width: 2px;
+    border-color: rgb(34, 132, 91);
+    border-radius: 2px;
+    font-size: 9px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    letter-spacing: 1px;
+    rotate: -7deg;
+}
+
+.free-play-level-locked,
+.free-play-level-button:disabled {
+    background-color: rgba(218, 228, 228, 0.82);
+    border-color: rgba(94, 127, 143, 0.62);
+    opacity: 0.67;
+}
+
+.free-play-level-locked .free-play-level-title-strip {
+    background-color: rgba(201, 216, 219, 0.86);
+}
+
+.free-play-level-locked .free-play-level-number {
+    color: rgba(54, 83, 98, 0.58);
+}
+
+.free-play-level-locked-label {
+    color: rgba(69, 91, 102, 0.72);
+}
+
+.free-play-level-lock-line {
+    position: absolute;
+    width: 150px;
+    height: 2px;
+    background-color: rgba(75, 111, 127, 0.35);
+    rotate: -37deg;
+}
+
+/* Night blueprint paper */
+.theme-dark .free-play-back-button {
+    background-color: rgb(12, 49, 81);
+    border-color: rgb(76, 171, 198);
+}
+
+.theme-dark .free-play-back-icon {
+    -unity-background-image-tint-color: rgb(199, 233, 239);
+}
+
+.theme-dark .free-play-drawing-header {
+    background-color: rgba(9, 43, 73, 0.97);
+    border-color: rgb(55, 132, 165);
+    border-left-color: rgb(81, 194, 217);
+}
+
+.theme-dark .free-play-header-kicker,
+.theme-dark .free-play-header-sheet,
+.theme-dark .free-play-meta-caption,
+.theme-dark .free-play-section-label {
+    color: rgb(142, 204, 220);
+}
+
+.theme-dark .free-play-drawing-title,
+.theme-dark .free-play-context-title,
+.theme-dark .free-play-level-pack-label,
+.theme-dark .free-play-meta-value,
+.theme-dark .free-play-level-title,
+.theme-dark .free-play-level-progress {
+    color: rgb(224, 242, 244);
+    -unity-text-outline-width: 0;
+}
+
+.theme-dark .free-play-meta-accent {
+    color: rgb(92, 207, 161);
+}
+
+.theme-dark .free-play-header-rule {
+    background-color: rgba(105, 199, 219, 0.62);
+}
+
+.theme-dark .free-play-header-meta,
+.theme-dark .free-play-meta-field {
+    border-color: rgba(99, 185, 205, 0.48);
+}
+
+.theme-dark .free-play-pack-button,
+.theme-dark .free-play-size-button,
+.theme-dark .free-play-level-button {
+    background-color: rgba(11, 48, 79, 0.98);
+    border-color: rgb(66, 144, 173);
+}
+
+.theme-dark .free-play-pack-button:hover,
+.theme-dark .free-play-size-button:hover,
+.theme-dark .free-play-level-button:hover {
+    background-color: rgb(15, 60, 94);
+}
+
+.theme-dark .free-play-pack-button,
+.theme-dark .free-play-size-button {
+    border-left-color: rgb(80, 190, 214);
+}
+
+.theme-dark .free-play-pack-tab {
+    background-color: rgb(31, 136, 174);
+}
+
+.theme-dark .free-play-plan-preview,
+.theme-dark .free-play-size-preview {
+    background-color: rgb(8, 37, 65);
+    border-color: rgb(107, 202, 220);
+}
+
+.theme-dark .free-play-plan-wall,
+.theme-dark .free-play-size-grid-line {
+    background-color: rgba(115, 211, 227, 0.78);
+}
+
+.theme-dark .free-play-plan-marker,
+.theme-dark .free-play-size-badge,
+.theme-dark .free-play-pack-name,
+.theme-dark .free-play-level-number {
+    color: rgb(224, 242, 244);
+}
+
+.theme-dark .free-play-pack-caption,
+.theme-dark .free-play-pack-progress,
+.theme-dark .free-play-size-caption,
+.theme-dark .free-play-size-sheet,
+.theme-dark .free-play-size-progress,
+.theme-dark .free-play-pack-arrow {
+    color: rgb(150, 205, 219);
+}
+
+.theme-dark .free-play-size-badge {
+    background-color: rgba(12, 53, 85, 0.94);
+    border-color: rgb(91, 188, 210);
+    -unity-text-outline-width: 0;
+}
+
+.theme-dark .free-play-pack-progress-track,
+.theme-dark .free-play-size-progress-track {
+    background-color: rgb(15, 63, 94);
+    border-color: rgb(71, 147, 175);
+}
+
+.theme-dark .free-play-pack-progress-fill,
+.theme-dark .free-play-size-progress-fill {
+    background-color: rgb(71, 190, 143);
+}
+
+.theme-dark .free-play-continue-button {
+    background-color: rgb(76, 61, 27);
+    border-color: rgb(201, 150, 29);
+    border-left-color: rgb(239, 181, 41);
+}
+
+.theme-dark .free-play-continue-button:hover {
+    background-color: rgb(91, 72, 30);
+}
+
+.theme-dark .free-play-continue-marker {
+    background-color: rgb(22, 116, 155);
+}
+
+.theme-dark .free-play-continue-caption {
+    color: rgb(238, 190, 73);
+}
+
+.theme-dark .free-play-continue-label {
+    color: rgb(244, 239, 215);
+    -unity-text-outline-width: 0;
+}
+
+.theme-dark .free-play-continue-action {
+    color: rgb(137, 213, 228);
+}
+
+.theme-dark .free-play-level-grid-panel {
+    background-color: rgba(7, 37, 65, 0.86);
+    border-color: rgba(80, 171, 197, 0.66);
+}
+
+.theme-dark .free-play-level-title-strip {
+    background-color: rgb(16, 66, 98);
+    border-bottom-color: rgb(66, 145, 174);
+}
+
+.theme-dark .free-play-level-plan-label,
+.theme-dark .free-play-level-sheet-label,
+.theme-dark .free-play-level-ready-label {
+    color: rgb(144, 204, 219);
+}
+
+.theme-dark .free-play-level-next {
+    background-color: rgb(68, 57, 28);
+    border-color: rgb(236, 180, 43);
+}
+
+.theme-dark .free-play-level-next .free-play-level-title-strip {
+    background-color: rgb(91, 70, 25);
+    border-bottom-color: rgb(221, 163, 31);
+}
+
+.theme-dark .free-play-level-next-label {
+    color: rgb(248, 201, 82);
+}
+
+.theme-dark .free-play-level-completed {
+    background-color: rgb(13, 66, 67);
+    border-color: rgb(75, 184, 139);
+}
+
+.theme-dark .free-play-level-completed .free-play-level-title-strip {
+    background-color: rgb(17, 82, 78);
+    border-bottom-color: rgb(75, 184, 139);
+}
+
+.theme-dark .free-play-level-approved-stamp {
+    color: rgb(97, 219, 166);
+    border-color: rgb(97, 219, 166);
+}
+
+.theme-dark .free-play-level-locked,
+.theme-dark .free-play-level-button:disabled {
+    background-color: rgba(9, 37, 60, 0.82);
+    border-color: rgba(66, 111, 132, 0.62);
+}
+
+.theme-dark .free-play-level-locked .free-play-level-title-strip {
+    background-color: rgba(15, 51, 76, 0.88);
+}
+
+.theme-dark .free-play-level-locked .free-play-level-number,
+.theme-dark .free-play-level-locked-label {
+    color: rgba(152, 184, 194, 0.5);
+}
+
+.theme-dark .free-play-level-lock-line {
+    background-color: rgba(113, 172, 188, 0.26);
+}

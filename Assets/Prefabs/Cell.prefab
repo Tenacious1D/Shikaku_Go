@@ -870,16 +870,16 @@ MonoBehaviour:
   label: {fileID: 1879162960433544165}
   colorLabel: {fileID: 2436937956454323705}
   bevelSprite: {fileID: 21300000, guid: d6b1e5f8c93f4b42bae7f809132d4c56, type: 3}
-  blankCellColor: {r: 0.98039216, g: 0.9647059, b: 0.92156863, a: 1}
+  blankCellColor: {r: 0.93333334, g: 0.96862745, b: 0.972549, a: 1}
   bevelHighlightBlend: 0.42
-  tileShadowColor: {r: 0.2627451, g: 0.21176471, b: 0.15294118, a: 0.3764706}
+  tileShadowColor: {r: 0.078431375, g: 0.25490198, b: 0.36862746, a: 0.28235295}
   tileShadowOffset: {x: 0, y: -3}
   baseBorderThickness: 2
   colorLabelSizeFactor: 0.28
   colorLabelMinSize: 16
   colorLabelMaxSize: 48
-  anchorLabelColor: {r: 0.9647059, g: 0.9372549, b: 0.8627451, a: 1}
-  anchorOutlineColor: {r: 0.29803923, g: 0.25490198, b: 0.19215687, a: 0.7058824}
+  anchorLabelColor: {r: 0.92156863, g: 0.96862745, b: 0.9764706, a: 1}
+  anchorOutlineColor: {r: 0.023529412, g: 0.14117648, b: 0.23921569, a: 0.74509805}
   anchorOutlineWidth: 0.055
   anchorFontSize: 70
   anchorBold: 1
@@ -889,8 +889,8 @@ MonoBehaviour:
   bottom: {fileID: 4080498525608768895}
   left: {fileID: 6933784870622398727}
   showCompleteOutline: 0
-  borderColor: {r: 0.16470589, g: 0.14901961, b: 0.1254902, a: 0.7254902}
-  selectedCellBorderColor: {r: 1, g: 0.98039216, b: 0.92156863, a: 1}
+  borderColor: {r: 0.13725491, g: 0.35686275, b: 0.49411765, a: 0.74509805}
+  selectedCellBorderColor: {r: 0.93333334, g: 0.98039216, b: 0.9882353, a: 1}
   selectedCellBorderThickness: 4
   hintBorderThickness: 7
   doubleTapThreshold: 0.35
@@ -902,7 +902,7 @@ MonoBehaviour:
   hintedCompleteSheenPulseGap: 0.1
   completePattern: {fileID: 0}
   completePaperTexture: {fileID: 2800000, guid: 71a3d2e49c694b10b073b4c2ec811f0d, type: 3}
-  showCompletePaper: 1
+  showCompletePaper: 0
   completePaperAlpha: 0.2
   showCompletePattern: 0
   completePatternAlpha: 0.02

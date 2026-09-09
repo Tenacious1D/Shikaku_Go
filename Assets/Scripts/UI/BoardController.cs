@@ -46,17 +46,17 @@ namespace Shikaku.UI
         [Header("Board Surface")]
         [SerializeField, Min(0f)] private float boardTrayMargin = 6f;
         [SerializeField] private Color boardTrayColor =
-            new Color32(224, 216, 194, 245);
+            new Color32(225, 240, 243, 248);
         [SerializeField] private Color boardEdgeColor =
-            new Color32(190, 180, 156, 255);
+            new Color32(76, 130, 163, 255);
         [SerializeField] private Color boardShadowColor =
-            new Color32(190, 180, 156, 255);
+            new Color32(76, 130, 163, 255);
         [SerializeField] private Color darkBoardTrayColor =
-            new Color32(48, 45, 40, 255);
+            new Color32(8, 35, 60, 255);
         [SerializeField] private Color darkBoardEdgeColor =
-            new Color32(91, 83, 71, 255);
+            new Color32(55, 123, 158, 255);
         [SerializeField] private Color darkBoardShadowColor =
-            new Color32(91, 83, 71, 255);
+            new Color32(55, 123, 158, 255);
 
         private RectTransform _boardTray;
         private AspectRatioFitter _boardAspectRatioFitter;
@@ -64,6 +64,7 @@ namespace Shikaku.UI
 
         [Header("Palette")]
         [SerializeField] private PuzzlePalette palette;
+        [SerializeField] private BlueprintThemeAssets blueprintTheme;
         public PuzzlePalette Palette => palette;
 
         [Header("Puzzle Size")]
@@ -118,6 +119,7 @@ namespace Shikaku.UI
 
         private PuzzleModel _model;
         private CellView[] _cells;
+        private BlueprintRoomDecorationLayer _blueprintRooms;
         private readonly Vector3[] _tutorialCellWorldCorners = new Vector3[4];
         private System.Func<BoardInputAction, int, bool>
             _tutorialInputFilter;
@@ -292,6 +294,7 @@ namespace Shikaku.UI
 
             ConfigureResponsiveBoardPanel();
             EnsureBoardTray();
+            blueprintTheme = BlueprintThemeAssets.Resolve(blueprintTheme);
 
             PuzzleData data = LoadPuzzleDataSmart(puzzleId);
 
@@ -713,6 +716,9 @@ namespace Shikaku.UI
                     _tutorialHighlights.Contains(i));
                 _cells[i] = view;
             }
+
+            _blueprintRooms =
+                BlueprintRoomDecorationLayer.Create(boardPanel);
         }
 
         private void RefreshHoleVisuals()
@@ -873,6 +879,54 @@ namespace Shikaku.UI
             if (_cells == null) return;
             for (int i = 0; i < _cells.Length; i++)
                 _cells[i].Render();
+
+            RefreshBlueprintRooms();
+        }
+
+        private void RefreshBlueprintRooms()
+        {
+            if (_blueprintRooms == null || _model == null ||
+                _cells == null)
+            {
+                return;
+            }
+
+            bool hasPreview = TryGetDraftVisual(out BlueprintRoomVisualDescriptor preview);
+            _blueprintRooms.Refresh(
+                _model,
+                _cells,
+                blueprintTheme,
+                ThemeManager.IsDark,
+                hasPreview,
+                preview);
+        }
+
+        private bool TryGetDraftVisual(
+            out BlueprintRoomVisualDescriptor descriptor)
+        {
+            descriptor = default;
+            if (!_dragActive)
+                return false;
+
+            ShikakuRegionEvaluation evaluation =
+                _model.EvaluateRegionCandidate(
+                    _dragStartIndex,
+                    _dragCurrentIndex);
+            if (evaluation.Width <= 0 || evaluation.Height <= 0)
+                return false;
+
+            descriptor = new BlueprintRoomVisualDescriptor(
+                -1,
+                evaluation.X,
+                evaluation.Y,
+                evaluation.Width,
+                evaluation.Height,
+                evaluation.ClueValue,
+                5,
+                evaluation.IsRuleValid
+                    ? BlueprintRoomVisualState.Preview
+                    : BlueprintRoomVisualState.Invalid);
+            return true;
         }
 
         private void OnCellChanged(int cellIndex)
@@ -1008,7 +1062,9 @@ namespace Shikaku.UI
                 return;
             }
 
-            if (!_model.CanCommitRegion(startIndex, endIndex))
+            ShikakuRegionEvaluation evaluation =
+                _model.EvaluateRegionCandidate(startIndex, endIndex);
+            if (!evaluation.IsRuleValid)
             {
                 RenderAll();
                 ShowIllegalMoveFeedback(endIndex);
@@ -1065,6 +1121,34 @@ namespace Shikaku.UI
                 CheckSolved();
             }
         }
+        public int[] GetFirstSolutionRegionCells()
+        {
+            SolutionRegion region =
+                _solutionRegions != null && _solutionRegions.Length > 0
+                    ? _solutionRegions[0]
+                    : null;
+            if (region == null || region.width <= 0 || region.height <= 0)
+            {
+                for (int index = 0; index < width * height; index++)
+                {
+                    if (IsAnchorCell(index))
+                        return new[] { index };
+                }
+
+                return null;
+            }
+
+            var cells = new int[region.width * region.height];
+            int target = 0;
+            for (int y = region.y; y < region.y + region.height; y++)
+            {
+                for (int x = region.x; x < region.x + region.width; x++)
+                    cells[target++] = y * width + x;
+            }
+
+            return cells;
+        }
+
         public int SelectedCellIndex => _model.SelectedCellIndex;
         public int SelectedComponentId => _model.SelectedRegionId;
 
@@ -1072,6 +1156,26 @@ namespace Shikaku.UI
         public int GivenNumberAt(int idx) => _model.GivenNumber[idx];
         public int ValueAt(int idx) => _model.Value[idx];
         public int RegionIdAt(int idx) => _model.GetRegionIdAt(idx);
+        public int RegionPaletteIndexAt(int idx)
+        {
+            ShikakuRegion region = _model.GetRegionAt(idx);
+            int paletteCount = palette != null && palette.numberColors != null
+                ? palette.numberColors.Length - 1
+                : 0;
+            if (region == null || paletteCount <= 0)
+                return 1;
+
+            unchecked
+            {
+                int hash = 23;
+                hash = hash * 31 + region.X;
+                hash = hash * 31 + region.Y;
+                hash = hash * 31 + region.Width;
+                hash = hash * 31 + region.Height;
+                hash = hash * 31 + region.ClueValue;
+                return Mathf.Abs(hash % paletteCount) + 1;
+            }
+        }
         public bool IsCellAssigned(int idx) => _model.GetRegionIdAt(idx) >= 0;
         public bool IsRegionValidAt(int idx) => _model.IsRegionValidAt(idx);
         public bool IsRegionSelectedAt(int idx) => _model.IsRegionSelectedAt(idx);
@@ -1101,7 +1205,9 @@ namespace Shikaku.UI
         }
 
         public bool DraftIsGeometricallyValid => _dragActive &&
-            _model.CanCommitRegion(_dragStartIndex, _dragCurrentIndex);
+            _model.EvaluateRegionCandidate(
+                _dragStartIndex,
+                _dragCurrentIndex).IsRuleValid;
 
         public bool OverwriteTutorialCell(
             int sourceCellIndex,
@@ -1598,6 +1704,7 @@ namespace Shikaku.UI
             {
                 if (_alreadySolved) return;
                 _alreadySolved = true;
+                _blueprintRooms?.PlaySolveSweep();
 
                 // TIME TRIAL: no solved panel, immediately load next puzzle
                 if (Shikaku.Menu.GameSession.Mode == Shikaku.Menu.MenuMode.TimeTrial)
@@ -1877,6 +1984,8 @@ namespace Shikaku.UI
             bool isDark = ThemeManager.IsDark;
             foreach (CellView cell in _cells)
                 cell?.SetDarkTheme(isDark);
+
+            RefreshBlueprintRooms();
         }
 
         private void OnApplicationFocus(bool hasFocus)

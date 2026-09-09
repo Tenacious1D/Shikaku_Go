@@ -18,12 +18,12 @@ namespace Shikaku.UI
         [Header("Tile Surface")]
         [SerializeField] private Sprite bevelSprite;
         [SerializeField] private Color blankCellColor =
-            new Color32(250, 246, 235, 255);
+            new Color32(238, 247, 248, 255);
         [SerializeField] private Color darkBlankCellColor =
-            new Color32(67, 63, 56, 255);
+            new Color32(10, 39, 65, 255);
         [SerializeField, Range(0f, 1f)] private float bevelHighlightBlend = 0.42f;
         [SerializeField] private Color tileShadowColor =
-            new Color32(67, 54, 39, 96);
+            new Color32(20, 65, 94, 72);
         [SerializeField] private Color darkTileShadowColor =
             new Color32(0, 0, 0, 135);
         [SerializeField] private Vector2 tileShadowOffset =
@@ -39,9 +39,9 @@ namespace Shikaku.UI
 
         [Header("Anchor Label Style")]
         [SerializeField] private Color anchorLabelColor =
-            new Color32(246, 239, 220, 255);
+            new Color32(235, 247, 249, 255);
         [SerializeField] private Color anchorOutlineColor =
-            new Color32(76, 65, 49, 180);
+            new Color32(6, 36, 61, 190);
         [SerializeField] private float anchorOutlineWidth = 0.055f;
         [SerializeField] private float anchorFontSize = 70f;
         [SerializeField] private bool anchorBold = true;
@@ -57,9 +57,9 @@ namespace Shikaku.UI
         [Header("Border Style")]
         [SerializeField] private bool showCompleteOutline = false;
         [SerializeField] private Color borderColor =
-            new Color32(42, 38, 32, 185);
+            new Color32(35, 91, 126, 190);
         [SerializeField] private Color selectedCellBorderColor =
-            new Color32(255, 250, 235, 255);
+            new Color32(238, 250, 252, 255);
         [SerializeField, Min(1f)] private float selectedCellBorderThickness = 4f;
         [SerializeField] private Color invalidRegionBorderColor =
             new Color32(210, 69, 69, 255);
@@ -72,7 +72,7 @@ namespace Shikaku.UI
         [SerializeField, Min(1f)] private float previewBorderThickness = 6f;
         [SerializeField] private float hintBorderThickness = 7f;
         [SerializeField] private Color tutorialHighlightColor =
-            new Color32(236, 174, 48, 255);
+            new Color32(244, 188, 43, 255);
         [SerializeField, Min(1f)] private float tutorialHighlightThickness = 7f;
 
         private bool _tutorialHighlighted;
@@ -568,8 +568,8 @@ namespace Shikaku.UI
 
             tileColor.a = 1f;
             Color warmHighlight = _isDarkTheme
-                ? new Color32(126, 117, 100, 255)
-                : new Color32(255, 250, 237, 255);
+                ? new Color32(87, 147, 177, 255)
+                : new Color32(250, 255, 255, 255);
             float highlightBlend = _isDarkTheme
                 ? bevelHighlightBlend * 0.45f
                 : bevelHighlightBlend;
@@ -765,9 +765,16 @@ namespace Shikaku.UI
             Color fill = _isDarkTheme ? darkBlankCellColor : blankCellColor;
             if (isAssigned)
             {
-                fill = _board.Palette != null
-                    ? _board.Palette.GetColorForNumber((regionId % 12) + 1)
-                    : (Color)new Color32(183, 214, 205, 255);
+                Color blueprintBase = _isDarkTheme
+                    ? new Color32(18, 61, 91, 255)
+                    : new Color32(218, 238, 242, 255);
+                Color identity = _board.Palette != null
+                    ? _board.Palette.GetColorForNumber(
+                        _board.RegionPaletteIndexAt(_index))
+                    : (Color)new Color32(45, 145, 180, 255);
+                float identityBlend = _isDarkTheme ? 0.08f : 0.12f;
+                fill = Color.Lerp(blueprintBase, identity, identityBlend);
+                fill.a = 1f;
             }
             if (isDraft)
             {
@@ -790,7 +797,7 @@ namespace Shikaku.UI
                 float luminance = (fill.r * 0.299f) + (fill.g * 0.587f) + (fill.b * 0.114f);
                 label.color = luminance > 0.58f
                     ? new Color32(47, 42, 35, 255)
-                    : new Color32(250, 246, 235, 255);
+                    : new Color32(238, 247, 248, 255);
             }
 
             bool showCompleteFx = isValid && !isSelected && !isDraft;

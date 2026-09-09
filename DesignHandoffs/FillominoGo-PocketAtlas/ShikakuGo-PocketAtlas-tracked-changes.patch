@@ -1,0 +1,1506 @@
+diff --git a/Assets/Editor/IOSAppIconConfiguration.cs b/Assets/Editor/IOSAppIconConfiguration.cs
+index 19b6d64..eaa2928 100644
+--- a/Assets/Editor/IOSAppIconConfiguration.cs
++++ b/Assets/Editor/IOSAppIconConfiguration.cs
+@@ -15,7 +15,7 @@ namespace Shikaku.EditorTools
+     public static class IOSAppIconConfiguration
+     {
+         public const string SourceAssetPath =
+-            "Assets/Art/Logos/icon_legacy.png";
++            "Assets/Art/Logos/pocket_atlas_app_icon_opaque.png";
+ 
+         [MenuItem("Tools/Shikaku Go/iOS/Apply App Icon")]
+         public static void ApplyIOSAppIcon()
+diff --git a/Assets/Scripts/Logic/PuzzleModel.cs b/Assets/Scripts/Logic/PuzzleModel.cs
+index 4cca685..3823c35 100644
+--- a/Assets/Scripts/Logic/PuzzleModel.cs
++++ b/Assets/Scripts/Logic/PuzzleModel.cs
+@@ -37,6 +37,38 @@ namespace Shikaku.Logic
+         }
+     }
+ 
++    public readonly struct ShikakuRegionEvaluation
++    {
++        public bool GeometryAllowed { get; }
++        public int X { get; }
++        public int Y { get; }
++        public int Width { get; }
++        public int Height { get; }
++        public int Area => Width * Height;
++        public int ClueCount { get; }
++        public int ClueValue { get; }
++        public bool IsRuleValid =>
++            GeometryAllowed && ClueCount == 1 && ClueValue == Area;
++
++        internal ShikakuRegionEvaluation(
++            bool geometryAllowed,
++            int x,
++            int y,
++            int width,
++            int height,
++            int clueCount,
++            int clueValue)
++        {
++            GeometryAllowed = geometryAllowed;
++            X = x;
++            Y = y;
++            Width = width;
++            Height = height;
++            ClueCount = clueCount;
++            ClueValue = clueValue;
++        }
++    }
++
+     /// <summary>
+     /// Region-based Shikaku board state. Clues and the mask are immutable;
+     /// player moves are complete axis-aligned rectangles committed atomically.
+@@ -253,6 +285,64 @@ namespace Shikaku.Logic
+                    CanCommitRectangle(x, y, w, h);
+         }
+ 
++        public ShikakuRegionEvaluation EvaluateRegionCandidate(
++            int startIndex,
++            int endIndex)
++        {
++            if (!TryNormalizeBounds(
++                    startIndex,
++                    endIndex,
++                    out int x,
++                    out int y,
++                    out int regionWidth,
++                    out int regionHeight))
++            {
++                return default;
++            }
++
++            bool geometryAllowed =
++                CanCommitRectangle(x, y, regionWidth, regionHeight);
++            int clueCount = 0;
++            int clueValue = 0;
++
++            if (geometryAllowed)
++            {
++                for (int row = y; row < y + regionHeight; row++)
++                {
++                    for (int column = x;
++                         column < x + regionWidth;
++                         column++)
++                    {
++                        int clue = GivenNumber[row * Width + column];
++                        if (clue <= 0)
++                            continue;
++
++                        clueCount++;
++                        clueValue = clue;
++                    }
++                }
++            }
++
++            return new ShikakuRegionEvaluation(
++                geometryAllowed,
++                x,
++                y,
++                regionWidth,
++                regionHeight,
++                clueCount,
++                clueCount == 1 ? clueValue : 0);
++        }
++
++        internal void CopyRegionsTo(List<ShikakuRegion> destination)
++        {
++            if (destination == null)
++                throw new ArgumentNullException(nameof(destination));
++
++            destination.Clear();
++            foreach (ShikakuRegion region in _regions.Values)
++                destination.Add(region);
++        }
++
+         public bool CanCommitRectangle(int x, int y, int regionWidth, int regionHeight)
+         {
+             if (x < 0 || y < 0 || regionWidth <= 0 || regionHeight <= 0 ||
+diff --git a/Assets/Scripts/Menu/HomeScreenController.cs b/Assets/Scripts/Menu/HomeScreenController.cs
+index 1ee0fbf..77fe2c4 100644
+--- a/Assets/Scripts/Menu/HomeScreenController.cs
++++ b/Assets/Scripts/Menu/HomeScreenController.cs
+@@ -228,6 +228,25 @@ namespace Shikaku.Menu
+             ApplyMenuBackButtonLayout();
+         }
+ 
++        private void ApplyAtlasResponsiveLayout()
++        {
++            if (_root == null)
++                return;
++
++            float panelWidth = _root.resolvedStyle.width;
++            float panelHeight = _root.resolvedStyle.height;
++            if (panelWidth <= 0f || panelHeight <= 0f)
++                return;
++
++            bool useTabletCards =
++                panelWidth >= 1180f && panelWidth / panelHeight >= 0.68f;
++            VisualElement screenRoot =
++                _root.Q<VisualElement>("screen-root");
++            screenRoot?.EnableInClassList(
++                "atlas-tablet-layout",
++                useTabletCards);
++        }
++
+         private void ApplyMenuBackButtonLayout()
+         {
+             if (_root == null || _menuBackButtons == null ||
+diff --git a/Assets/Scripts/Menu/SettingsScreenController.cs b/Assets/Scripts/Menu/SettingsScreenController.cs
+index 5585da8..ff2f1d1 100644
+--- a/Assets/Scripts/Menu/SettingsScreenController.cs
++++ b/Assets/Scripts/Menu/SettingsScreenController.cs
+@@ -26,6 +26,7 @@ namespace Shikaku.Menu
+         private readonly DropdownField _appearanceDropdown;
+         private readonly Toggle _colorLabelsToggle;
+         private readonly Toggle _vibrationToggle;
++        private readonly Toggle _reduceMotionToggle;
+         private readonly Toggle _notificationsToggle;
+         private readonly Button _notificationSystemButton;
+         private readonly SliderInt _volumeSlider;
+@@ -93,6 +94,10 @@ namespace Shikaku.Menu
+                 documentRoot,
+                 "settings-vibration-toggle"
+             );
++            _reduceMotionToggle = RequireElement<Toggle>(
++                documentRoot,
++                "settings-reduce-motion-toggle"
++            );
+             _notificationsToggle = RequireElement<Toggle>(
+                 documentRoot,
+                 "settings-notifications-toggle"
+@@ -209,6 +214,9 @@ namespace Shikaku.Menu
+             _vibrationToggle.RegisterValueChangedCallback(
+                 OnVibrationChanged
+             );
++            _reduceMotionToggle.RegisterValueChangedCallback(
++                OnReduceMotionChanged
++            );
+             _notificationsToggle.RegisterValueChangedCallback(
+                 OnNotificationsChanged
+             );
+@@ -252,6 +260,9 @@ namespace Shikaku.Menu
+             _vibrationToggle.SetValueWithoutNotify(
+                 AppSettings.VibrationEnabled
+             );
++            _reduceMotionToggle.SetValueWithoutNotify(
++                AppSettings.ReduceMotion
++            );
+             RefreshNotificationControls();
+             _volumeSlider.SetValueWithoutNotify(AppSettings.MasterVolume);
+             UpdateVolumeText(AppSettings.MasterVolume);
+@@ -312,6 +323,9 @@ namespace Shikaku.Menu
+             _vibrationToggle.UnregisterValueChangedCallback(
+                 OnVibrationChanged
+             );
++            _reduceMotionToggle.UnregisterValueChangedCallback(
++                OnReduceMotionChanged
++            );
+             _notificationsToggle.UnregisterValueChangedCallback(
+                 OnNotificationsChanged
+             );
+@@ -471,6 +485,12 @@ namespace Shikaku.Menu
+             AppSettings.SetVibrationEnabled(evt.newValue);
+         }
+ 
++        private static void OnReduceMotionChanged(
++            ChangeEvent<bool> evt)
++        {
++            AppSettings.SetReduceMotion(evt.newValue);
++        }
++
+         private void OnNotificationsChanged(ChangeEvent<bool> evt)
+         {
+             if (!evt.newValue)
+diff --git a/Assets/Scripts/Settings/AppSettings.cs b/Assets/Scripts/Settings/AppSettings.cs
+index 7082aca..a720e73 100644
+--- a/Assets/Scripts/Settings/AppSettings.cs
++++ b/Assets/Scripts/Settings/AppSettings.cs
+@@ -15,6 +15,7 @@ namespace Shikaku.Settings
+         private const string KEY_COLOR_LABELS = "settings_color_labels";
+         private const string KEY_MASTER_VOLUME = "settings_master_volume"; // 0..10
+         private const string KEY_VIBRATION = "settings_vibration";
++        private const string KEY_REDUCE_MOTION = "settings_reduce_motion";
+         private const string KEY_DARK_MODE_PREFERENCE =
+             "settings_dark_mode_preference";
+         private const string KEY_DARK_MODE_USER_SELECTED =
+@@ -29,6 +30,7 @@ namespace Shikaku.Settings
+         private static bool _colorLabels;
+         private static int _masterVolume;
+         private static bool _vibrationEnabled;
++        private static bool _reduceMotion;
+         private static bool _darkModePreferred;
+ 
+         public static void EnsureLoaded()
+@@ -47,6 +49,8 @@ namespace Shikaku.Settings
+ 
+             _vibrationEnabled =
+                 PlayerPrefs.GetInt(KEY_VIBRATION, 1) == 1;
++            _reduceMotion =
++                PlayerPrefs.GetInt(KEY_REDUCE_MOTION, 0) == 1;
+ 
+             if (PlayerPrefs.HasKey(KEY_DARK_MODE_PREFERENCE))
+             {
+@@ -138,6 +142,27 @@ namespace Shikaku.Settings
+             Changed?.Invoke();
+         }
+ 
++        public static bool ReduceMotion
++        {
++            get
++            {
++                EnsureLoaded();
++                return _reduceMotion;
++            }
++        }
++
++        public static void SetReduceMotion(bool on)
++        {
++            EnsureLoaded();
++            if (_reduceMotion == on)
++                return;
++
++            _reduceMotion = on;
++            PlayerPrefs.SetInt(KEY_REDUCE_MOTION, on ? 1 : 0);
++            PlayerPrefs.Save();
++            Changed?.Invoke();
++        }
++
+         public static bool DarkModePreferred
+         {
+             get
+diff --git a/Assets/Scripts/UI/BoardController.cs b/Assets/Scripts/UI/BoardController.cs
+index a2c86cc..28e369d 100644
+--- a/Assets/Scripts/UI/BoardController.cs
++++ b/Assets/Scripts/UI/BoardController.cs
+@@ -64,6 +64,7 @@ namespace Shikaku.UI
+ 
+         [Header("Palette")]
+         [SerializeField] private PuzzlePalette palette;
++        [SerializeField] private AtlasThemeAssets atlasTheme;
+         public PuzzlePalette Palette => palette;
+ 
+         [Header("Puzzle Size")]
+@@ -118,6 +119,7 @@ namespace Shikaku.UI
+ 
+         private PuzzleModel _model;
+         private CellView[] _cells;
++        private AtlasRegionDecorationLayer _atlasDecorations;
+         private readonly Vector3[] _tutorialCellWorldCorners = new Vector3[4];
+         private System.Func<BoardInputAction, int, bool>
+             _tutorialInputFilter;
+@@ -292,6 +294,7 @@ namespace Shikaku.UI
+ 
+             ConfigureResponsiveBoardPanel();
+             EnsureBoardTray();
++            atlasTheme = AtlasThemeAssets.Resolve(atlasTheme);
+ 
+             PuzzleData data = LoadPuzzleDataSmart(puzzleId);
+ 
+@@ -713,6 +716,9 @@ namespace Shikaku.UI
+                     _tutorialHighlights.Contains(i));
+                 _cells[i] = view;
+             }
++
++            _atlasDecorations =
++                AtlasRegionDecorationLayer.Create(boardPanel);
+         }
+ 
+         private void RefreshHoleVisuals()
+@@ -873,6 +879,54 @@ namespace Shikaku.UI
+             if (_cells == null) return;
+             for (int i = 0; i < _cells.Length; i++)
+                 _cells[i].Render();
++
++            RefreshAtlasDecorations();
++        }
++
++        private void RefreshAtlasDecorations()
++        {
++            if (_atlasDecorations == null || _model == null ||
++                _cells == null)
++            {
++                return;
++            }
++
++            bool hasPreview = TryGetDraftVisual(out AtlasRegionVisualDescriptor preview);
++            _atlasDecorations.Refresh(
++                _model,
++                _cells,
++                atlasTheme,
++                ThemeManager.IsDark,
++                hasPreview,
++                preview);
++        }
++
++        private bool TryGetDraftVisual(
++            out AtlasRegionVisualDescriptor descriptor)
++        {
++            descriptor = default;
++            if (!_dragActive)
++                return false;
++
++            ShikakuRegionEvaluation evaluation =
++                _model.EvaluateRegionCandidate(
++                    _dragStartIndex,
++                    _dragCurrentIndex);
++            if (evaluation.Width <= 0 || evaluation.Height <= 0)
++                return false;
++
++            descriptor = new AtlasRegionVisualDescriptor(
++                -1,
++                evaluation.X,
++                evaluation.Y,
++                evaluation.Width,
++                evaluation.Height,
++                evaluation.ClueValue,
++                5,
++                evaluation.IsRuleValid
++                    ? AtlasRegionVisualState.Preview
++                    : AtlasRegionVisualState.Invalid);
++            return true;
+         }
+ 
+         private void OnCellChanged(int cellIndex)
+@@ -1008,7 +1062,9 @@ namespace Shikaku.UI
+                 return;
+             }
+ 
+-            if (!_model.CanCommitRegion(startIndex, endIndex))
++            ShikakuRegionEvaluation evaluation =
++                _model.EvaluateRegionCandidate(startIndex, endIndex);
++            if (!evaluation.IsRuleValid)
+             {
+                 RenderAll();
+                 ShowIllegalMoveFeedback(endIndex);
+@@ -1065,6 +1121,34 @@ namespace Shikaku.UI
+                 CheckSolved();
+             }
+         }
++        public int[] GetFirstSolutionRegionCells()
++        {
++            SolutionRegion region =
++                _solutionRegions != null && _solutionRegions.Length > 0
++                    ? _solutionRegions[0]
++                    : null;
++            if (region == null || region.width <= 0 || region.height <= 0)
++            {
++                for (int index = 0; index < width * height; index++)
++                {
++                    if (IsAnchorCell(index))
++                        return new[] { index };
++                }
++
++                return null;
++            }
++
++            var cells = new int[region.width * region.height];
++            int target = 0;
++            for (int y = region.y; y < region.y + region.height; y++)
++            {
++                for (int x = region.x; x < region.x + region.width; x++)
++                    cells[target++] = y * width + x;
++            }
++
++            return cells;
++        }
++
+         public int SelectedCellIndex => _model.SelectedCellIndex;
+         public int SelectedComponentId => _model.SelectedRegionId;
+ 
+@@ -1072,6 +1156,26 @@ namespace Shikaku.UI
+         public int GivenNumberAt(int idx) => _model.GivenNumber[idx];
+         public int ValueAt(int idx) => _model.Value[idx];
+         public int RegionIdAt(int idx) => _model.GetRegionIdAt(idx);
++        public int RegionPaletteIndexAt(int idx)
++        {
++            ShikakuRegion region = _model.GetRegionAt(idx);
++            int paletteCount = palette != null && palette.numberColors != null
++                ? palette.numberColors.Length - 1
++                : 0;
++            if (region == null || paletteCount <= 0)
++                return 1;
++
++            unchecked
++            {
++                int hash = 23;
++                hash = hash * 31 + region.X;
++                hash = hash * 31 + region.Y;
++                hash = hash * 31 + region.Width;
++                hash = hash * 31 + region.Height;
++                hash = hash * 31 + region.ClueValue;
++                return Mathf.Abs(hash % paletteCount) + 1;
++            }
++        }
+         public bool IsCellAssigned(int idx) => _model.GetRegionIdAt(idx) >= 0;
+         public bool IsRegionValidAt(int idx) => _model.IsRegionValidAt(idx);
+         public bool IsRegionSelectedAt(int idx) => _model.IsRegionSelectedAt(idx);
+@@ -1101,7 +1205,9 @@ namespace Shikaku.UI
+         }
+ 
+         public bool DraftIsGeometricallyValid => _dragActive &&
+-            _model.CanCommitRegion(_dragStartIndex, _dragCurrentIndex);
++            _model.EvaluateRegionCandidate(
++                _dragStartIndex,
++                _dragCurrentIndex).IsRuleValid;
+ 
+         public bool OverwriteTutorialCell(
+             int sourceCellIndex,
+@@ -1598,6 +1704,7 @@ namespace Shikaku.UI
+             {
+                 if (_alreadySolved) return;
+                 _alreadySolved = true;
++                _atlasDecorations?.PlaySolveSweep();
+ 
+                 // TIME TRIAL: no solved panel, immediately load next puzzle
+                 if (Shikaku.Menu.GameSession.Mode == Shikaku.Menu.MenuMode.TimeTrial)
+@@ -1877,6 +1984,8 @@ namespace Shikaku.UI
+             bool isDark = ThemeManager.IsDark;
+             foreach (CellView cell in _cells)
+                 cell?.SetDarkTheme(isDark);
++
++            RefreshAtlasDecorations();
+         }
+ 
+         private void OnApplicationFocus(bool hasFocus)
+diff --git a/Assets/Scripts/UI/CellView.cs b/Assets/Scripts/UI/CellView.cs
+index dc19cf9..8852876 100644
+--- a/Assets/Scripts/UI/CellView.cs
++++ b/Assets/Scripts/UI/CellView.cs
+@@ -766,7 +766,8 @@ namespace Shikaku.UI
+             if (isAssigned)
+             {
+                 fill = _board.Palette != null
+-                    ? _board.Palette.GetColorForNumber((regionId % 12) + 1)
++                    ? _board.Palette.GetColorForNumber(
++                        _board.RegionPaletteIndexAt(_index))
+                     : (Color)new Color32(183, 214, 205, 255);
+             }
+             if (isDraft)
+diff --git a/Assets/Scripts/UI/GameplayHUD.cs b/Assets/Scripts/UI/GameplayHUD.cs
+index b53b773..cf5375f 100644
+--- a/Assets/Scripts/UI/GameplayHUD.cs
++++ b/Assets/Scripts/UI/GameplayHUD.cs
+@@ -97,6 +97,7 @@ namespace Shikaku.UI
+         private Button _tutorialForwardButton;
+         private Button _tutorialNextButton;
+         private int _tutorialStep = -1;
++        private int[] _atlasTutorialTargets;
+         private readonly bool[] _tutorialStepsReached =
+             new bool[TUTORIAL_STEP_COUNT];
+         private bool _tutorialRunCompleted;
+@@ -154,7 +155,7 @@ namespace Shikaku.UI
+         private const int TUTORIAL_SHARED_ANCHOR_LEFT = 0;   // (0,0) = 3
+         private const int TUTORIAL_SHARED_ANCHOR_RIGHT = 1;  // (1,0) = 3
+         private const int TUTORIAL_SHARED_FILL = 4;          // (0,1) = empty
+-        private const int TUTORIAL_STEP_COUNT = 8;
++        private const int TUTORIAL_STEP_COUNT = 7;
+         private const float TUTORIAL_SWIPE_THRESHOLD = 70f;
+         private const float TUTORIAL_CARD_GAP = 22f;
+         private const float TUTORIAL_CARD_AD_GAP = 18f;
+@@ -179,14 +180,13 @@ namespace Shikaku.UI
+             { TUTORIAL_ILLEGAL_ANCHOR, TUTORIAL_ILLEGAL_ABOVE };
+         private static readonly string[] TUTORIAL_STEP_NAMES =
+         {
+-            "welcome",
+-            "build_region",
+-            "overwrite_filled_cell",
+-            "erase_cell",
+-            "erase_region",
+-            "shared_region",
+-            "illegal_moves",
+-            "finish_puzzle"
++            "goal",
++            "read_clue",
++            "draw_rectangle",
++            "match_area",
++            "one_clue",
++            "replace_region",
++            "cover_board"
+         };
+ 
+         private void Awake()
+@@ -888,23 +888,14 @@ namespace Shikaku.UI
+                 if (resetButton != null) resetButton.style.display = DisplayStyle.None;
+             }
+ 
+-            if (_tutorialTitle != null)
+-                _tutorialTitle.text = "Draw rectangles";
+-            if (_tutorialMessage != null)
+-                _tutorialMessage.text =
+-                    "Drag from one corner to the opposite corner. Every rectangle must contain exactly one number, and its area must equal that number.";
+-            if (_tutorialAction != null)
+-                _tutorialAction.text =
+-                    "Redraw across a region to replace it when you release.";
+             if (_tutorialProgress != null)
+-                _tutorialProgress.style.display = DisplayStyle.None;
++                _tutorialProgress.style.display = DisplayStyle.Flex;
+             if (_tutorialPreviousButton != null)
+-                _tutorialPreviousButton.style.display = DisplayStyle.None;
++                _tutorialPreviousButton.style.display = DisplayStyle.Flex;
+             if (_tutorialForwardButton != null)
+-                _tutorialForwardButton.style.display = DisplayStyle.None;
+-            if (_tutorialNextButton != null)
+-                _tutorialNextButton.style.display = DisplayStyle.None;
++                _tutorialForwardButton.style.display = DisplayStyle.Flex;
+ 
++            SetTutorialStep(0);
+             ScheduleResponsiveGameplayLayout();
+             RefreshTitle();
+             UpdateTimerText();
+@@ -982,50 +973,12 @@ namespace Shikaku.UI
+ 
+         private bool PrepareTutorialBoardForStep(int step)
+         {
+-            if (board == null || !board.ResetTutorialPuzzleState())
++            if (board == null)
+                 return false;
+ 
+-            bool prepared = true;
+-
+-            if (step >= 2 && step <= 4)
+-            {
+-                prepared &=
+-                    board.RestoreTutorialCell(
+-                        TUTORIAL_THREE_ANCHOR,
+-                        TUTORIAL_THREE_NEAR,
+-                        playFeedback: false,
+-                        checkSolved: false);
+-
+-                prepared &=
+-                    board.RestoreTutorialCell(
+-                        TUTORIAL_THREE_ANCHOR,
+-                        TUTORIAL_THREE_FAR,
+-                        playFeedback: false,
+-                        checkSolved: false);
+-            }
+-            if (step == 2)
+-            {
+-                prepared &=
+-                    board.OverwriteTutorialCell(
+-                        TUTORIAL_TWO_ANCHOR,
+-                        TUTORIAL_THREE_NEAR,
+-                        playFeedback: false,
+-                        checkSolved: false);
+-            }
+-
+-
+-            if (step >= 6)
+-            {
+-                prepared &=
+-                    board.RestoreTutorialCell(
+-                        TUTORIAL_SHARED_ANCHOR_LEFT,
+-                        TUTORIAL_SHARED_FILL,
+-                        playFeedback: false,
+-                        checkSolved: false);
+-            }
+-
+-            board.ClearSelection();
+-            return prepared;
++            // The Atlas tutorial teaches one continuous solve. Navigating its
++            // cards must not erase rectangles the player has already charted.
++            return true;
+         }
+ 
+         private void OnTutorialPointerDown(PointerDownEvent evt)
+@@ -1080,10 +1033,7 @@ namespace Shikaku.UI
+ 
+         private void SetTutorialStep(int step)
+         {
+-            _tutorialStep = Mathf.Clamp(
+-                step,
+-                0,
+-                TUTORIAL_STEP_COUNT - 1);
++            _tutorialStep = Mathf.Clamp(step, 0, TUTORIAL_STEP_COUNT - 1);
+ 
+             if (!_tutorialStepsReached[_tutorialStep])
+             {
+@@ -1099,203 +1049,93 @@ namespace Shikaku.UI
+             UpdateTutorialGuideTile();
+             UpdateTutorialProgress();
+             UpdateTutorialNavigation();
+-
+             board.ClearTutorialInputFilter();
+             board.SetTutorialHighlights();
++            _atlasTutorialTargets = null;
+ 
+             switch (_tutorialStep)
+             {
+-                // ---------------------------------------------------------
+-                // 1. WELCOME
+-                // ---------------------------------------------------------
+                 case 0:
+                     SetPuzzleInteractionLocked(true);
+-
+                     SetTutorialCopy(
+-                        "Welcome to Shikaku!",
+-                        "The puzzle game of building number regions. Each starting number, or anchor, defines the size of the region it belongs to.",
+-                        "",
++                        "Chart the whole board",
++                        "Welcome, explorer! Divide the grid into rectangles until every square belongs to one mapped district.",
++                        "Pip will guide your first route.",
+                         true);
+-
+                     break;
+ 
+-                // ---------------------------------------------------------
+-                // 2. BUILD A REGION
+-                // ---------------------------------------------------------
+                 case 1:
+-                    SetPuzzleInteractionLocked(false);
+-
+-                    board.SetTutorialHighlights(
+-                        TUTORIAL_THREE_ANCHOR,
+-                        TUTORIAL_THREE_NEAR,
+-                        TUTORIAL_THREE_FAR);
+-
+-                    board.SetTutorialInputFilter(
+-                        (action, index) =>
+-                            (action == BoardInputAction.Select &&
+-                             index == TUTORIAL_THREE_ANCHOR) ||
+-                            ((action == BoardInputAction.Paint ||
+-                              action == BoardInputAction.DragPaint) &&
+-                             (index == TUTORIAL_THREE_NEAR ||
+-                              index == TUTORIAL_THREE_FAR)));
+-
++                    SetPuzzleInteractionLocked(true);
++                    int clueIndex = FindFirstTutorialClue();
++                    if (clueIndex >= 0)
++                    {
++                        _atlasTutorialTargets = new[] { clueIndex };
++                        board.SetTutorialHighlights(_atlasTutorialTargets);
++                    }
+                     SetTutorialCopy(
+-                        "Fill a Region",
+-                        "Build regions by adding squares that share an edge with a square already in the region. Corners do not connect.",
+-                        "Tap the highlighted 3, then tap or drag across the empty squares.",
+-                        false);
+-
++                        "Read the survey marker",
++                        "Each number is the area of its rectangle. A 6 can be 1 × 6, 2 × 3, 3 × 2, or 6 × 1 when the board allows it.",
++                        "Every district keeps its numbered marker.",
++                        true);
+                     break;
+ 
+-                // ---------------------------------------------------------
+-                // ---------------------------------------------------------
+-                // 3. OVERWRITE A FILLED CELL
+-                // ---------------------------------------------------------
+                 case 2:
+                     SetPuzzleInteractionLocked(false);
+-
+-                    board.SetTutorialHighlights(
+-                        TUTORIAL_THREE_ANCHOR,
+-                        TUTORIAL_THREE_NEAR,
+-                        TUTORIAL_THREE_FAR);
+-
++                    _atlasTutorialTargets = board.GetFirstSolutionRegionCells();
++                    if (_atlasTutorialTargets != null)
++                        board.SetTutorialHighlights(_atlasTutorialTargets);
+                     board.SetTutorialInputFilter(
+                         (action, index) =>
+-                            (action == BoardInputAction.Select &&
+-                             index == TUTORIAL_THREE_ANCHOR) ||
+-                            (action == BoardInputAction.DragOverwrite &&
+-                             index == TUTORIAL_THREE_NEAR) ||
+-                            (action == BoardInputAction.DragPaint &&
+-                             index == TUTORIAL_THREE_FAR));
+-
++                            action == BoardInputAction.BeginRegion ||
++                            action == BoardInputAction.UpdateRegion ||
++                            action == BoardInputAction.CommitRegion ||
++                            action == BoardInputAction.OverrideRegion ||
++                            action == BoardInputAction.InvalidRegion ||
++                            action == BoardInputAction.Select);
+                     SetTutorialCopy(
+-                        "Overwrite a Filled Cell",
+-                        "Oops! I accidentally drew over your region. You can overwrite a cell by dragging over the new region.",
+-                        "Tap the highlighted 3, then drag across to overwrite the filled cell.",
++                        "Draw corner to corner",
++                        "Press any corner and drag to the opposite corner. The live label shows width × height = area.",
++                        "Chart the highlighted rectangle.",
+                         false);
+-
+                     break;
+ 
+-                // 4. SINGLE-SQUARE ERASE
+-                // ---------------------------------------------------------
+                 case 3:
+-                    SetPuzzleInteractionLocked(false);
+-
+-                    board.SetTutorialHighlights(TUTORIAL_THREE_FAR);
+-
+-                    board.SetTutorialInputFilter(
+-                        (action, index) =>
+-                            index == TUTORIAL_THREE_FAR &&
+-                            (action == BoardInputAction.Select ||
+-                             action == BoardInputAction.EraseCell));
+-
++                    SetPuzzleInteractionLocked(true);
+                     SetTutorialCopy(
+-                        "Edit a Region",
+-                        "Completed regions can still be changed. You can erase squares when needed - we all make mistakes.",
+-                        "Double-tap the highlighted square to erase it.",
+-                        false);
+-
++                        "Match the area",
++                        "A rectangle is accepted only when its area matches its marker. Red borders mean the shape is not ready to commit.",
++                        "Use the live area label before releasing.",
++                        true);
+                     break;
+ 
+-                // ---------------------------------------------------------
+-                // 5. WHOLE-REGION ERASE
+-                // ---------------------------------------------------------
+                 case 4:
+-                    SetPuzzleInteractionLocked(false);
+-
+-                    board.SetTutorialHighlights(TUTORIAL_THREE_ANCHOR);
+-
+-                    board.SetTutorialInputFilter(
+-                        (action, index) =>
+-                            index == TUTORIAL_THREE_ANCHOR &&
+-                            (action == BoardInputAction.Select ||
+-                             action == BoardInputAction.EraseRegion));
+-
++                    SetPuzzleInteractionLocked(true);
+                     SetTutorialCopy(
+-                        "Erase a Whole Region",
+-                        "Some mistakes are bigger than others. Double-tapping an anchor square erases every square you added to its connected region.",
+-                        "Double-tap the highlighted 3 anchor to erase its region.",
+-                        false);
+-
++                        "One marker per district",
++                        "Every rectangle must contain exactly one number. A shape with no marker or two markers is rejected.",
++                        "Clear borders make each district easy to inspect.",
++                        true);
+                     break;
+ 
+-                // ---------------------------------------------------------
+-                // 6. Anchors in same region
+-                // ---------------------------------------------------------
+                 case 5:
+                     SetPuzzleInteractionLocked(false);
+-
+-                    board.SetTutorialHighlights(
+-                        TUTORIAL_SHARED_ANCHOR_LEFT,
+-                        TUTORIAL_SHARED_ANCHOR_RIGHT,
+-                        TUTORIAL_SHARED_FILL);
+-
+-                    board.SetTutorialInputFilter(
+-                        (action, index) =>
+-                            (action == BoardInputAction.Select &&
+-                             (index == TUTORIAL_SHARED_ANCHOR_LEFT ||
+-                              index == TUTORIAL_SHARED_ANCHOR_RIGHT)) ||
+-                            ((action == BoardInputAction.Paint ||
+-                              action == BoardInputAction.DragPaint) &&
+-                             index == TUTORIAL_SHARED_FILL));
+-
+-                    SetTutorialCopy(
+-                        "Shared Anchors",
+-                        "More than one anchor can belong to the same region. These two 3s are connected and need one more square to make a region of three.",
+-                        "Tap either highlighted 3, then fill the empty square.",
+-                        false);
+-
+-                    break;
+-
+-                // ---------------------------------------------------------
+-                // 7. ILLEGAL MOVES
+-                // ---------------------------------------------------------
+-                case 6:
+-                    _tutorialFirstIllegalMoveComplete = false;
+-                    _tutorialIllegalMoveTransitioning = false;
+-
+-                    SetPuzzleInteractionLocked(false);
+-
+-                    board.SetTutorialHighlights(
+-                        TUTORIAL_ILLEGAL_LEFT,
+-                        TUTORIAL_ILLEGAL_ANCHOR);
+-
+-                    board.SetTutorialInputFilter(
+-                        (action, index) =>
+-                            !_tutorialIllegalMoveTransitioning &&
+-                            ((action == BoardInputAction.Select &&
+-                              index == TUTORIAL_ILLEGAL_ANCHOR) ||
+-                             (action == BoardInputAction.IllegalMove &&
+-                              ((!_tutorialFirstIllegalMoveComplete &&
+-                                index == TUTORIAL_ILLEGAL_LEFT) ||
+-                               (_tutorialFirstIllegalMoveComplete &&
+-                                index == TUTORIAL_ILLEGAL_ABOVE)))));
+-
++                    board.ClearTutorialInputFilter();
+                     SetTutorialCopy(
+-                        "Illegal Moves",
+-                        "Regions with matching numbers and colors can join, but the combined region cannot be larger than that number. Moves that would make a region too large are blocked.",
+-                        "Tap the highlighted 3 anchor, then tap the empty highlighted square.",
+-                        false);
+-
++                        "Revise your route",
++                        "Drag across an unlocked rectangle to replace it. Double-tap a rectangle when you want to remove it completely.",
++                        "Try another rectangle, or continue when ready.",
++                        true);
+                     break;
+ 
+-                // ---------------------------------------------------------
+-                // 8. FINISH THE PUZZLE
+-                // ---------------------------------------------------------
+                 default:
+-                    // IMPORTANT:
+-                    // The board stays playable and the tutorial popup stays visible.
+                     SetPuzzleInteractionLocked(false);
+-
+                     board.ClearTutorialInputFilter();
+                     SetFinalTutorialHighlights();
+-
+                     SetTutorialCopy(
+-                        "Finish the Puzzle",
+-                        "You're ready to solve on your own. Remember: every region must contain exactly as many squares as its number.",
+-                        "",
++                        "Cover every square",
++                        "Finish the map with valid rectangles. When there are no gaps, your Pocket Atlas is complete.",
++                        "Solve the rest of the board.",
+                         false);
+-
+                     break;
+             }
+         }
+@@ -1385,24 +1225,22 @@ namespace Shikaku.UI
+ 
+         private int[] GetTutorialActionTargets()
+         {
+-            switch (_tutorialStep)
++            return _atlasTutorialTargets;
++        }
++
++        private int FindFirstTutorialClue()
++        {
++            if (board == null)
++                return -1;
++
++            int cellCount = board.Width * board.Height;
++            for (int index = 0; index < cellCount; index++)
+             {
+-                case 1:
+-                case 2:
+-                    return TUTORIAL_BUILD_TARGETS;
+-                case 3:
+-                    return TUTORIAL_SINGLE_ERASE_TARGETS;
+-                case 4:
+-                    return TUTORIAL_REGION_ERASE_TARGETS;
+-                case 5:
+-                    return TUTORIAL_SHARED_TARGETS;
+-                case 6:
+-                    return _tutorialFirstIllegalMoveComplete
+-                        ? TUTORIAL_ILLEGAL_ABOVE_TARGETS
+-                        : TUTORIAL_ILLEGAL_LEFT_TARGETS;
+-                default:
+-                    return null;
++                if (board.IsAnchorCell(index))
++                    return index;
+             }
++
++            return -1;
+         }
+ 
+         private void LateUpdate()
+@@ -1780,145 +1618,20 @@ namespace Shikaku.UI
+             if (!Shikaku.Menu.GameSession.IsTutorial)
+                 return;
+ 
+-            switch (_tutorialStep)
++            if (_tutorialStep == 2 &&
++                (action == BoardInputAction.CommitRegion ||
++                 action == BoardInputAction.OverrideRegion))
+             {
+-                // ---------------------------------------------------------
+-                // STEP 2: BUILD THE FIRST 3 REGION
+-                // ---------------------------------------------------------
+-                case 1:
+-                    if ((cellIndex == TUTORIAL_THREE_NEAR ||
+-                         cellIndex == TUTORIAL_THREE_FAR) &&
+-                        (action == BoardInputAction.Paint ||
+-                         action == BoardInputAction.DragPaint))
+-                    {
+-                        if (board.ValueAt(TUTORIAL_THREE_NEAR) == 3 &&
+-                            board.ValueAt(TUTORIAL_THREE_FAR) == 3)
+-                        {
+-                            if (_tutorialBuildTransitionRoutine == null)
+-                            {
+-                                _tutorialBuildTransitionRoutine =
+-                                    StartCoroutine(
+-                                        CompleteBuildRegionLesson());
+-                            }
+-                        }
+-                        else
+-                        {
+-
+-                            if (board.ValueAt(TUTORIAL_THREE_NEAR) == 0)
+-                            {
+-                                board.SetTutorialHighlights(
+-                                    TUTORIAL_THREE_ANCHOR,
+-                                    TUTORIAL_THREE_NEAR);
+-                            }
+-                            else
+-                            {
+-                                board.SetTutorialHighlights(
+-                                    TUTORIAL_THREE_ANCHOR,
+-                                    TUTORIAL_THREE_FAR);
+-                            }
+-                        }
+-                    }
+-
+-                    break;
+-
+-                // ---------------------------------------------------------
+-                // ---------------------------------------------------------
+-                // STEP 3: OVERWRITE THE FILLED CELL
+-                // ---------------------------------------------------------
+-                case 2:
+-                    bool changedOverwriteTarget =
+-                        (cellIndex == TUTORIAL_THREE_NEAR &&
+-                         action == BoardInputAction.DragOverwrite) ||
+-                        (cellIndex == TUTORIAL_THREE_FAR &&
+-                         action == BoardInputAction.DragPaint);
+-
+-                    if (changedOverwriteTarget &&
+-                        board.ValueAt(TUTORIAL_THREE_NEAR) == 3 &&
+-                        board.ValueAt(TUTORIAL_THREE_FAR) == 3)
+-                    {
+-                        SetTutorialStep(3);
+-                    }
+-
+-                    break;
+-
+-                // STEP 4: ERASE ONE SQUARE, THEN RESTORE IT
+-                // ---------------------------------------------------------
+-                case 3:
+-                    if (cellIndex == TUTORIAL_THREE_FAR &&
+-                        action == BoardInputAction.EraseCell &&
+-                        _tutorialSingleEraseRoutine == null)
+-                    {
+-                        _tutorialSingleEraseRoutine =
+-                            StartCoroutine(RestoreTutorialErase());
+-                    }
+-
+-                    break;
+-
+-                // ---------------------------------------------------------
+-                // STEP 5: ERASE THE WHOLE REGION
+-                // ---------------------------------------------------------
+-                case 4:
+-                    if (cellIndex == TUTORIAL_THREE_ANCHOR &&
+-                        action == BoardInputAction.EraseRegion)
+-                    {
+-                        SetTutorialStep(5);
+-                    }
+-
+-                    break;
+-
+-                // ---------------------------------------------------------
+-                // STEP 6: SHARED ANCHORS
+-                // ---------------------------------------------------------
+-                case 5:
+-                    if (cellIndex == TUTORIAL_SHARED_FILL &&
+-                        (action == BoardInputAction.Paint ||
+-                         action == BoardInputAction.DragPaint))
+-                    {
+-                        if (board.ValueAt(TUTORIAL_SHARED_FILL) == 3)
+-                        {
+-                            SetTutorialStep(6);
+-                        }
+-                    }
+-
+-                    break;
+-
+-                // ---------------------------------------------------------
+-                // STEP 7: ILLEGAL MOVES
+-                // ---------------------------------------------------------
+-                case 6:
+-                    if (cellIndex == TUTORIAL_ILLEGAL_LEFT &&
+-                        action == BoardInputAction.IllegalMove &&
+-                        !_tutorialFirstIllegalMoveComplete &&
+-                        _tutorialIllegalMoveRoutine == null)
+-                    {
+-                        _tutorialIllegalMoveRoutine =
+-                            StartCoroutine(AdvanceAfterFirstIllegalMove());
+-                    }
+-                    else if (cellIndex == TUTORIAL_ILLEGAL_ABOVE &&
+-                             action == BoardInputAction.IllegalMove &&
+-                             _tutorialFirstIllegalMoveComplete &&
+-                             _tutorialIllegalMoveRoutine == null)
+-                    {
+-                        _tutorialIllegalMoveRoutine =
+-                            StartCoroutine(CompleteIllegalMoveLesson());
+-                    }
+-
+-                    break;
+-
+-                // ---------------------------------------------------------
+-                // STEP 8: FREE SOLVING
+-                // ---------------------------------------------------------
+-                case 7:
+-                    if (action == BoardInputAction.Paint ||
+-                        action == BoardInputAction.DragPaint ||
+-                        action == BoardInputAction.DragOverwrite ||
+-                        action == BoardInputAction.EraseCell ||
+-                        action == BoardInputAction.EraseRegion)
+-                    {
+-                        SetFinalTutorialHighlights();
+-                    }
++                SetTutorialStep(3);
++                return;
++            }
+ 
+-                    break;
++            if (_tutorialStep == TUTORIAL_STEP_COUNT - 1 &&
++                (action == BoardInputAction.CommitRegion ||
++                 action == BoardInputAction.OverrideRegion ||
++                 action == BoardInputAction.RemoveRegion))
++            {
++                SetFinalTutorialHighlights();
+             }
+         }
+ 
+diff --git a/Assets/Tests/Editor/ShikakuPuzzleModelTests.cs b/Assets/Tests/Editor/ShikakuPuzzleModelTests.cs
+index 10f7c96..b576c3c 100644
+--- a/Assets/Tests/Editor/ShikakuPuzzleModelTests.cs
++++ b/Assets/Tests/Editor/ShikakuPuzzleModelTests.cs
+@@ -1,6 +1,8 @@
+ #if UNITY_EDITOR
+ using NUnit.Framework;
+ using Shikaku.Logic;
++using Shikaku.UI;
++using UnityEngine;
+ 
+ namespace Shikaku.Tests
+ {
+@@ -75,6 +77,69 @@ namespace Shikaku.Tests
+             Assert.That(model.IsSolved(), Is.False);
+         }
+ 
++        [Test]
++        public void EvaluateRegionCandidate_ReportsDimensionsAndValidRule()
++        {
++            var model = new PuzzleModel(
++                3,
++                2,
++                new[] { 0, 0, 0, 0, 0, 6 });
++
++            ShikakuRegionEvaluation result =
++                model.EvaluateRegionCandidate(0, 5);
++
++            Assert.That(result.GeometryAllowed, Is.True);
++            Assert.That(result.Width, Is.EqualTo(3));
++            Assert.That(result.Height, Is.EqualTo(2));
++            Assert.That(result.Area, Is.EqualTo(6));
++            Assert.That(result.ClueCount, Is.EqualTo(1));
++            Assert.That(result.ClueValue, Is.EqualTo(6));
++            Assert.That(result.IsRuleValid, Is.True);
++        }
++
++        [Test]
++        public void EvaluateRegionCandidate_RejectsAreaMismatchAndMultipleClues()
++        {
++            var areaMismatch = new PuzzleModel(
++                2,
++                2,
++                new[] { 4, 0, 0, 0 });
++            var multipleClues = new PuzzleModel(
++                3,
++                2,
++                new[] { 3, 0, 3, 0, 0, 0 });
++
++            ShikakuRegionEvaluation tooSmall =
++                areaMismatch.EvaluateRegionCandidate(0, 0);
++            ShikakuRegionEvaluation ambiguous =
++                multipleClues.EvaluateRegionCandidate(0, 5);
++
++            Assert.That(tooSmall.GeometryAllowed, Is.True);
++            Assert.That(tooSmall.ClueCount, Is.EqualTo(1));
++            Assert.That(tooSmall.IsRuleValid, Is.False);
++            Assert.That(ambiguous.ClueCount, Is.EqualTo(2));
++            Assert.That(ambiguous.IsRuleValid, Is.False);
++        }
++        [Test]
++        public void PocketAtlasTheme_LoadsConfiguredArtSet()
++        {
++            AtlasThemeAssets theme =
++                Resources.Load<AtlasThemeAssets>("UI/AtlasThemeAssets");
++
++            Assert.That(theme, Is.Not.Null);
++            Assert.That(theme.lightPaper, Is.Not.Null);
++            Assert.That(theme.darkPaper, Is.Not.Null);
++            Assert.That(theme.districtMotifs, Has.Length.EqualTo(6));
++            Assert.That(theme.districtMotifs, Has.All.Not.Null);
++            Assert.That(theme.compassStamp, Is.Not.Null);
++            Assert.That(theme.approvedStamp, Is.Not.Null);
++            Assert.That(theme.pipWelcome, Is.Not.Null);
++            Assert.That(theme.pipTeach, Is.Not.Null);
++            Assert.That(theme.pipInspect, Is.Not.Null);
++            Assert.That(theme.pipHint, Is.Not.Null);
++            Assert.That(theme.pipCelebrate, Is.Not.Null);
++            Assert.That(theme.pipConcerned, Is.Not.Null);
++        }
+         [Test]
+         public void ClassicalFreeplayPack_LoadsCanonicalRectangles()
+         {
+diff --git a/Assets/UI/Screens/Gameplay/GameplayOverlay.uxml b/Assets/UI/Screens/Gameplay/GameplayOverlay.uxml
+index 3531c8b..aa3c016 100644
+--- a/Assets/UI/Screens/Gameplay/GameplayOverlay.uxml
++++ b/Assets/UI/Screens/Gameplay/GameplayOverlay.uxml
+@@ -1,10 +1,12 @@
+ <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+     <Style src="project://database/Assets/UI/Screens/Gameplay/GameplayScreen.uss"/>
+     <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
++    <Style src="project://database/Assets/UI/Themes/AtlasTheme.uss"/>
+     <ui:VisualElement name="gameplay-overlay-root" class="gameplay-overlay-root" picking-mode="Ignore">
+         <ui:VisualElement name="gameplay-not-quite-warning" class="gameplay-not-quite-warning screen-hidden" picking-mode="Ignore">
++            <ui:VisualElement class="pip pip-concerned pip-small" picking-mode="Ignore"/>
+             <ui:Label text="Not Quite!" class="gameplay-not-quite-title" picking-mode="Ignore"/>
+-            <ui:Label text="Check that every region contains the number of tiles defined by their anchor(s)." class="gameplay-not-quite-message" picking-mode="Ignore"/>
++            <ui:Label text="Every district must be one rectangle, match its clue area, and contain exactly one survey marker." class="gameplay-not-quite-message" picking-mode="Ignore"/>
+         </ui:VisualElement>
+         <ui:VisualElement name="gameplay-tutorial-root" class="gameplay-tutorial-root screen-hidden" picking-mode="Ignore">
+             <ui:VisualElement class="gameplay-tutorial-shade" picking-mode="Ignore"/>
+@@ -16,6 +18,7 @@
+                 <ui:Button name="gameplay-tutorial-previous-button" text="&#x2039;" class="gameplay-tutorial-nav gameplay-tutorial-nav-previous"/>
+                 <ui:VisualElement name="gameplay-tutorial-card" class="gameplay-tutorial-card">
+                     <ui:VisualElement class="gameplay-tutorial-heading">
++                        <ui:VisualElement class="pip pip-teach pip-small" picking-mode="Ignore"/>
+                         <ui:VisualElement name="gameplay-tutorial-guide-tile" class="gameplay-tutorial-guide-tile"><ui:Label name="gameplay-tutorial-guide-number" text="1" class="gameplay-tutorial-guide-number"/></ui:VisualElement>
+                         <ui:Label name="gameplay-tutorial-title" text="Welcome!" class="gameplay-tutorial-title"/>
+                     </ui:VisualElement>
+@@ -43,6 +46,7 @@
+                     <ui:VisualElement name="gameplay-streak-celebration-count-row" class="gameplay-streak-celebration-count-row" picking-mode="Ignore"><ui:VisualElement class="gameplay-streak-celebration-star" picking-mode="Ignore"/><ui:Label name="gameplay-streak-celebration-number" text="0" class="gameplay-streak-celebration-number" picking-mode="Ignore"/><ui:Label text="DAYS" class="gameplay-streak-celebration-days" picking-mode="Ignore"/></ui:VisualElement>
+                     <ui:Label name="gameplay-streak-celebration-reward" text="+1 Hint" class="gameplay-streak-celebration-reward" picking-mode="Ignore"/>
+                 </ui:VisualElement>
++                <ui:VisualElement class="pip pip-celebrate" picking-mode="Ignore"/>
+                 <ui:Label name="gameplay-solved-title" text="Puzzle Solved!" class="gameplay-modal-title gameplay-solved-title"/>
+                 <ui:VisualElement class="gameplay-modal-ornament"><ui:VisualElement class="gameplay-modal-line"/><ui:Label text="&#10003;" class="gameplay-solved-check"/><ui:VisualElement class="gameplay-modal-line"/></ui:VisualElement>
+                 <ui:Label name="gameplay-solved-message" text="Solved in 0.00" class="gameplay-modal-message"/>
+diff --git a/Assets/UI/Screens/Gameplay/GameplayScreen.uxml b/Assets/UI/Screens/Gameplay/GameplayScreen.uxml
+index 4a93377..059d1d3 100644
+--- a/Assets/UI/Screens/Gameplay/GameplayScreen.uxml
++++ b/Assets/UI/Screens/Gameplay/GameplayScreen.uxml
+@@ -1,6 +1,7 @@
+ <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+     <Style src="project://database/Assets/UI/Screens/Gameplay/GameplayScreen.uss"/>
+     <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
++    <Style src="project://database/Assets/UI/Themes/AtlasTheme.uss"/>
+     <ui:VisualElement name="gameplay-root" class="gameplay-root">
+         <ui:Button name="gameplay-background-button" class="gameplay-background"/>
+         <ui:VisualElement name="gameplay-safe-area" class="gameplay-safe-area" picking-mode="Ignore">
+diff --git a/Assets/UI/Screens/Home/HomeScreen.uxml b/Assets/UI/Screens/Home/HomeScreen.uxml
+index 94f318d..0894401 100644
+--- a/Assets/UI/Screens/Home/HomeScreen.uxml
++++ b/Assets/UI/Screens/Home/HomeScreen.uxml
+@@ -7,9 +7,11 @@
+     <Style src="project://database/Assets/UI/Screens/FreePlay/FreePlayScreen.uss?fileID=7433441132597879392&amp;guid=1fbf38c383f84187a3c8da1ce16201fe&amp;type=3#FreePlayScreen"/>
+     <Style src="project://database/Assets/UI/Screens/Adventure/AdventureScreen.uss"/>
+     <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
++    <Style src="project://database/Assets/UI/Themes/AtlasTheme.uss"/>
+     <ui:VisualElement name="screen-root" class="screen-root">
+         <ui:VisualElement name="safe-area" class="safe-area">
+             <ui:VisualElement name="brand-section" class="brand-section">
++              <ui:Label text="POCKET ATLAS PUZZLES" class="atlas-eyebrow"/>
+               <ui:VisualElement name="brand-mark" class="brand-mark-scatter">
+                 <ui:VisualElement class="brand-logo-tile brand-logo-tile-blank scatter-blank"/>
+                 <ui:VisualElement class="brand-logo-tile brand-logo-tile-grey scatter-one">
+@@ -34,7 +36,7 @@
+                 </ui:VisualElement>
+                 <ui:VisualElement class="tagline-row">
+                     <ui:VisualElement class="tagline-rule"/>
+-                    <ui:Label text="CONNECT NUMBERS. SOLVE PUZZLES." class="tagline"/>
++                    <ui:Label text="DRAW RECTANGLES. CHART EVERY SQUARE." class="tagline"/>
+                     <ui:VisualElement class="tagline-rule"/>
+                 </ui:VisualElement>
+             </ui:VisualElement>
+@@ -43,28 +45,28 @@
+                     <ui:VisualElement class="menu-button-inner">
+                         <ui:VisualElement class="menu-button-icon icon-adventure"/>
+                         <ui:VisualElement class="menu-button-divider"/>
+-                        <ui:Label text="Adventure" class="menu-button-label"/>
++                        <ui:VisualElement class="menu-button-copy"><ui:Label text="Adventure" class="menu-button-label"/><ui:Label text="Follow the story map" class="menu-button-note"/></ui:VisualElement>
+                     </ui:VisualElement>
+                 </ui:Button>
+                 <ui:Button name="free-play-button" class="menu-button main-menu-button free-play-button">
+                     <ui:VisualElement class="menu-button-inner">
+                         <ui:VisualElement class="menu-button-icon icon-free-play"/>
+                         <ui:VisualElement class="menu-button-divider"/>
+-                        <ui:Label text="Free Play" class="menu-button-label"/>
++                        <ui:VisualElement class="menu-button-copy"><ui:Label text="Free Play" class="menu-button-label"/><ui:Label text="Choose any atlas" class="menu-button-note"/></ui:VisualElement>
+                     </ui:VisualElement>
+                 </ui:Button>
+                 <ui:Button name="time-trial-button" class="menu-button main-menu-button time-trial-button">
+                     <ui:VisualElement class="menu-button-inner">
+                         <ui:VisualElement class="menu-button-icon icon-time-trial"/>
+                         <ui:VisualElement class="menu-button-divider"/>
+-                        <ui:Label text="Time Trial" class="menu-button-label"/>
++                        <ui:VisualElement class="menu-button-copy"><ui:Label text="Time Trial" class="menu-button-label"/><ui:Label text="Race the expedition clock" class="menu-button-note"/></ui:VisualElement>
+                     </ui:VisualElement>
+                 </ui:Button>
+                 <ui:Button name="daily-button" class="menu-button main-menu-button daily-button">
+                     <ui:VisualElement class="menu-button-inner">
+                         <ui:VisualElement class="menu-button-icon icon-daily"/>
+                         <ui:VisualElement class="menu-button-divider"/>
+-                        <ui:Label text="Daily Puzzles" class="menu-button-label"/>
++                        <ui:VisualElement class="menu-button-copy"><ui:Label text="Daily Puzzles" class="menu-button-label"/><ui:Label text="Stamp the field journal" class="menu-button-note"/></ui:VisualElement>
+                     </ui:VisualElement>
+                 </ui:Button>
+             </ui:VisualElement>
+@@ -175,6 +177,13 @@
+                                 <ui:Label text="Vibration" class="settings-control-label"/>
+                                 <ui:Toggle name="settings-vibration-toggle" class="settings-switch"/>
+                             </ui:VisualElement>
++                            <ui:VisualElement class="settings-control-row">
++                                <ui:VisualElement class="settings-appearance-copy">
++                                    <ui:Label text="Reduce Motion" class="settings-control-label"/>
++                                    <ui:Label text="Uses instant map stamps and region changes." class="settings-appearance-note"/>
++                                </ui:VisualElement>
++                                <ui:Toggle name="settings-reduce-motion-toggle" class="settings-switch"/>
++                            </ui:VisualElement>
+                             <ui:VisualElement class="settings-control-row settings-volume-row">
+                                 <ui:Label text="Volume" class="settings-control-label"/>
+                                 <ui:VisualElement class="settings-volume-control">
+@@ -320,7 +329,7 @@
+             <ui:VisualElement class="shop-content">
+                 <ui:VisualElement class="shop-title-block">
+                     <ui:VisualElement class="shop-title-row">
+-                        <ui:Label text="Shop" class="shop-title"/>
++                        <ui:Label text="Supply Post" class="shop-title"/>
+                     </ui:VisualElement>
+                     <ui:VisualElement class="shop-title-ornament">
+                         <ui:VisualElement class="shop-ornament-line"/>
+@@ -413,7 +422,7 @@
+                         <ui:VisualElement class="time-trial-ornament-line"/>
+                     </ui:VisualElement>
+                 </ui:VisualElement>
+-                <ui:Label text="Complete as many squares as you can before time runs out." class="time-trial-subtitle"/>
++                <ui:Label text="Chart as many districts as you can before the expedition clock runs out." class="time-trial-subtitle"/>
+                 <ui:Button name="time-trial-sprint-button" class="time-trial-mode-button time-trial-sprint">
+                     <ui:VisualElement class="time-trial-mode-inner">
+                         <ui:VisualElement class="time-trial-board-badge"><ui:Label text="3&#215;3" class="time-trial-board-label"/></ui:VisualElement>
+@@ -480,7 +489,7 @@
+                         <ui:VisualElement class="free-play-ornament-line"/>
+                     </ui:VisualElement>
+                 </ui:VisualElement>
+-                <ui:Label text="Choose a puzzle pack" class="free-play-subtitle"/>
++                <ui:Label text="Choose an atlas" class="free-play-subtitle"/>
+                 <ui:ScrollView name="free-play-pack-scroll" mode="Vertical" class="free-play-scroll-view free-play-pack-scroll">
+                     <ui:VisualElement name="free-play-pack-list" class="free-play-pack-list"/>
+                 </ui:ScrollView>
+@@ -538,7 +547,7 @@
+                         <ui:VisualElement class="adventure-ornament-line"/>
+                     </ui:VisualElement>
+                 </ui:VisualElement>
+-                <ui:Label text="Choose a chapter" class="adventure-subtitle"/>
++                <ui:Label text="Choose a destination" class="adventure-subtitle"/>
+                 <ui:VisualElement class="adventure-progress-chip">
+                     <ui:Label name="adventure-map-progress" text="0 of 10 chapters completed" class="adventure-progress-label"/>
+                 </ui:VisualElement>
+@@ -583,7 +592,8 @@
+                     <ui:VisualElement class="privacy-welcome-brand-mark">
+                         <ui:Label text="1" class="privacy-welcome-brand-number"/>
+                     </ui:VisualElement>
+-                    <ui:Label text="Welcome to Shikaku Go" class="privacy-welcome-title"/>
++                    <ui:VisualElement class="pip pip-welcome" picking-mode="Ignore"/>
++                <ui:Label text="Welcome to Shikaku Go" class="privacy-welcome-title"/>
+                     <ui:Label text="By continuing, you agree to our Terms of Service and acknowledge our Privacy Policy." class="privacy-welcome-legal-copy"/>
+                     <ui:VisualElement class="privacy-welcome-legal-links">
+                         <ui:Button name="privacy-welcome-terms-button" text="Terms of Service" class="privacy-welcome-link-button"/>
+@@ -623,6 +633,7 @@
+             <ui:VisualElement class="analytics-modal-backdrop"/>
+             <ui:VisualElement class="analytics-modal-card streak-restore-card">
+                 <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore"/>
++                <ui:VisualElement class="pip pip-hint" picking-mode="Ignore"/>
+                 <ui:Label text="Save Your Streak" class="analytics-modal-title"/>
+                 <ui:Label name="streak-restore-copy" text="Restore your streak, then complete a puzzle today to continue it." class="analytics-modal-copy streak-restore-copy"/>
+                 <ui:VisualElement class="analytics-modal-actions streak-restore-actions">
+@@ -637,6 +648,7 @@
+             <ui:VisualElement class="analytics-modal-backdrop"/>
+             <ui:VisualElement class="analytics-modal-card rate-modal-card">
+                 <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore"/>
++                <ui:VisualElement class="pip pip-welcome pip-small" picking-mode="Ignore"/>
+                 <ui:Label text="Rate Shikaku Go" class="analytics-modal-title"/>
+                 <ui:Label text="You&#8217;ve reached a 3-day streak! If you&#8217;re enjoying Shikaku Go, would you take a moment to rate it?" class="analytics-modal-copy"/>
+                 <ui:VisualElement class="analytics-modal-actions">
+diff --git a/ProjectSettings/ProjectSettings.asset b/ProjectSettings/ProjectSettings.asset
+index c88e29c..545692b 100644
+--- a/ProjectSettings/ProjectSettings.asset
++++ b/ProjectSettings/ProjectSettings.asset
+@@ -16,7 +16,7 @@ PlayerSettings:
+   productName: Shikaku Go
+   defaultCursor: {fileID: 0}
+   cursorHotspot: {x: 0, y: 0}
+-  m_SplashScreenBackgroundColor: {r: 0.8, g: 0.8, b: 0.8, a: 1}
++  m_SplashScreenBackgroundColor: {r: 0.9137255, g: 0.85882354, b: 0.7294118, a: 1}
+   m_ShowUnitySplashScreen: 1
+   m_ShowUnitySplashLogo: 0
+   m_SplashScreenOverlayOpacity: 1
+@@ -40,8 +40,8 @@ PlayerSettings:
+     width: 1
+     height: 1
+   m_SplashScreenLogos:
+-  - logo: {fileID: 0}
+-    duration: 3
++  - logo: {fileID: 21300000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
++    duration: 2
+   m_VirtualRealitySplashScreen: {fileID: 0}
+   m_HolographicTrackingLossScreen: {fileID: 0}
+   defaultScreenWidth: 1920
+@@ -273,7 +273,7 @@ PlayerSettings:
+   AndroidTargetArchitectures: 3
+   AndroidAllowedArchitectures: -13
+   AndroidSplashScreenScale: 0
+-  androidSplashScreen: {fileID: 0}
++  androidSplashScreen: {fileID: 21300000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+   AndroidKeystoreName:
+   AndroidKeyaliasName:
+   AndroidEnableArmv9SecurityFeatures: 0
+@@ -370,7 +370,7 @@ PlayerSettings:
+       m_Kind: 0
+       m_SubKind: 
+     - m_Textures:
+-      - {fileID: 2800000, guid: 60431bdb6d1d58643a6d5fe1f551d82c, type: 3}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       - {fileID: 0}
+       m_Width: 432
+       m_Height: 432
+@@ -404,115 +404,115 @@ PlayerSettings:
+   - m_BuildTarget: iPhone
+     m_Icons:
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 180
+       m_Height: 180
+       m_Kind: 0
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 120
+       m_Height: 120
+       m_Kind: 0
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 167
+       m_Height: 167
+       m_Kind: 0
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 152
+       m_Height: 152
+       m_Kind: 0
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 76
+       m_Height: 76
+       m_Kind: 0
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 120
+       m_Height: 120
+       m_Kind: 3
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 80
+       m_Height: 80
+       m_Kind: 3
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 80
+       m_Height: 80
+       m_Kind: 3
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 40
+       m_Height: 40
+       m_Kind: 3
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 87
+       m_Height: 87
+       m_Kind: 1
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 58
+       m_Height: 58
+       m_Kind: 1
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 29
+       m_Height: 29
+       m_Kind: 1
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 58
+       m_Height: 58
+       m_Kind: 1
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 29
+       m_Height: 29
+       m_Kind: 1
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 60
+       m_Height: 60
+       m_Kind: 2
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 40
+       m_Height: 40
+       m_Kind: 2
+       m_SubKind: iPhone
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 40
+       m_Height: 40
+       m_Kind: 2
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 20
+       m_Height: 20
+       m_Kind: 2
+       m_SubKind: iPad
+     - m_Textures:
+-      - {fileID: 0}
++      - {fileID: 2800000, guid: 34c25ff8b2a64cc58677809b844cca43, type: 3}
+       m_Width: 1024
+       m_Height: 1024
+       m_Kind: 4

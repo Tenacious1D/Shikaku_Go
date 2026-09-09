@@ -1,0 +1,93 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Screens/Gameplay/GameplayScreen.uss"/>
+    <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
+    <Style src="project://database/Assets/UI/Themes/AtlasTheme.uss"/>
+    <ui:VisualElement name="gameplay-overlay-root" class="gameplay-overlay-root" picking-mode="Ignore">
+        <ui:VisualElement name="gameplay-not-quite-warning" class="gameplay-not-quite-warning screen-hidden" picking-mode="Ignore">
+            <ui:VisualElement class="pip pip-concerned pip-small" picking-mode="Ignore"/>
+            <ui:Label text="Not Quite!" class="gameplay-not-quite-title" picking-mode="Ignore"/>
+            <ui:Label text="Every district must be one rectangle, match its clue area, and contain exactly one survey marker." class="gameplay-not-quite-message" picking-mode="Ignore"/>
+        </ui:VisualElement>
+        <ui:VisualElement name="gameplay-tutorial-root" class="gameplay-tutorial-root screen-hidden" picking-mode="Ignore">
+            <ui:VisualElement class="gameplay-tutorial-shade" picking-mode="Ignore"/>
+            <ui:VisualElement name="gameplay-tutorial-action-bubble" class="gameplay-tutorial-action-bubble screen-hidden" picking-mode="Ignore">
+                <ui:VisualElement name="gameplay-tutorial-action-tail" class="gameplay-tutorial-action-tail tutorial-tail-bottom" picking-mode="Ignore"/>
+                <ui:Label name="gameplay-tutorial-action" text="" class="gameplay-tutorial-action" picking-mode="Ignore"/>
+            </ui:VisualElement>
+            <ui:VisualElement name="gameplay-tutorial-card-row" class="gameplay-tutorial-card-row">
+                <ui:Button name="gameplay-tutorial-previous-button" text="&#x2039;" class="gameplay-tutorial-nav gameplay-tutorial-nav-previous"/>
+                <ui:VisualElement name="gameplay-tutorial-card" class="gameplay-tutorial-card">
+                    <ui:VisualElement class="gameplay-tutorial-heading">
+                        <ui:VisualElement class="pip pip-teach pip-small" picking-mode="Ignore"/>
+                        <ui:VisualElement name="gameplay-tutorial-guide-tile" class="gameplay-tutorial-guide-tile"><ui:Label name="gameplay-tutorial-guide-number" text="1" class="gameplay-tutorial-guide-number"/></ui:VisualElement>
+                        <ui:Label name="gameplay-tutorial-title" text="Welcome!" class="gameplay-tutorial-title"/>
+                    </ui:VisualElement>
+                    <ui:Label name="gameplay-tutorial-message" text="" class="gameplay-tutorial-message"/>
+                    <ui:VisualElement name="gameplay-tutorial-progress" class="gameplay-tutorial-progress" picking-mode="Ignore">
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                        <ui:VisualElement class="gameplay-tutorial-dot"/>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="gameplay-tutorial-buttons">
+                        <ui:Button name="gameplay-tutorial-next-button" text="Continue" class="gameplay-tutorial-button gameplay-tutorial-next"/>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:Button name="gameplay-tutorial-forward-button" text="&#x203A;" class="gameplay-tutorial-nav gameplay-tutorial-nav-forward"/>
+            </ui:VisualElement>
+        </ui:VisualElement>        <ui:VisualElement name="gameplay-solved-modal" class="gameplay-modal screen-hidden">
+            <ui:Button name="gameplay-solved-backdrop" class="gameplay-modal-backdrop"/>
+            <ui:VisualElement class="gameplay-modal-card gameplay-solved-card">
+                <ui:VisualElement name="gameplay-streak-celebration" class="gameplay-streak-celebration screen-hidden" picking-mode="Ignore">
+                    <ui:Label name="gameplay-streak-celebration-title" text="DAILY STREAK" class="gameplay-streak-celebration-title" picking-mode="Ignore"/>
+                    <ui:VisualElement name="gameplay-streak-celebration-count-row" class="gameplay-streak-celebration-count-row" picking-mode="Ignore"><ui:VisualElement class="gameplay-streak-celebration-star" picking-mode="Ignore"/><ui:Label name="gameplay-streak-celebration-number" text="0" class="gameplay-streak-celebration-number" picking-mode="Ignore"/><ui:Label text="DAYS" class="gameplay-streak-celebration-days" picking-mode="Ignore"/></ui:VisualElement>
+                    <ui:Label name="gameplay-streak-celebration-reward" text="+1 Hint" class="gameplay-streak-celebration-reward" picking-mode="Ignore"/>
+                </ui:VisualElement>
+                <ui:VisualElement class="pip pip-celebrate" picking-mode="Ignore"/>
+                <ui:Label name="gameplay-solved-title" text="Puzzle Solved!" class="gameplay-modal-title gameplay-solved-title"/>
+                <ui:VisualElement class="gameplay-modal-ornament"><ui:VisualElement class="gameplay-modal-line"/><ui:Label text="&#10003;" class="gameplay-solved-check"/><ui:VisualElement class="gameplay-modal-line"/></ui:VisualElement>
+                <ui:Label name="gameplay-solved-message" text="Solved in 0.00" class="gameplay-modal-message"/>
+                <ui:Button name="gameplay-solved-same-difficulty-button" text="Next Day's Medium" class="gameplay-modal-button gameplay-secondary-button screen-hidden"/>
+                <ui:Button name="gameplay-solved-primary-button" text="Next Puzzle" class="gameplay-modal-button gameplay-primary-button"/>
+                <ui:Button name="gameplay-solved-exit-button" text="Exit" class="gameplay-modal-button gameplay-secondary-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="gameplay-rate-prompt-modal" class="gameplay-modal screen-hidden">
+            <ui:Button name="gameplay-rate-prompt-backdrop" class="gameplay-modal-backdrop"/>
+            <ui:VisualElement class="gameplay-modal-card gameplay-rate-card">
+                <ui:VisualElement class="gameplay-rate-icon" picking-mode="Ignore"/>
+                <ui:Label text="Rate Shikaku Go" class="gameplay-modal-title"/>
+                <ui:Label text="You&#8217;ve reached a 3-day streak! If you&#8217;re enjoying Shikaku Go, would you take a moment to rate it?" class="gameplay-modal-message"/>
+                <ui:Button name="gameplay-rate-prompt-rate-button" text="Rate Shikaku Go" class="gameplay-modal-button gameplay-primary-button"/>
+                <ui:Button name="gameplay-rate-prompt-later-button" text="Not Now" class="gameplay-modal-button gameplay-secondary-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="gameplay-reset-modal" class="gameplay-modal screen-hidden">
+            <ui:Button name="gameplay-reset-backdrop" class="gameplay-modal-backdrop"/>
+            <ui:VisualElement class="gameplay-modal-card">
+                <ui:Label text="Reset Puzzle?" class="gameplay-modal-title"/>
+                <ui:VisualElement class="gameplay-modal-ornament"><ui:VisualElement class="gameplay-modal-line"/><ui:VisualElement class="gameplay-reset-modal-icon"/><ui:VisualElement class="gameplay-modal-line"/></ui:VisualElement>
+                <ui:Label text="All progress on this board will be cleared." class="gameplay-modal-message"/>
+                <ui:Button name="gameplay-confirm-reset-button" text="Reset" class="gameplay-modal-button gameplay-danger-button"/>
+                <ui:Button name="gameplay-cancel-reset-button" text="Cancel" class="gameplay-modal-button gameplay-secondary-button"/>
+            </ui:VisualElement>
+        </ui:VisualElement>
+      <ui:VisualElement name="gameplay-exit-modal" class="gameplay-modal screen-hidden">
+        <ui:Button name="gameplay-exit-backdrop" class="gameplay-modal-backdrop"/>
+        <ui:VisualElement class="gameplay-modal-card">
+          <ui:Label name="gameplay-exit-title" text="Leave Puzzle?" class="gameplay-modal-title"/>
+          <ui:VisualElement class="gameplay-modal-ornament">
+            <ui:VisualElement class="gameplay-modal-line"/>
+            <ui:VisualElement class="gameplay-reset-modal-icon"/>
+            <ui:VisualElement class="gameplay-modal-line"/>
+          </ui:VisualElement>
+          <ui:Label name="gameplay-exit-message" text="Your current progress will be lost." class="gameplay-modal-message"/>
+          <ui:Button name="gameplay-confirm-exit-button" text="Leave" class="gameplay-modal-button gameplay-danger-button"/>
+          <ui:Button name="gameplay-cancel-exit-button" text="Stay" class="gameplay-modal-button gameplay-secondary-button"/>
+        </ui:VisualElement>
+      </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

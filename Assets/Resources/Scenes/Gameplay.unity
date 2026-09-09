@@ -745,12 +745,12 @@ MonoBehaviour:
   cellPrefab: {fileID: 6994053757602910139, guid: 9225305d2d293e949ba1c28f5db6dc3f, type: 3}
   boardContainer: {fileID: 1812490087}
   boardTrayMargin: 6
-  boardTrayColor: {r: 0.8784314, g: 0.84705883, b: 0.7607843, a: 0.9607843}
-  boardEdgeColor: {r: 0.74509805, g: 0.7058824, b: 0.6117647, a: 1}
-  boardShadowColor: {r: 0.74509805, g: 0.7058824, b: 0.6117647, a: 1}
-  darkBoardTrayColor: {r: 0.1882353, g: 0.1764706, b: 0.15686275, a: 1}
-  darkBoardEdgeColor: {r: 0.35686275, g: 0.3254902, b: 0.2784314, a: 1}
-  darkBoardShadowColor: {r: 0.35686275, g: 0.3254902, b: 0.2784314, a: 1}
+  boardTrayColor: {r: 0.88235295, g: 0.9411765, b: 0.9529412, a: 0.972549}
+  boardEdgeColor: {r: 0.29803923, g: 0.50980395, b: 0.6392157, a: 1}
+  boardShadowColor: {r: 0.29803923, g: 0.50980395, b: 0.6392157, a: 1}
+  darkBoardTrayColor: {r: 0.03137255, g: 0.13725491, b: 0.23529412, a: 1}
+  darkBoardEdgeColor: {r: 0.21568628, g: 0.48235294, b: 0.61960787, a: 1}
+  darkBoardShadowColor: {r: 0.21568628, g: 0.48235294, b: 0.61960787, a: 1}
   palette: {fileID: 11400000, guid: 177d60c217ce99f42ad1eaba5fc295de, type: 2}
   width: 8
   height: 8

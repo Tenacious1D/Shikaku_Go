@@ -225,7 +225,27 @@ namespace Shikaku.Menu
 
         private void OnRootGeometryChanged(GeometryChangedEvent evt)
         {
+            ApplyBlueprintResponsiveLayout();
             ApplyMenuBackButtonLayout();
+        }
+
+        private void ApplyBlueprintResponsiveLayout()
+        {
+            if (_root == null)
+                return;
+
+            float panelWidth = _root.resolvedStyle.width;
+            float panelHeight = _root.resolvedStyle.height;
+            if (panelWidth <= 0f || panelHeight <= 0f)
+                return;
+
+            bool useTabletCards =
+                panelWidth >= 1180f && panelWidth / panelHeight >= 0.68f;
+            VisualElement screenRoot =
+                _root.Q<VisualElement>("screen-root");
+            screenRoot?.EnableInClassList(
+                "blueprint-tablet-layout",
+                useTabletCards);
         }
 
         private void ApplyMenuBackButtonLayout()

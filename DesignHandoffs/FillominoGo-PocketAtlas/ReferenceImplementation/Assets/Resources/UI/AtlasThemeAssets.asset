@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b3ad625655fa784d8251dc6459607d0, type: 3}
+  m_Name: AtlasThemeAssets
+  m_EditorClassIdentifier: Assembly-CSharp::Shikaku.UI.AtlasThemeAssets
+  lightPaper: {fileID: 2800000, guid: 6f4f863af85085f4495b7548fd9f20ba, type: 3}
+  darkPaper: {fileID: 2800000, guid: f312e3878e1f4b218fe51d90fe8c2d81, type: 3}
+  districtMotifs:
+  - {fileID: 2800000, guid: 8c0c74f28069a104f9e2299815804c06, type: 3}
+  - {fileID: 2800000, guid: 490c8e6acd49f6f499934308a7026eba, type: 3}
+  - {fileID: 2800000, guid: 72973fb54ddb2bc44980f4f0962801d0, type: 3}
+  - {fileID: 2800000, guid: 35a3ae3c09ac0be41a513f58ca1d60fd, type: 3}
+  - {fileID: 2800000, guid: 41c6bfa04965c3246b133b28463ef0c7, type: 3}
+  - {fileID: 2800000, guid: 261e56f4a07e03a47b6d1fc6c0035768, type: 3}
+  compassStamp: {fileID: 21300000, guid: 416dd33d364a42a49b8a60fd85c6a969, type: 3}
+  approvedStamp: {fileID: 5744904054898057027, guid: 87b5d7b4f30a19a458ffcbf1dee23402, type: 3}
+  pipWelcome: {fileID: 701000001, guid: 8a71d436b8e241bf9c5e4fe937a2d610, type: 3}
+  pipTeach: {fileID: 701000002, guid: 8a71d436b8e241bf9c5e4fe937a2d610, type: 3}
+  pipInspect: {fileID: 701000003, guid: 8a71d436b8e241bf9c5e4fe937a2d610, type: 3}
+  pipHint: {fileID: 701000004, guid: 8a71d436b8e241bf9c5e4fe937a2d610, type: 3}
+  pipCelebrate: {fileID: 701000005, guid: 8a71d436b8e241bf9c5e4fe937a2d610, type: 3}
+  pipConcerned: {fileID: 701000006, guid: 8a71d436b8e241bf9c5e4fe937a2d610, type: 3}
+  lightPatternInk: {r: 0.1764706, g: 0.16862746, b: 0.14901961, a: 1}
+  darkPatternInk: {r: 0.9372549, g: 0.9098039, b: 0.8509804, a: 1}
+  lightPatternOpacity: 0.15
+  darkPatternOpacity: 0.11
+  regionCommitDuration: 0.14

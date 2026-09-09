@@ -15,7 +15,7 @@ namespace Shikaku.EditorTools
     public static class IOSAppIconConfiguration
     {
         public const string SourceAssetPath =
-            "Assets/Art/Logos/icon_legacy.png";
+            "Assets/Art/Logos/shikaku_blueprint_app_icon.png";
 
         [MenuItem("Tools/Shikaku Go/iOS/Apply App Icon")]
         public static void ApplyIOSAppIcon()

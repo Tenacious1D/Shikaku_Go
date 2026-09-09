@@ -1,0 +1,616 @@
+using System.Collections.Generic;
+using Shikaku.Logic;
+using Shikaku.Settings;
+using TMPro;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace Shikaku.UI
+{
+    internal enum BlueprintRoomVisualState
+    {
+        Preview,
+        Committed,
+        Invalid
+    }
+
+    internal readonly struct BlueprintRoomVisualDescriptor
+    {
+        public readonly int RegionId;
+        public readonly int X;
+        public readonly int Y;
+        public readonly int Width;
+        public readonly int Height;
+        public readonly int ClueValue;
+        public readonly int HatchIndex;
+        public readonly BlueprintRoomVisualState State;
+
+        public int Area => Width * Height;
+
+        public BlueprintRoomVisualDescriptor(
+            int regionId,
+            int x,
+            int y,
+            int width,
+            int height,
+            int clueValue,
+            int hatchIndex,
+            BlueprintRoomVisualState state)
+        {
+            RegionId = regionId;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
+            ClueValue = clueValue;
+            HatchIndex = hatchIndex;
+            State = state;
+        }
+    }
+
+    [DisallowMultipleComponent]
+    internal sealed class BlueprintRoomDecorationLayer : MonoBehaviour
+    {
+        private sealed class DecorationView
+        {
+            public int RegionId;
+            public int SeenGeneration;
+            public RectTransform Rect;
+            public RawImage Pattern;
+            public Image[] Walls;
+            public Color TargetColor;
+            public float CreatedAt;
+        }
+
+        private const int HatchCount = 6;
+        private static Texture2D[] _fallbackHatches;
+
+        private readonly Dictionary<int, DecorationView> _active =
+            new Dictionary<int, DecorationView>(64);
+        private readonly Stack<DecorationView> _pool =
+            new Stack<DecorationView>(16);
+        private readonly List<int> _releaseBuffer = new List<int>(16);
+        private readonly List<ShikakuRegion> _regionBuffer =
+            new List<ShikakuRegion>(64);
+
+        private RectTransform _root;
+        private RectTransform _previewRect;
+        private RawImage _previewPattern;
+        private TextMeshProUGUI _previewLabel;
+        private RectTransform _routeSweep;
+        private Image _routeSweepImage;
+        private Image[] _previewWalls;
+        private Coroutine _routeSweepRoutine;
+        private int _generation;
+        private BlueprintThemeAssets _theme;
+        private bool _dark;
+
+        public static BlueprintRoomDecorationLayer Create(
+            RectTransform boardPanel)
+        {
+            if (boardPanel == null)
+                return null;
+
+            Transform existing = boardPanel.Find("BlueprintRooms");
+            if (existing != null)
+            {
+                BlueprintRoomDecorationLayer layer =
+                    existing.GetComponent<BlueprintRoomDecorationLayer>();
+                if (layer != null)
+                {
+                    if (existing.GetComponent<RectMask2D>() == null)
+                        existing.gameObject.AddComponent<RectMask2D>();
+                    return layer;
+                }
+            }
+
+            GameObject layerObject = new GameObject(
+                "BlueprintRooms",
+                typeof(RectTransform),
+                typeof(CanvasGroup),
+                typeof(LayoutElement),
+                typeof(RectMask2D),
+                typeof(BlueprintRoomDecorationLayer));
+            layerObject.layer = boardPanel.gameObject.layer;
+            layerObject.transform.SetParent(boardPanel, false);
+
+            RectTransform rect = layerObject.GetComponent<RectTransform>();
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+            rect.localScale = Vector3.one;
+
+            LayoutElement layout = layerObject.GetComponent<LayoutElement>();
+            layout.ignoreLayout = true;
+
+            CanvasGroup canvasGroup = layerObject.GetComponent<CanvasGroup>();
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+
+            BlueprintRoomDecorationLayer component =
+                layerObject.GetComponent<BlueprintRoomDecorationLayer>();
+            component.Initialize(rect);
+            rect.SetAsLastSibling();
+            return component;
+        }
+
+        private void Initialize(RectTransform root)
+        {
+            _root = root;
+            EnsurePreview();
+            EnsureRouteSweep();
+        }
+
+        public void Refresh(
+            PuzzleModel model,
+            CellView[] cells,
+            BlueprintThemeAssets theme,
+            bool dark,
+            bool hasPreview,
+            BlueprintRoomVisualDescriptor preview)
+        {
+            if (_root == null)
+                _root = transform as RectTransform;
+            if (_root == null || model == null || cells == null)
+                return;
+
+            _theme = BlueprintThemeAssets.Resolve(theme);
+            _dark = dark;
+            _generation++;
+            model.CopyRegionsTo(_regionBuffer);
+
+            for (int index = 0; index < _regionBuffer.Count; index++)
+            {
+                ShikakuRegion region = _regionBuffer[index];
+                DecorationView view = GetOrCreate(region.Id);
+                view.SeenGeneration = _generation;
+                int hatchIndex = _theme.GetStableHatchIndex(region);
+                Texture2D hatch = _theme.GetRoomHatch(hatchIndex);
+                view.Pattern.texture = hatch != null
+                    ? hatch
+                    : GetFallbackHatch(hatchIndex);
+                view.Pattern.uvRect = new Rect(
+                    0f,
+                    0f,
+                    Mathf.Max(1f, region.Width * 0.7f),
+                    Mathf.Max(1f, region.Height * 0.7f));
+                view.TargetColor = _theme.GetPatternColor(_dark);
+                view.Pattern.color = view.TargetColor;
+                view.Pattern.enabled = true;
+                Color wallColor = _theme.GetWallColor(_dark);
+                for (int wallIndex = 0; wallIndex < view.Walls.Length; wallIndex++)
+                    view.Walls[wallIndex].color = wallColor;
+                SetRegionRect(
+                    view.Rect,
+                    cells,
+                    model.Width,
+                    region.X,
+                    region.Y,
+                    region.Width,
+                    region.Height);
+            }
+
+            _releaseBuffer.Clear();
+            foreach (KeyValuePair<int, DecorationView> pair in _active)
+            {
+                if (pair.Value.SeenGeneration != _generation)
+                    _releaseBuffer.Add(pair.Key);
+            }
+            for (int index = 0; index < _releaseBuffer.Count; index++)
+                Release(_releaseBuffer[index]);
+
+            RefreshPreview(cells, model.Width, hasPreview, preview);
+            _root.SetAsLastSibling();
+        }
+
+        private DecorationView GetOrCreate(int regionId)
+        {
+            if (_active.TryGetValue(regionId, out DecorationView existing))
+                return existing;
+
+            DecorationView view = _pool.Count > 0
+                ? _pool.Pop()
+                : CreateView();
+            view.RegionId = regionId;
+            view.CreatedAt = Time.unscaledTime;
+            view.Rect.gameObject.SetActive(true);
+            view.Rect.localScale = AppSettings.ReduceMotion
+                ? Vector3.one
+                : new Vector3(0.985f, 0.985f, 1f);
+            _active.Add(regionId, view);
+            return view;
+        }
+
+        private DecorationView CreateView()
+        {
+            GameObject viewObject = new GameObject(
+                "BlueprintRoom",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RawImage));
+            viewObject.layer = gameObject.layer;
+            viewObject.transform.SetParent(_root, false);
+            RawImage pattern = viewObject.GetComponent<RawImage>();
+            pattern.raycastTarget = false;
+            pattern.maskable = true;
+            RectTransform roomRect = viewObject.GetComponent<RectTransform>();
+            return new DecorationView
+            {
+                Rect = roomRect,
+                Pattern = pattern,
+                Walls = CreateWalls(roomRect, "RoomWall", 3f)
+            };
+        }
+
+        private Image[] CreateWalls(
+            RectTransform parent,
+            string prefix,
+            float thickness)
+        {
+            return new[]
+            {
+                CreateWall(parent, prefix + "Top", new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, thickness)),
+                CreateWall(parent, prefix + "Bottom", new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(0f, thickness)),
+                CreateWall(parent, prefix + "Left", new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(thickness, 0f)),
+                CreateWall(parent, prefix + "Right", new Vector2(1f, 0f), new Vector2(1f, 1f), new Vector2(thickness, 0f))
+            };
+        }
+
+        private Image CreateWall(
+            RectTransform parent,
+            string objectName,
+            Vector2 anchorMin,
+            Vector2 anchorMax,
+            Vector2 sizeDelta)
+        {
+            GameObject wallObject = new GameObject(
+                objectName,
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image));
+            wallObject.layer = gameObject.layer;
+            wallObject.transform.SetParent(parent, false);
+            RectTransform wallRect = wallObject.GetComponent<RectTransform>();
+            wallRect.anchorMin = anchorMin;
+            wallRect.anchorMax = anchorMax;
+            wallRect.pivot = new Vector2(0.5f, 0.5f);
+            wallRect.anchoredPosition = Vector2.zero;
+            wallRect.sizeDelta = sizeDelta;
+            Image wall = wallObject.GetComponent<Image>();
+            wall.raycastTarget = false;
+            return wall;
+        }
+
+        private void Release(int regionId)
+        {
+            if (!_active.TryGetValue(regionId, out DecorationView view))
+                return;
+
+            _active.Remove(regionId);
+            view.Rect.gameObject.SetActive(false);
+            _pool.Push(view);
+        }
+
+        private void EnsurePreview()
+        {
+            if (_previewRect != null)
+                return;
+
+            GameObject previewObject = new GameObject(
+                "BlueprintDraft",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RawImage));
+            previewObject.layer = gameObject.layer;
+            previewObject.transform.SetParent(_root, false);
+            _previewRect = previewObject.GetComponent<RectTransform>();
+            _previewPattern = previewObject.GetComponent<RawImage>();
+            _previewPattern.raycastTarget = false;
+            _previewWalls = CreateWalls(_previewRect, "DraftWall", 4f);
+
+            GameObject labelObject = new GameObject(
+                "BlueprintDimensionLabel",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(TextMeshProUGUI));
+            labelObject.layer = gameObject.layer;
+            labelObject.transform.SetParent(_previewRect, false);
+            RectTransform labelRect = labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = new Vector2(0f, 1f);
+            labelRect.anchorMax = new Vector2(1f, 1f);
+            labelRect.pivot = new Vector2(0.5f, 1f);
+            labelRect.anchoredPosition = new Vector2(0f, -6f);
+            labelRect.sizeDelta = new Vector2(-10f, 50f);
+
+            _previewLabel = labelObject.GetComponent<TextMeshProUGUI>();
+            _previewLabel.raycastTarget = false;
+            _previewLabel.alignment = TextAlignmentOptions.Center;
+            _previewLabel.fontStyle = FontStyles.Bold;
+            _previewLabel.fontSize = 30f;
+            _previewLabel.enableAutoSizing = true;
+            _previewLabel.fontSizeMin = 12f;
+            _previewLabel.fontSizeMax = 28f;
+            _previewRect.gameObject.SetActive(false);
+        }
+
+        public void PlaySolveSweep()
+        {
+            EnsureRouteSweep();
+            if (_routeSweep == null)
+                return;
+
+            if (_routeSweepRoutine != null)
+            {
+                StopCoroutine(_routeSweepRoutine);
+                _routeSweepRoutine = null;
+            }
+
+            if (AppSettings.ReduceMotion)
+            {
+                _routeSweep.gameObject.SetActive(false);
+                return;
+            }
+
+            _routeSweepRoutine = StartCoroutine(AnimateRouteSweep());
+        }
+
+        private void EnsureRouteSweep()
+        {
+            if (_routeSweep != null || _root == null)
+                return;
+
+            GameObject routeObject = new GameObject(
+                "BlueprintReviewSweep",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image));
+            routeObject.layer = gameObject.layer;
+            routeObject.transform.SetParent(_root, false);
+            _routeSweep = routeObject.GetComponent<RectTransform>();
+            _routeSweep.anchorMin = new Vector2(0f, 0.5f);
+            _routeSweep.anchorMax = new Vector2(0f, 0.5f);
+            _routeSweep.pivot = new Vector2(0.5f, 0.5f);
+            _routeSweep.localRotation = Quaternion.Euler(0f, 0f, -9f);
+            _routeSweepImage = routeObject.GetComponent<Image>();
+            _routeSweepImage.raycastTarget = false;
+            _routeSweepImage.color = new Color32(43, 188, 221, 0);
+            routeObject.SetActive(false);
+        }
+
+        private System.Collections.IEnumerator AnimateRouteSweep()
+        {
+            _routeSweep.gameObject.SetActive(true);
+            _routeSweep.SetAsLastSibling();
+            float boardWidth = Mathf.Max(1f, _root.rect.width);
+            float boardHeight = Mathf.Max(1f, _root.rect.height);
+            _routeSweep.sizeDelta = new Vector2(12f, boardHeight * 1.35f);
+            const float duration = 0.42f;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                float eased = t * t * (3f - 2f * t);
+                _routeSweep.anchoredPosition = new Vector2(
+                    Mathf.Lerp(-24f, boardWidth + 24f, eased),
+                    0f);
+                float fade = Mathf.Sin(t * Mathf.PI);
+                _routeSweepImage.color = new Color32(
+                    43,
+                    188,
+                    221,
+                    (byte)Mathf.RoundToInt(210f * fade));
+                yield return null;
+            }
+
+            _routeSweep.gameObject.SetActive(false);
+            _routeSweepRoutine = null;
+        }
+        private void RefreshPreview(
+            CellView[] cells,
+            int boardWidth,
+            bool hasPreview,
+            BlueprintRoomVisualDescriptor preview)
+        {
+            EnsurePreview();
+            if (!hasPreview)
+            {
+                _previewRect.gameObject.SetActive(false);
+                return;
+            }
+
+            _previewRect.gameObject.SetActive(true);
+            SetRegionRect(
+                _previewRect,
+                cells,
+                boardWidth,
+                preview.X,
+                preview.Y,
+                preview.Width,
+                preview.Height);
+            _previewPattern.texture = GetFallbackHatch(5);
+            _previewPattern.uvRect = new Rect(
+                0f,
+                0f,
+                Mathf.Max(1f, preview.Width * 0.7f),
+                Mathf.Max(1f, preview.Height * 0.7f));
+
+            bool valid = preview.State != BlueprintRoomVisualState.Invalid;
+            _previewPattern.color = valid
+                ? new Color32(54, 138, 154, 40)
+                : new Color32(190, 52, 56, 36);
+            Color previewWallColor = valid
+                ? (_dark ? new Color32(221, 245, 248, 255) : new Color32(18, 86, 143, 255))
+                : new Color32(196, 55, 62, 255);
+            for (int wallIndex = 0; wallIndex < _previewWalls.Length; wallIndex++)
+                _previewWalls[wallIndex].color = previewWallColor;
+            _previewLabel.color = valid
+                ? (_dark
+                    ? new Color32(221, 240, 238, 255)
+                    : new Color32(27, 91, 102, 255))
+                : new Color32(190, 52, 56, 255);
+            _previewLabel.text =
+                $"{preview.Width} × {preview.Height} = {preview.Area}";
+            _previewRect.SetAsLastSibling();
+        }
+
+        private void Update()
+        {
+            if (_theme == null || AppSettings.ReduceMotion)
+                return;
+
+            float duration = Mathf.Max(0.01f, _theme.wallInkDuration);
+            foreach (KeyValuePair<int, DecorationView> pair in _active)
+            {
+                DecorationView view = pair.Value;
+                float t = Mathf.Clamp01(
+                    (Time.unscaledTime - view.CreatedAt) / duration);
+                float eased = 1f - Mathf.Pow(1f - t, 3f);
+                view.Rect.localScale = Vector3.LerpUnclamped(
+                    new Vector3(0.985f, 0.985f, 1f),
+                    Vector3.one,
+                    eased);
+            }
+        }
+
+        private void SetRegionRect(
+            RectTransform target,
+            CellView[] cells,
+            int boardWidth,
+            int x,
+            int y,
+            int width,
+            int height)
+        {
+            int firstIndex = y * boardWidth + x;
+            int lastIndex =
+                (y + height - 1) * boardWidth + (x + width - 1);
+            if (firstIndex < 0 || lastIndex < 0 ||
+                firstIndex >= cells.Length || lastIndex >= cells.Length ||
+                cells[firstIndex] == null || cells[lastIndex] == null)
+            {
+                target.gameObject.SetActive(false);
+                return;
+            }
+
+            RectTransform first = cells[firstIndex].transform as RectTransform;
+            RectTransform last = cells[lastIndex].transform as RectTransform;
+            if (first == null || last == null)
+            {
+                target.gameObject.SetActive(false);
+                return;
+            }
+
+            Bounds firstBounds =
+                RectTransformUtility.CalculateRelativeRectTransformBounds(
+                    _root,
+                    first);
+            Bounds lastBounds =
+                RectTransformUtility.CalculateRelativeRectTransformBounds(
+                    _root,
+                    last);
+            ApplyLocalBounds(target, _root, firstBounds, lastBounds);
+        }
+
+        internal static void ApplyLocalBounds(
+            RectTransform target,
+            RectTransform root,
+            Bounds firstBounds,
+            Bounds lastBounds)
+        {
+            if (target == null || root == null)
+                return;
+
+            Vector3 min = Vector3.Min(firstBounds.min, lastBounds.min);
+            Vector3 max = Vector3.Max(firstBounds.max, lastBounds.max);
+            Vector3 center = (min + max) * 0.5f;
+
+            // Relative bounds are expressed around the root's pivot. Anchoring
+            // to that same pivot keeps anchoredPosition in the same coordinate
+            // space and prevents the old half-board left/down offset.
+            target.anchorMin = root.pivot;
+            target.anchorMax = root.pivot;
+            target.pivot = new Vector2(0.5f, 0.5f);
+            target.anchoredPosition = new Vector2(center.x, center.y);
+            target.sizeDelta = new Vector2(max.x - min.x, max.y - min.y);
+        }
+
+        private static Texture2D GetFallbackHatch(int hatchIndex)
+        {
+            if (_fallbackHatches == null)
+            {
+                _fallbackHatches = new Texture2D[HatchCount];
+                for (int index = 0; index < HatchCount; index++)
+                    _fallbackHatches[index] = BuildHatch(index);
+            }
+
+            return _fallbackHatches[Mathf.Abs(hatchIndex) % HatchCount];
+        }
+
+        private static Texture2D BuildHatch(int hatchIndex)
+        {
+            const int size = 64;
+            var pixels = new Color32[size * size];
+            var clear = new Color32(255, 255, 255, 0);
+            var ink = new Color32(255, 255, 255, 255);
+            for (int index = 0; index < pixels.Length; index++)
+                pixels[index] = clear;
+
+            for (int y = 0; y < size; y++)
+            {
+                for (int x = 0; x < size; x++)
+                {
+                    bool mark;
+                    switch (hatchIndex)
+                    {
+                        case 0: // concrete stipple
+                            int noise = (x * 17 + y * 31 + x * y * 3) & 31;
+                            mark = noise == 0 || noise == 11;
+                            break;
+                        case 1: // wood floor boards
+                            int boardRow = y / 12;
+                            mark = y % 12 == 0 ||
+                                (boardRow % 2 == 0 && x % 32 == 0) ||
+                                (boardRow % 2 == 1 && x % 32 == 16);
+                            break;
+                        case 2: // ceramic tile grid
+                            mark = x % 16 == 0 || y % 16 == 0;
+                            break;
+                        case 3: // steel diagonal hatch
+                            mark = (x + y) % 12 == 0;
+                            break;
+                        case 4: // insulation zigzag
+                            int segment = x % 16;
+                            int ridge = segment < 8 ? segment : 15 - segment;
+                            mark = Mathf.Abs((y % 16) - ridge * 2) < 2;
+                            break;
+                        default: // survey crosshatch
+                            mark = (x + y) % 16 == 0 ||
+                                (x - y + size) % 16 == 0;
+                            break;
+                    }
+
+                    if (mark)
+                        pixels[y * size + x] = ink;
+                }
+            }
+
+            var texture = new Texture2D(
+                size,
+                size,
+                TextureFormat.RGBA32,
+                false)
+            {
+                name = $"Blueprint Hatch {hatchIndex + 1}",
+                wrapMode = TextureWrapMode.Repeat,
+                filterMode = FilterMode.Bilinear,
+                hideFlags = HideFlags.HideAndDontSave
+            };
+            texture.SetPixels32(pixels);
+            texture.Apply(false, true);
+            return texture;
+        }
+    }
+}

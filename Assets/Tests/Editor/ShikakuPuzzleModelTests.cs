@@ -1,6 +1,9 @@
 #if UNITY_EDITOR
 using NUnit.Framework;
 using Shikaku.Logic;
+using Shikaku.UI;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Shikaku.Tests
 {
@@ -75,6 +78,153 @@ namespace Shikaku.Tests
             Assert.That(model.IsSolved(), Is.False);
         }
 
+        [Test]
+        public void EvaluateRegionCandidate_ReportsDimensionsAndValidRule()
+        {
+            var model = new PuzzleModel(
+                3,
+                2,
+                new[] { 0, 0, 0, 0, 0, 6 });
+
+            ShikakuRegionEvaluation result =
+                model.EvaluateRegionCandidate(0, 5);
+
+            Assert.That(result.GeometryAllowed, Is.True);
+            Assert.That(result.Width, Is.EqualTo(3));
+            Assert.That(result.Height, Is.EqualTo(2));
+            Assert.That(result.Area, Is.EqualTo(6));
+            Assert.That(result.ClueCount, Is.EqualTo(1));
+            Assert.That(result.ClueValue, Is.EqualTo(6));
+            Assert.That(result.IsRuleValid, Is.True);
+        }
+
+        [Test]
+        public void EvaluateRegionCandidate_RejectsAreaMismatchAndMultipleClues()
+        {
+            var areaMismatch = new PuzzleModel(
+                2,
+                2,
+                new[] { 4, 0, 0, 0 });
+            var multipleClues = new PuzzleModel(
+                3,
+                2,
+                new[] { 3, 0, 3, 0, 0, 0 });
+
+            ShikakuRegionEvaluation tooSmall =
+                areaMismatch.EvaluateRegionCandidate(0, 0);
+            ShikakuRegionEvaluation ambiguous =
+                multipleClues.EvaluateRegionCandidate(0, 5);
+
+            Assert.That(tooSmall.GeometryAllowed, Is.True);
+            Assert.That(tooSmall.ClueCount, Is.EqualTo(1));
+            Assert.That(tooSmall.IsRuleValid, Is.False);
+            Assert.That(ambiguous.ClueCount, Is.EqualTo(2));
+            Assert.That(ambiguous.IsRuleValid, Is.False);
+        }
+        [Test]
+        public void BlueprintRoomDecoration_UsesRootCoordinatesAndClipsOverflow()
+        {
+            var boardObject = new GameObject(
+                "Board",
+                typeof(RectTransform));
+            var roomObject = new GameObject(
+                "Room",
+                typeof(RectTransform));
+
+            try
+            {
+                RectTransform board =
+                    boardObject.GetComponent<RectTransform>();
+                board.sizeDelta = new Vector2(400f, 300f);
+                board.pivot = new Vector2(0.35f, 0.65f);
+
+                RectTransform room = roomObject.GetComponent<RectTransform>();
+                room.SetParent(board, false);
+
+                var firstBounds = new Bounds(
+                    new Vector3(-150f, -100f, 0f),
+                    new Vector3(100f, 100f, 0f));
+                var lastBounds = new Bounds(
+                    new Vector3(100f, 50f, 0f),
+                    new Vector3(100f, 100f, 0f));
+
+                System.Type layerType =
+                    typeof(BlueprintThemeAssets).Assembly.GetType(
+                        "Shikaku.UI.BlueprintRoomDecorationLayer");
+                Assert.That(layerType, Is.Not.Null);
+
+                System.Reflection.MethodInfo applyLocalBounds =
+                    layerType.GetMethod(
+                        "ApplyLocalBounds",
+                        System.Reflection.BindingFlags.Static |
+                        System.Reflection.BindingFlags.NonPublic);
+                Assert.That(applyLocalBounds, Is.Not.Null);
+                applyLocalBounds.Invoke(
+                    null,
+                    new object[]
+                    {
+                        room,
+                        board,
+                        firstBounds,
+                        lastBounds
+                    });
+
+                Assert.That(room.anchorMin.x,
+                    Is.EqualTo(board.pivot.x).Within(0.001f));
+                Assert.That(room.anchorMin.y,
+                    Is.EqualTo(board.pivot.y).Within(0.001f));
+                Assert.That(room.anchorMax.x,
+                    Is.EqualTo(board.pivot.x).Within(0.001f));
+                Assert.That(room.anchorMax.y,
+                    Is.EqualTo(board.pivot.y).Within(0.001f));
+                Assert.That(room.anchoredPosition.x,
+                    Is.EqualTo(-25f).Within(0.001f));
+                Assert.That(room.anchoredPosition.y,
+                    Is.EqualTo(-25f).Within(0.001f));
+                Assert.That(room.sizeDelta.x,
+                    Is.EqualTo(350f).Within(0.001f));
+                Assert.That(room.sizeDelta.y,
+                    Is.EqualTo(250f).Within(0.001f));
+
+                System.Reflection.MethodInfo createLayer =
+                    layerType.GetMethod(
+                        "Create",
+                        System.Reflection.BindingFlags.Static |
+                        System.Reflection.BindingFlags.Public);
+                Assert.That(createLayer, Is.Not.Null);
+                createLayer.Invoke(null, new object[] { board });
+
+                Transform layer = board.Find("BlueprintRooms");
+                Assert.That(layer, Is.Not.Null);
+                Assert.That(layer.GetComponent<RectMask2D>(), Is.Not.Null);
+            }
+            finally
+            {
+                Object.DestroyImmediate(boardObject);
+                if (roomObject != null)
+                    Object.DestroyImmediate(roomObject);
+            }
+        }
+        [Test]
+        public void BlueprintTheme_LoadsConfiguredArtSet()
+        {
+            BlueprintThemeAssets theme =
+                Resources.Load<BlueprintThemeAssets>("UI/BlueprintThemeAssets");
+
+            Assert.That(theme, Is.Not.Null);
+            Assert.That(theme.whiteprintPaper, Is.Not.Null);
+            Assert.That(theme.blueprintPaper, Is.Not.Null);
+            Assert.That(theme.roomHatches, Has.Length.EqualTo(6));
+            Assert.That(theme.roomHatches, Has.All.Not.Null);
+            Assert.That(theme.inspectionStamp, Is.Not.Null);
+            Assert.That(theme.approvedStamp, Is.Not.Null);
+            Assert.That(theme.rivetWelcome, Is.Not.Null);
+            Assert.That(theme.rivetTeach, Is.Not.Null);
+            Assert.That(theme.rivetInspect, Is.Not.Null);
+            Assert.That(theme.rivetHint, Is.Not.Null);
+            Assert.That(theme.rivetCelebrate, Is.Not.Null);
+            Assert.That(theme.rivetConcerned, Is.Not.Null);
+        }
         [Test]
         public void ClassicalFreeplayPack_LoadsCanonicalRectangles()
         {

@@ -7,9 +7,11 @@
     <Style src="project://database/Assets/UI/Screens/FreePlay/FreePlayScreen.uss?fileID=7433441132597879392&amp;guid=1fbf38c383f84187a3c8da1ce16201fe&amp;type=3#FreePlayScreen"/>
     <Style src="project://database/Assets/UI/Screens/Adventure/AdventureScreen.uss"/>
     <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
+    <Style src="project://database/Assets/UI/Themes/BlueprintTheme.uss"/>
     <ui:VisualElement name="screen-root" class="screen-root">
         <ui:VisualElement name="safe-area" class="safe-area">
             <ui:VisualElement name="brand-section" class="brand-section">
+              <ui:Label text="BLUEPRINT PUZZLES" class="blueprint-eyebrow"/>
               <ui:VisualElement name="brand-mark" class="brand-mark-scatter">
                 <ui:VisualElement class="brand-logo-tile brand-logo-tile-blank scatter-blank"/>
                 <ui:VisualElement class="brand-logo-tile brand-logo-tile-grey scatter-one">
@@ -34,37 +36,41 @@
                 </ui:VisualElement>
                 <ui:VisualElement class="tagline-row">
                     <ui:VisualElement class="tagline-rule"/>
-                    <ui:Label text="CONNECT NUMBERS. SOLVE PUZZLES." class="tagline"/>
+                    <ui:Label text="DRAW ROOMS. COMPLETE THE FLOOR." class="tagline"/>
                     <ui:VisualElement class="tagline-rule"/>
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="primary-actions" class="primary-actions">
-                <ui:Button name="adventure-button" class="menu-button main-menu-button adventure-button">
-                    <ui:VisualElement class="menu-button-inner">
-                        <ui:VisualElement class="menu-button-icon icon-adventure"/>
-                        <ui:VisualElement class="menu-button-divider"/>
-                        <ui:Label text="Adventure" class="menu-button-label"/>
+                <ui:VisualElement class="home-feature-row">
+                    <ui:Button name="adventure-button" class="menu-button main-menu-button adventure-button home-adventure-feature">
+                        <ui:VisualElement class="menu-button-inner">
+                            <ui:VisualElement class="menu-button-icon icon-adventure"/>
+                            <ui:VisualElement class="menu-button-divider"/>
+                            <ui:VisualElement class="menu-button-copy"><ui:Label text="Adventure" class="menu-button-label"/><ui:Label text="Build through guided floors" class="menu-button-note"/></ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:Button>
+                    <ui:VisualElement class="home-compact-stack">
+                        <ui:Button name="free-play-button" class="menu-button main-menu-button free-play-button home-compact-button">
+                            <ui:VisualElement class="menu-button-inner">
+                                <ui:VisualElement class="menu-button-icon icon-free-play"/>
+                                <ui:VisualElement class="menu-button-divider"/>
+                                <ui:VisualElement class="menu-button-copy"><ui:Label text="Free Play" class="menu-button-label"/><ui:Label text="Open any plan set" class="menu-button-note"/></ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:Button>
+                        <ui:Button name="time-trial-button" class="menu-button main-menu-button time-trial-button home-compact-button">
+                            <ui:VisualElement class="menu-button-inner">
+                                <ui:VisualElement class="menu-button-icon icon-time-trial"/>
+                                <ui:VisualElement class="menu-button-divider"/>
+                                <ui:VisualElement class="menu-button-copy"><ui:Label text="Time Trial" class="menu-button-label"/><ui:Label text="Draft against the clock" class="menu-button-note"/></ui:VisualElement>
+                            </ui:VisualElement>
+                        </ui:Button>
                     </ui:VisualElement>
-                </ui:Button>
-                <ui:Button name="free-play-button" class="menu-button main-menu-button free-play-button">
-                    <ui:VisualElement class="menu-button-inner">
-                        <ui:VisualElement class="menu-button-icon icon-free-play"/>
-                        <ui:VisualElement class="menu-button-divider"/>
-                        <ui:Label text="Free Play" class="menu-button-label"/>
-                    </ui:VisualElement>
-                </ui:Button>
-                <ui:Button name="time-trial-button" class="menu-button main-menu-button time-trial-button">
-                    <ui:VisualElement class="menu-button-inner">
-                        <ui:VisualElement class="menu-button-icon icon-time-trial"/>
-                        <ui:VisualElement class="menu-button-divider"/>
-                        <ui:Label text="Time Trial" class="menu-button-label"/>
-                    </ui:VisualElement>
-                </ui:Button>
-                <ui:Button name="daily-button" class="menu-button main-menu-button daily-button">
+                </ui:VisualElement>
+                <ui:Button name="daily-button" class="menu-button main-menu-button daily-button home-daily-wide">
                     <ui:VisualElement class="menu-button-inner">
                         <ui:VisualElement class="menu-button-icon icon-daily"/>
                         <ui:VisualElement class="menu-button-divider"/>
-                        <ui:Label text="Daily Puzzles" class="menu-button-label"/>
+                        <ui:VisualElement class="menu-button-copy"><ui:Label text="Daily Puzzles" class="menu-button-label"/><ui:Label text="Complete today&apos;s inspection" class="menu-button-note"/></ui:VisualElement>
                     </ui:VisualElement>
                 </ui:Button>
             </ui:VisualElement>
@@ -174,6 +180,13 @@
                             <ui:VisualElement class="settings-control-row">
                                 <ui:Label text="Vibration" class="settings-control-label"/>
                                 <ui:Toggle name="settings-vibration-toggle" class="settings-switch"/>
+                            </ui:VisualElement>
+                            <ui:VisualElement class="settings-control-row">
+                                <ui:VisualElement class="settings-appearance-copy">
+                                    <ui:Label text="Reduce Motion" class="settings-control-label"/>
+                                    <ui:Label text="Uses instant plan marks and room changes." class="settings-appearance-note"/>
+                                </ui:VisualElement>
+                                <ui:Toggle name="settings-reduce-motion-toggle" class="settings-switch"/>
                             </ui:VisualElement>
                             <ui:VisualElement class="settings-control-row settings-volume-row">
                                 <ui:Label text="Volume" class="settings-control-label"/>
@@ -320,7 +333,7 @@
             <ui:VisualElement class="shop-content">
                 <ui:VisualElement class="shop-title-block">
                     <ui:VisualElement class="shop-title-row">
-                        <ui:Label text="Shop" class="shop-title"/>
+                        <ui:Label text="Tool Crib" class="shop-title"/>
                     </ui:VisualElement>
                     <ui:VisualElement class="shop-title-ornament">
                         <ui:VisualElement class="shop-ornament-line"/>
@@ -413,7 +426,7 @@
                         <ui:VisualElement class="time-trial-ornament-line"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label text="Complete as many squares as you can before time runs out." class="time-trial-subtitle"/>
+                <ui:Label text="Complete as many floor plans as you can before the drafting clock runs out." class="time-trial-subtitle"/>
                 <ui:Button name="time-trial-sprint-button" class="time-trial-mode-button time-trial-sprint">
                     <ui:VisualElement class="time-trial-mode-inner">
                         <ui:VisualElement class="time-trial-board-badge"><ui:Label text="3&#215;3" class="time-trial-board-label"/></ui:VisualElement>
@@ -469,55 +482,83 @@
         </ui:VisualElement>
         <ui:VisualElement name="free-play-screen" class="free-play-screen screen-hidden">
             <ui:VisualElement name="free-play-pack-view" class="free-play-view">
-                <ui:VisualElement class="free-play-title-block">
-                    <ui:VisualElement class="free-play-title-row">
-                        <ui:Label text="Free" class="free-play-title-dark"/>
-                        <ui:Label text="Play" class="free-play-title-green"/>
+                <ui:VisualElement class="free-play-drawing-header">
+                    <ui:VisualElement class="free-play-header-index">
+                        <ui:Label text="DRAWING ARCHIVE" class="free-play-header-kicker"/>
+                        <ui:Label text="FP-000" class="free-play-header-sheet"/>
                     </ui:VisualElement>
-                    <ui:VisualElement class="free-play-title-ornament">
-                        <ui:VisualElement class="free-play-ornament-line"/>
-                        <ui:VisualElement class="free-play-ornament-icon"/>
-                        <ui:VisualElement class="free-play-ornament-line"/>
+                    <ui:Label text="FREE PLAY" class="free-play-drawing-title"/>
+                    <ui:VisualElement class="free-play-header-rule"/>
+                    <ui:VisualElement class="free-play-header-meta">
+                        <ui:VisualElement class="free-play-meta-field">
+                            <ui:Label text="FILE" class="free-play-meta-caption"/>
+                            <ui:Label text="PLAN LIBRARY" class="free-play-meta-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="free-play-meta-field">
+                            <ui:Label text="STATUS" class="free-play-meta-caption"/>
+                            <ui:Label text="OPEN" class="free-play-meta-value free-play-meta-accent"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label text="Choose a puzzle pack" class="free-play-subtitle"/>
+                <ui:Label text="SELECT PROJECT BINDER" class="free-play-section-label"/>
                 <ui:ScrollView name="free-play-pack-scroll" mode="Vertical" class="free-play-scroll-view free-play-pack-scroll">
                     <ui:VisualElement name="free-play-pack-list" class="free-play-pack-list"/>
                 </ui:ScrollView>
             </ui:VisualElement>
             <ui:VisualElement name="free-play-size-view" class="free-play-view screen-hidden">
-                <ui:VisualElement class="free-play-context-header">
+                <ui:VisualElement class="free-play-drawing-header free-play-context-header">
+                    <ui:VisualElement class="free-play-header-index">
+                        <ui:Label text="PROJECT BINDER" class="free-play-header-kicker"/>
+                        <ui:Label text="FP-100" class="free-play-header-sheet"/>
+                    </ui:VisualElement>
                     <ui:Label name="free-play-size-pack-title" text="Classical 1" class="free-play-context-title"/>
-                    <ui:VisualElement class="free-play-title-ornament">
-                        <ui:VisualElement class="free-play-ornament-line"/>
-                        <ui:VisualElement class="free-play-ornament-icon"/>
-                        <ui:VisualElement class="free-play-ornament-line"/>
+                    <ui:VisualElement class="free-play-header-rule"/>
+                    <ui:VisualElement class="free-play-header-meta">
+                        <ui:VisualElement class="free-play-meta-field">
+                            <ui:Label text="DRAWING TYPE" class="free-play-meta-caption"/>
+                            <ui:Label text="FLOOR PLANS" class="free-play-meta-value"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="free-play-meta-field">
+                            <ui:Label text="UNITS" class="free-play-meta-caption"/>
+                            <ui:Label text="GRID CELLS" class="free-play-meta-value"/>
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label text="Choose a board size" class="free-play-subtitle"/>
+                <ui:Label text="SELECT FLOOR PLATE" class="free-play-section-label"/>
                 <ui:ScrollView name="free-play-size-scroll" mode="Vertical" class="free-play-scroll-view">
                     <ui:VisualElement name="free-play-size-list" class="free-play-size-list"/>
                 </ui:ScrollView>
             </ui:VisualElement>
             <ui:VisualElement name="free-play-level-view" class="free-play-view screen-hidden">
-                <ui:VisualElement class="free-play-level-header">
-                    <ui:Label name="free-play-level-title" text="5&#215;5" class="free-play-level-title"/>
-                    <ui:Label name="free-play-level-pack-label" text="Classical 1" class="free-play-level-pack-label"/>
-                    <ui:VisualElement class="free-play-title-ornament">
-                        <ui:VisualElement class="free-play-ornament-line"/>
-                        <ui:VisualElement class="free-play-ornament-icon"/>
-                        <ui:VisualElement class="free-play-ornament-line"/>
+                <ui:VisualElement class="free-play-drawing-header free-play-level-header">
+                    <ui:VisualElement class="free-play-header-index">
+                        <ui:Label text="PLAN INDEX" class="free-play-header-kicker"/>
+                        <ui:Label text="FP-200" class="free-play-header-sheet"/>
                     </ui:VisualElement>
-                </ui:VisualElement>
-                <ui:VisualElement class="free-play-level-progress-chip">
-                    <ui:Label name="free-play-level-progress" text="0 of 50 completed" class="free-play-level-progress"/>
+                    <ui:Label name="free-play-level-pack-label" text="Classical 1" class="free-play-context-title free-play-level-pack-label"/>
+                    <ui:VisualElement class="free-play-header-rule"/>
+                    <ui:VisualElement class="free-play-header-meta free-play-level-meta">
+                        <ui:VisualElement class="free-play-meta-field">
+                            <ui:Label text="GRID" class="free-play-meta-caption"/>
+                            <ui:Label name="free-play-level-title" text="5&#215;5" class="free-play-meta-value free-play-level-title"/>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="free-play-meta-field free-play-progress-field">
+                            <ui:Label text="APPROVALS" class="free-play-meta-caption"/>
+                            <ui:Label name="free-play-level-progress" text="0 of 50 completed" class="free-play-meta-value free-play-level-progress"/>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:Button name="free-play-continue-button" class="free-play-continue-button">
-                    <ui:VisualElement class="free-play-continue-icon">
-                        <ui:VisualElement class="ui-play-icon free-play-continue-icon-label" picking-mode="Ignore"/>
+                    <ui:VisualElement class="free-play-continue-marker" picking-mode="Ignore">
+                        <ui:Label text="&#9654;" class="free-play-continue-marker-label" picking-mode="Ignore"/>
                     </ui:VisualElement>
-                    <ui:Label name="free-play-continue-label" text="Continue &#8226; Puzzle 1" class="free-play-continue-label"/>
+                    <ui:VisualElement class="free-play-continue-copy" picking-mode="Ignore">
+                        <ui:Label text="ACTIVE DRAWING" class="free-play-continue-caption" picking-mode="Ignore"/>
+                        <ui:Label name="free-play-continue-label" text="Resume Plan 01" class="free-play-continue-label" picking-mode="Ignore"/>
+                    </ui:VisualElement>
+                    <ui:Label text="OPEN" class="free-play-continue-action" picking-mode="Ignore"/>
                 </ui:Button>
+                <ui:Label text="DRAWING SHEETS" class="free-play-section-label free-play-level-section-label"/>
                 <ui:ScrollView name="free-play-level-scroll" mode="Vertical" class="free-play-scroll-view">
                     <ui:VisualElement class="free-play-level-scroll-content">
                         <ui:VisualElement name="free-play-level-grid" class="free-play-level-grid"/>
@@ -538,7 +579,7 @@
                         <ui:VisualElement class="adventure-ornament-line"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label text="Choose a chapter" class="adventure-subtitle"/>
+                <ui:Label text="Choose a project" class="adventure-subtitle"/>
                 <ui:VisualElement class="adventure-progress-chip">
                     <ui:Label name="adventure-map-progress" text="0 of 10 chapters completed" class="adventure-progress-label"/>
                 </ui:VisualElement>
@@ -583,7 +624,8 @@
                     <ui:VisualElement class="privacy-welcome-brand-mark">
                         <ui:Label text="1" class="privacy-welcome-brand-number"/>
                     </ui:VisualElement>
-                    <ui:Label text="Welcome to Shikaku Go" class="privacy-welcome-title"/>
+                    <ui:VisualElement class="rivet rivet-welcome" picking-mode="Ignore"/>
+                <ui:Label text="Welcome to Shikaku Go" class="privacy-welcome-title"/>
                     <ui:Label text="By continuing, you agree to our Terms of Service and acknowledge our Privacy Policy." class="privacy-welcome-legal-copy"/>
                     <ui:VisualElement class="privacy-welcome-legal-links">
                         <ui:Button name="privacy-welcome-terms-button" text="Terms of Service" class="privacy-welcome-link-button"/>
@@ -623,6 +665,7 @@
             <ui:VisualElement class="analytics-modal-backdrop"/>
             <ui:VisualElement class="analytics-modal-card streak-restore-card">
                 <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore"/>
+                <ui:VisualElement class="rivet rivet-hint" picking-mode="Ignore"/>
                 <ui:Label text="Save Your Streak" class="analytics-modal-title"/>
                 <ui:Label name="streak-restore-copy" text="Restore your streak, then complete a puzzle today to continue it." class="analytics-modal-copy streak-restore-copy"/>
                 <ui:VisualElement class="analytics-modal-actions streak-restore-actions">
@@ -637,6 +680,7 @@
             <ui:VisualElement class="analytics-modal-backdrop"/>
             <ui:VisualElement class="analytics-modal-card rate-modal-card">
                 <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore"/>
+                <ui:VisualElement class="rivet rivet-welcome rivet-small" picking-mode="Ignore"/>
                 <ui:Label text="Rate Shikaku Go" class="analytics-modal-title"/>
                 <ui:Label text="You&#8217;ve reached a 3-day streak! If you&#8217;re enjoying Shikaku Go, would you take a moment to rate it?" class="analytics-modal-copy"/>
                 <ui:VisualElement class="analytics-modal-actions">

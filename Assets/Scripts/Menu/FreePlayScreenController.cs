@@ -194,13 +194,22 @@ namespace Shikaku.Menu
             };
             button.AddToClassList("free-play-pack-button");
 
-            var emblem = new Label($"C{collectionNumber}");
-            emblem.AddToClassList("free-play-pack-emblem");
-            emblem.AddToClassList("free-play-pack-emblem-label");
-            button.Add(emblem);
+            var tab = new VisualElement();
+            tab.AddToClassList("free-play-pack-tab");
+            var tabLabel = new Label($"SET A-{collectionNumber:00}");
+            tabLabel.AddToClassList("free-play-pack-tab-label");
+            tab.Add(tabLabel);
+            button.Add(tab);
+
+            VisualElement preview = CreatePlanPreview(collectionNumber);
+            button.Add(preview);
 
             var copy = new VisualElement();
             copy.AddToClassList("free-play-pack-copy");
+
+            var caption = new Label("PROJECT BINDER");
+            caption.AddToClassList("free-play-pack-caption");
+            copy.Add(caption);
 
             var name = new Label(collection.DisplayName);
             name.AddToClassList("free-play-pack-name");
@@ -208,19 +217,76 @@ namespace Shikaku.Menu
 
             int completed = CountCompleted(collection);
             var progress = new Label(
-                $"{completed} / {collection.TotalPuzzleCount} complete");
+                $"{completed:00} / {collection.TotalPuzzleCount:00} APPROVED");
             progress.AddToClassList("free-play-pack-progress");
             copy.Add(progress);
+            copy.Add(CreateProgressBar(
+                completed,
+                collection.TotalPuzzleCount,
+                "free-play-pack-progress"));
             button.Add(copy);
 
-            var arrow = new Label("\u203A");
-            arrow.AddToClassList("free-play-pack-arrow");
-            button.Add(arrow);
+            var open = new Label("OPEN  \u203A");
+            open.AddToClassList("free-play-pack-arrow");
+            button.Add(open);
 
             button.clicked += () => OpenCollection(collection);
             return button;
         }
 
+        private static VisualElement CreatePlanPreview(int seed)
+        {
+            var preview = new VisualElement();
+            preview.AddToClassList("free-play-plan-preview");
+            preview.AddToClassList(
+                $"free-play-plan-preview-{((seed - 1) % 3) + 1}");
+
+            string[] wallClasses =
+            {
+                "free-play-plan-wall-v1",
+                "free-play-plan-wall-v2",
+                "free-play-plan-wall-h1",
+                "free-play-plan-wall-h2"
+            };
+
+            for (int i = 0; i < wallClasses.Length; i++)
+            {
+                var wall = new VisualElement();
+                wall.AddToClassList("free-play-plan-wall");
+                wall.AddToClassList(wallClasses[i]);
+                preview.Add(wall);
+            }
+
+            var markerOne = new Label("4");
+            markerOne.AddToClassList("free-play-plan-marker");
+            markerOne.AddToClassList("free-play-plan-marker-one");
+            preview.Add(markerOne);
+
+            var markerTwo = new Label("6");
+            markerTwo.AddToClassList("free-play-plan-marker");
+            markerTwo.AddToClassList("free-play-plan-marker-two");
+            preview.Add(markerTwo);
+
+            return preview;
+        }
+
+        private static VisualElement CreateProgressBar(
+            int completed,
+            int total,
+            string classPrefix)
+        {
+            var track = new VisualElement();
+            track.AddToClassList($"{classPrefix}-track");
+
+            var fill = new VisualElement();
+            fill.AddToClassList($"{classPrefix}-fill");
+            float percent = total > 0
+                ? Mathf.Clamp01((float)completed / total) * 100f
+                : 0f;
+            fill.style.width = new Length(percent, LengthUnit.Percent);
+            track.Add(fill);
+            return track;
+        }
         private void OpenCollection(
             PuzzleCatalog.FreePlayCollectionInfo collection)
         {
@@ -254,9 +320,28 @@ namespace Shikaku.Menu
         private void BuildSizeList()
         {
             _sizeListRoot.Clear();
-            for (int i = 0; i < _selectedCollection.SizePacks.Count; i++)
-                _sizeListRoot.Add(CreateSizeButton(
-                    _selectedCollection.SizePacks[i]));
+            IReadOnlyList<PuzzleCatalog.PackInfo> sizePacks =
+                _selectedCollection.SizePacks;
+
+            for (int rowStart = 0; rowStart < sizePacks.Count; rowStart += 2)
+            {
+                var row = new VisualElement();
+                row.AddToClassList("free-play-size-row");
+                row.Add(CreateSizeButton(sizePacks[rowStart]));
+
+                if (rowStart + 1 < sizePacks.Count)
+                {
+                    row.Add(CreateSizeButton(sizePacks[rowStart + 1]));
+                }
+                else
+                {
+                    var blank = new VisualElement();
+                    blank.AddToClassList("free-play-size-card-blank");
+                    row.Add(blank);
+                }
+
+                _sizeListRoot.Add(row);
+            }
         }
 
         private Button CreateSizeButton(PuzzleCatalog.PackInfo sizePack)
@@ -266,39 +351,56 @@ namespace Shikaku.Menu
                 name = $"free-play-size-{sizePack.Size}-button"
             };
             button.AddToClassList("free-play-size-button");
-            button.AddToClassList(ToneClassForSize(sizePack.Size));
+
+            var heading = new VisualElement();
+            heading.AddToClassList("free-play-size-heading");
+
+            var caption = new Label("FLOOR PLATE");
+            caption.AddToClassList("free-play-size-caption");
+            heading.Add(caption);
+
+            var sheet = new Label($"FP-{sizePack.Size:00}");
+            sheet.AddToClassList("free-play-size-sheet");
+            heading.Add(sheet);
+            button.Add(heading);
+
+            var preview = new VisualElement();
+            preview.AddToClassList("free-play-size-preview");
+            for (int i = 1; i < 4; i++)
+            {
+                var vertical = new VisualElement();
+                vertical.AddToClassList("free-play-size-grid-line");
+                vertical.AddToClassList("free-play-size-grid-vertical");
+                vertical.style.left = new Length(i * 25f, LengthUnit.Percent);
+                preview.Add(vertical);
+
+                var horizontal = new VisualElement();
+                horizontal.AddToClassList("free-play-size-grid-line");
+                horizontal.AddToClassList("free-play-size-grid-horizontal");
+                horizontal.style.top = new Length(i * 25f, LengthUnit.Percent);
+                preview.Add(horizontal);
+            }
 
             var badge = new Label($"{sizePack.Size}\u00D7{sizePack.Size}");
             badge.AddToClassList("free-play-size-badge");
-            button.Add(badge);
+            preview.Add(badge);
+            button.Add(preview);
 
             int completed = CountCompleted(
                 PuzzleCatalog.GetPackPuzzleIds(sizePack.PackPath));
             var progress = new Label(
-                $"{completed} / {sizePack.Count} complete");
+                $"{completed:00} / {sizePack.Count:00} APPROVED");
             progress.AddToClassList("free-play-size-progress");
             button.Add(progress);
-
-            var arrow = new Label("\u203A");
-            arrow.AddToClassList("free-play-size-arrow");
-            button.Add(arrow);
+            button.Add(CreateProgressBar(
+                completed,
+                sizePack.Count,
+                "free-play-size-progress"));
 
             button.clicked += () =>
                 ShowLevelSelection(sizePack.Size, sizePack.PackPath);
             return button;
         }
-
-        private static string ToneClassForSize(int size)
-        {
-            if (size <= 5)
-                return "free-play-size-green";
-
-            if (size <= 7)
-                return "free-play-size-blue";
-
-            return "free-play-size-red";
-        }
-
         private void ShowLevelSelection(int size, string packPath)
         {
             IReadOnlyList<string> puzzleIds =
@@ -321,7 +423,7 @@ namespace Shikaku.Menu
             _levelPackLabel.text = _selectedCollection != null
                 ? _selectedCollection.DisplayName
                 : "Free Play";
-            ApplyLevelTone(size);
+
 
             int completed = CountCompleted(puzzleIds);
             int nextPuzzleIndex = FindNextIncomplete(puzzleIds);
@@ -334,10 +436,10 @@ namespace Shikaku.Menu
 
             _levelTitleLabel.text = $"{size}\u00D7{size}";
             _levelProgressLabel.text =
-                $"{completed} of {puzzleIds.Count} completed";
+                $"{completed:00} / {puzzleIds.Count:00} APPROVED";
             _continueLabel.text = allCompleted
-                ? "Replay Puzzle 1"
-                : $"Continue \u2022 Puzzle {_continueLevelIndex}";
+                ? "REOPEN PLAN 01"
+                : $"RESUME PLAN {_continueLevelIndex:00}";
 
             BuildLevelGrid(puzzleIds, allCompleted ? -1 : nextPuzzleIndex);
             _levelScrollView.schedule.Execute(() =>
@@ -347,20 +449,6 @@ namespace Shikaku.Menu
                 else
                     _levelScrollView.scrollOffset = Vector2.zero;
             });
-        }
-
-        private void ApplyLevelTone(int size)
-        {
-            _levelView.RemoveFromClassList("free-play-level-green");
-            _levelView.RemoveFromClassList("free-play-level-blue");
-            _levelView.RemoveFromClassList("free-play-level-red");
-
-            if (size <= 5)
-                _levelView.AddToClassList("free-play-level-green");
-            else if (size <= 7)
-                _levelView.AddToClassList("free-play-level-blue");
-            else
-                _levelView.AddToClassList("free-play-level-red");
         }
 
         private void BuildLevelGrid(
@@ -438,41 +526,76 @@ namespace Shikaku.Menu
             button.AddToClassList("free-play-level-cell");
             button.AddToClassList("free-play-level-button");
 
-            var numberLabel = new Label(levelIndex.ToString());
+            var titleStrip = new VisualElement();
+            titleStrip.AddToClassList("free-play-level-title-strip");
+
+            var planLabel = new Label("PLAN");
+            planLabel.AddToClassList("free-play-level-plan-label");
+            titleStrip.Add(planLabel);
+
+            var sheetLabel = new Label($"A-{levelIndex:00}");
+            sheetLabel.AddToClassList("free-play-level-sheet-label");
+            titleStrip.Add(sheetLabel);
+            button.Add(titleStrip);
+
+            var numberLabel = new Label(levelIndex.ToString("00"));
             numberLabel.AddToClassList("free-play-level-number");
             button.Add(numberLabel);
 
             if (isNext)
             {
                 button.AddToClassList("free-play-level-next");
+
                 var nextLabel = new Label("NEXT");
                 nextLabel.AddToClassList("free-play-level-next-label");
                 button.Add(nextLabel);
+
+                var topCorner = new VisualElement();
+                topCorner.AddToClassList("free-play-level-corner");
+                topCorner.AddToClassList("free-play-level-corner-top");
+                button.Add(topCorner);
+
+                var bottomCorner = new VisualElement();
+                bottomCorner.AddToClassList("free-play-level-corner");
+                bottomCorner.AddToClassList("free-play-level-corner-bottom");
+                button.Add(bottomCorner);
             }
+
             if (completed)
             {
                 button.AddToClassList("free-play-level-completed");
-                var checkmark = new Label("\u2713");
-                checkmark.AddToClassList("free-play-level-checkmark");
-                button.Add(checkmark);
+                var stamp = new Label("APPROVED");
+                stamp.AddToClassList("free-play-level-approved-stamp");
+                button.Add(stamp);
             }
 
             if (!unlocked)
             {
                 button.AddToClassList("free-play-level-locked");
-                var lockedLabel = new Label("LOCKED");
+
+                var constructionLine = new VisualElement();
+                constructionLine.AddToClassList("free-play-level-lock-line");
+                button.Add(constructionLine);
+
+                var lockedLabel = new Label("HOLD");
                 lockedLabel.AddToClassList("free-play-level-locked-label");
                 button.Add(lockedLabel);
             }
             else
             {
+                if (!completed && !isNext)
+                {
+                    var readyLabel = new Label("READY");
+                    readyLabel.AddToClassList("free-play-level-ready-label");
+                    button.Add(readyLabel);
+                }
+
                 button.clicked += () => StartLevel(levelIndex, puzzleId);
             }
 
             button.SetEnabled(unlocked);
             return button;
         }
-
         private void ContinueLevel()
         {
             if (_continueLevelIndex <= 0 ||

@@ -97,6 +97,7 @@ namespace Shikaku.UI
         private Button _tutorialForwardButton;
         private Button _tutorialNextButton;
         private int _tutorialStep = -1;
+        private int[] _blueprintTutorialTargets;
         private readonly bool[] _tutorialStepsReached =
             new bool[TUTORIAL_STEP_COUNT];
         private bool _tutorialRunCompleted;
@@ -154,7 +155,7 @@ namespace Shikaku.UI
         private const int TUTORIAL_SHARED_ANCHOR_LEFT = 0;   // (0,0) = 3
         private const int TUTORIAL_SHARED_ANCHOR_RIGHT = 1;  // (1,0) = 3
         private const int TUTORIAL_SHARED_FILL = 4;          // (0,1) = empty
-        private const int TUTORIAL_STEP_COUNT = 8;
+        private const int TUTORIAL_STEP_COUNT = 7;
         private const float TUTORIAL_SWIPE_THRESHOLD = 70f;
         private const float TUTORIAL_CARD_GAP = 22f;
         private const float TUTORIAL_CARD_AD_GAP = 18f;
@@ -179,14 +180,13 @@ namespace Shikaku.UI
             { TUTORIAL_ILLEGAL_ANCHOR, TUTORIAL_ILLEGAL_ABOVE };
         private static readonly string[] TUTORIAL_STEP_NAMES =
         {
-            "welcome",
-            "build_region",
-            "overwrite_filled_cell",
-            "erase_cell",
-            "erase_region",
-            "shared_region",
-            "illegal_moves",
-            "finish_puzzle"
+            "goal",
+            "read_clue",
+            "draw_rectangle",
+            "match_area",
+            "one_clue",
+            "replace_region",
+            "cover_board"
         };
 
         private void Awake()
@@ -825,7 +825,7 @@ namespace Shikaku.UI
                 if (solvedTimeText != null)
                 {
                     solvedTimeText.text =
-                        "You know the rules and controls. You are ready to continue Adventure.";
+                        "You know the drafting rules and controls. You are ready to continue Adventure.";
                 }
 
                 ShowSolvedModal(false);
@@ -888,23 +888,14 @@ namespace Shikaku.UI
                 if (resetButton != null) resetButton.style.display = DisplayStyle.None;
             }
 
-            if (_tutorialTitle != null)
-                _tutorialTitle.text = "Draw rectangles";
-            if (_tutorialMessage != null)
-                _tutorialMessage.text =
-                    "Drag from one corner to the opposite corner. Every rectangle must contain exactly one number, and its area must equal that number.";
-            if (_tutorialAction != null)
-                _tutorialAction.text =
-                    "Redraw across a region to replace it when you release.";
             if (_tutorialProgress != null)
-                _tutorialProgress.style.display = DisplayStyle.None;
+                _tutorialProgress.style.display = DisplayStyle.Flex;
             if (_tutorialPreviousButton != null)
-                _tutorialPreviousButton.style.display = DisplayStyle.None;
+                _tutorialPreviousButton.style.display = DisplayStyle.Flex;
             if (_tutorialForwardButton != null)
-                _tutorialForwardButton.style.display = DisplayStyle.None;
-            if (_tutorialNextButton != null)
-                _tutorialNextButton.style.display = DisplayStyle.None;
+                _tutorialForwardButton.style.display = DisplayStyle.Flex;
 
+            SetTutorialStep(0);
             ScheduleResponsiveGameplayLayout();
             RefreshTitle();
             UpdateTimerText();
@@ -982,50 +973,12 @@ namespace Shikaku.UI
 
         private bool PrepareTutorialBoardForStep(int step)
         {
-            if (board == null || !board.ResetTutorialPuzzleState())
+            if (board == null)
                 return false;
 
-            bool prepared = true;
-
-            if (step >= 2 && step <= 4)
-            {
-                prepared &=
-                    board.RestoreTutorialCell(
-                        TUTORIAL_THREE_ANCHOR,
-                        TUTORIAL_THREE_NEAR,
-                        playFeedback: false,
-                        checkSolved: false);
-
-                prepared &=
-                    board.RestoreTutorialCell(
-                        TUTORIAL_THREE_ANCHOR,
-                        TUTORIAL_THREE_FAR,
-                        playFeedback: false,
-                        checkSolved: false);
-            }
-            if (step == 2)
-            {
-                prepared &=
-                    board.OverwriteTutorialCell(
-                        TUTORIAL_TWO_ANCHOR,
-                        TUTORIAL_THREE_NEAR,
-                        playFeedback: false,
-                        checkSolved: false);
-            }
-
-
-            if (step >= 6)
-            {
-                prepared &=
-                    board.RestoreTutorialCell(
-                        TUTORIAL_SHARED_ANCHOR_LEFT,
-                        TUTORIAL_SHARED_FILL,
-                        playFeedback: false,
-                        checkSolved: false);
-            }
-
-            board.ClearSelection();
-            return prepared;
+            // The blueprint tutorial teaches one continuous solve. Navigating its
+            // cards must not erase rooms the player has already drafted.
+            return true;
         }
 
         private void OnTutorialPointerDown(PointerDownEvent evt)
@@ -1080,10 +1033,7 @@ namespace Shikaku.UI
 
         private void SetTutorialStep(int step)
         {
-            _tutorialStep = Mathf.Clamp(
-                step,
-                0,
-                TUTORIAL_STEP_COUNT - 1);
+            _tutorialStep = Mathf.Clamp(step, 0, TUTORIAL_STEP_COUNT - 1);
 
             if (!_tutorialStepsReached[_tutorialStep])
             {
@@ -1099,203 +1049,93 @@ namespace Shikaku.UI
             UpdateTutorialGuideTile();
             UpdateTutorialProgress();
             UpdateTutorialNavigation();
-
             board.ClearTutorialInputFilter();
             board.SetTutorialHighlights();
+            _blueprintTutorialTargets = null;
 
             switch (_tutorialStep)
             {
-                // ---------------------------------------------------------
-                // 1. WELCOME
-                // ---------------------------------------------------------
                 case 0:
                     SetPuzzleInteractionLocked(true);
-
                     SetTutorialCopy(
-                        "Welcome to Shikaku!",
-                        "The puzzle game of building number regions. Each starting number, or anchor, defines the size of the region it belongs to.",
-                        "",
+                        "Complete the floor plan",
+                        "Welcome, builder! Divide the floor plate into rectangular rooms until every square belongs to one room.",
+                        "Rivet will guide your first drawing.",
                         true);
-
                     break;
 
-                // ---------------------------------------------------------
-                // 2. BUILD A REGION
-                // ---------------------------------------------------------
                 case 1:
-                    SetPuzzleInteractionLocked(false);
-
-                    board.SetTutorialHighlights(
-                        TUTORIAL_THREE_ANCHOR,
-                        TUTORIAL_THREE_NEAR,
-                        TUTORIAL_THREE_FAR);
-
-                    board.SetTutorialInputFilter(
-                        (action, index) =>
-                            (action == BoardInputAction.Select &&
-                             index == TUTORIAL_THREE_ANCHOR) ||
-                            ((action == BoardInputAction.Paint ||
-                              action == BoardInputAction.DragPaint) &&
-                             (index == TUTORIAL_THREE_NEAR ||
-                              index == TUTORIAL_THREE_FAR)));
-
+                    SetPuzzleInteractionLocked(true);
+                    int clueIndex = FindFirstTutorialClue();
+                    if (clueIndex >= 0)
+                    {
+                        _blueprintTutorialTargets = new[] { clueIndex };
+                        board.SetTutorialHighlights(_blueprintTutorialTargets);
+                    }
                     SetTutorialCopy(
-                        "Fill a Region",
-                        "Build regions by adding squares that share an edge with a square already in the region. Corners do not connect.",
-                        "Tap the highlighted 3, then tap or drag across the empty squares.",
-                        false);
-
+                        "Read the area marker",
+                        "Each number is the required area of its room. A 6 can be 1 × 6, 2 × 3, 3 × 2, or 6 × 1 when the floor allows it.",
+                        "Every room keeps its numbered area marker.",
+                        true);
                     break;
 
-                // ---------------------------------------------------------
-                // ---------------------------------------------------------
-                // 3. OVERWRITE A FILLED CELL
-                // ---------------------------------------------------------
                 case 2:
                     SetPuzzleInteractionLocked(false);
-
-                    board.SetTutorialHighlights(
-                        TUTORIAL_THREE_ANCHOR,
-                        TUTORIAL_THREE_NEAR,
-                        TUTORIAL_THREE_FAR);
-
+                    _blueprintTutorialTargets = board.GetFirstSolutionRegionCells();
+                    if (_blueprintTutorialTargets != null)
+                        board.SetTutorialHighlights(_blueprintTutorialTargets);
                     board.SetTutorialInputFilter(
                         (action, index) =>
-                            (action == BoardInputAction.Select &&
-                             index == TUTORIAL_THREE_ANCHOR) ||
-                            (action == BoardInputAction.DragOverwrite &&
-                             index == TUTORIAL_THREE_NEAR) ||
-                            (action == BoardInputAction.DragPaint &&
-                             index == TUTORIAL_THREE_FAR));
-
+                            action == BoardInputAction.BeginRegion ||
+                            action == BoardInputAction.UpdateRegion ||
+                            action == BoardInputAction.CommitRegion ||
+                            action == BoardInputAction.OverrideRegion ||
+                            action == BoardInputAction.InvalidRegion ||
+                            action == BoardInputAction.Select);
                     SetTutorialCopy(
-                        "Overwrite a Filled Cell",
-                        "Oops! I accidentally drew over your region. You can overwrite a cell by dragging over the new region.",
-                        "Tap the highlighted 3, then drag across to overwrite the filled cell.",
+                        "Draw corner to corner",
+                        "Press any corner and drag to the opposite corner. The live label shows width × height = area.",
+                        "Draft the highlighted room.",
                         false);
-
                     break;
 
-                // 4. SINGLE-SQUARE ERASE
-                // ---------------------------------------------------------
                 case 3:
-                    SetPuzzleInteractionLocked(false);
-
-                    board.SetTutorialHighlights(TUTORIAL_THREE_FAR);
-
-                    board.SetTutorialInputFilter(
-                        (action, index) =>
-                            index == TUTORIAL_THREE_FAR &&
-                            (action == BoardInputAction.Select ||
-                             action == BoardInputAction.EraseCell));
-
+                    SetPuzzleInteractionLocked(true);
                     SetTutorialCopy(
-                        "Edit a Region",
-                        "Completed regions can still be changed. You can erase squares when needed - we all make mistakes.",
-                        "Double-tap the highlighted square to erase it.",
-                        false);
-
+                        "Match the area",
+                        "A room is accepted only when its area matches its marker. Red walls mean the drawing is not ready to commit.",
+                        "Use the live area label before releasing.",
+                        true);
                     break;
 
-                // ---------------------------------------------------------
-                // 5. WHOLE-REGION ERASE
-                // ---------------------------------------------------------
                 case 4:
-                    SetPuzzleInteractionLocked(false);
-
-                    board.SetTutorialHighlights(TUTORIAL_THREE_ANCHOR);
-
-                    board.SetTutorialInputFilter(
-                        (action, index) =>
-                            index == TUTORIAL_THREE_ANCHOR &&
-                            (action == BoardInputAction.Select ||
-                             action == BoardInputAction.EraseRegion));
-
+                    SetPuzzleInteractionLocked(true);
                     SetTutorialCopy(
-                        "Erase a Whole Region",
-                        "Some mistakes are bigger than others. Double-tapping an anchor square erases every square you added to its connected region.",
-                        "Double-tap the highlighted 3 anchor to erase its region.",
-                        false);
-
+                        "One marker per room",
+                        "Every room must contain exactly one number. A drawing with no marker or two markers is rejected.",
+                        "Clear walls make every room easy to inspect.",
+                        true);
                     break;
 
-                // ---------------------------------------------------------
-                // 6. Anchors in same region
-                // ---------------------------------------------------------
                 case 5:
                     SetPuzzleInteractionLocked(false);
-
-                    board.SetTutorialHighlights(
-                        TUTORIAL_SHARED_ANCHOR_LEFT,
-                        TUTORIAL_SHARED_ANCHOR_RIGHT,
-                        TUTORIAL_SHARED_FILL);
-
-                    board.SetTutorialInputFilter(
-                        (action, index) =>
-                            (action == BoardInputAction.Select &&
-                             (index == TUTORIAL_SHARED_ANCHOR_LEFT ||
-                              index == TUTORIAL_SHARED_ANCHOR_RIGHT)) ||
-                            ((action == BoardInputAction.Paint ||
-                              action == BoardInputAction.DragPaint) &&
-                             index == TUTORIAL_SHARED_FILL));
-
+                    board.ClearTutorialInputFilter();
                     SetTutorialCopy(
-                        "Shared Anchors",
-                        "More than one anchor can belong to the same region. These two 3s are connected and need one more square to make a region of three.",
-                        "Tap either highlighted 3, then fill the empty square.",
-                        false);
-
+                        "Revise the drawing",
+                        "Drag across an unlocked room to replace it. Double-tap a room when you want to remove it completely.",
+                        "Try another room, or continue when ready.",
+                        true);
                     break;
 
-                // ---------------------------------------------------------
-                // 7. ILLEGAL MOVES
-                // ---------------------------------------------------------
-                case 6:
-                    _tutorialFirstIllegalMoveComplete = false;
-                    _tutorialIllegalMoveTransitioning = false;
-
-                    SetPuzzleInteractionLocked(false);
-
-                    board.SetTutorialHighlights(
-                        TUTORIAL_ILLEGAL_LEFT,
-                        TUTORIAL_ILLEGAL_ANCHOR);
-
-                    board.SetTutorialInputFilter(
-                        (action, index) =>
-                            !_tutorialIllegalMoveTransitioning &&
-                            ((action == BoardInputAction.Select &&
-                              index == TUTORIAL_ILLEGAL_ANCHOR) ||
-                             (action == BoardInputAction.IllegalMove &&
-                              ((!_tutorialFirstIllegalMoveComplete &&
-                                index == TUTORIAL_ILLEGAL_LEFT) ||
-                               (_tutorialFirstIllegalMoveComplete &&
-                                index == TUTORIAL_ILLEGAL_ABOVE)))));
-
-                    SetTutorialCopy(
-                        "Illegal Moves",
-                        "Regions with matching numbers and colors can join, but the combined region cannot be larger than that number. Moves that would make a region too large are blocked.",
-                        "Tap the highlighted 3 anchor, then tap the empty highlighted square.",
-                        false);
-
-                    break;
-
-                // ---------------------------------------------------------
-                // 8. FINISH THE PUZZLE
-                // ---------------------------------------------------------
                 default:
-                    // IMPORTANT:
-                    // The board stays playable and the tutorial popup stays visible.
                     SetPuzzleInteractionLocked(false);
-
                     board.ClearTutorialInputFilter();
                     SetFinalTutorialHighlights();
-
                     SetTutorialCopy(
-                        "Finish the Puzzle",
-                        "You're ready to solve on your own. Remember: every region must contain exactly as many squares as its number.",
-                        "",
+                        "Finish the floor",
+                        "Finish the floor plan with valid rooms. When there are no gaps, the plan is ready for approval.",
+                        "Draft the rest of the floor.",
                         false);
-
                     break;
             }
         }
@@ -1385,24 +1225,22 @@ namespace Shikaku.UI
 
         private int[] GetTutorialActionTargets()
         {
-            switch (_tutorialStep)
+            return _blueprintTutorialTargets;
+        }
+
+        private int FindFirstTutorialClue()
+        {
+            if (board == null)
+                return -1;
+
+            int cellCount = board.Width * board.Height;
+            for (int index = 0; index < cellCount; index++)
             {
-                case 1:
-                case 2:
-                    return TUTORIAL_BUILD_TARGETS;
-                case 3:
-                    return TUTORIAL_SINGLE_ERASE_TARGETS;
-                case 4:
-                    return TUTORIAL_REGION_ERASE_TARGETS;
-                case 5:
-                    return TUTORIAL_SHARED_TARGETS;
-                case 6:
-                    return _tutorialFirstIllegalMoveComplete
-                        ? TUTORIAL_ILLEGAL_ABOVE_TARGETS
-                        : TUTORIAL_ILLEGAL_LEFT_TARGETS;
-                default:
-                    return null;
+                if (board.IsAnchorCell(index))
+                    return index;
             }
+
+            return -1;
         }
 
         private void LateUpdate()
@@ -1780,145 +1618,20 @@ namespace Shikaku.UI
             if (!Shikaku.Menu.GameSession.IsTutorial)
                 return;
 
-            switch (_tutorialStep)
+            if (_tutorialStep == 2 &&
+                (action == BoardInputAction.CommitRegion ||
+                 action == BoardInputAction.OverrideRegion))
             {
-                // ---------------------------------------------------------
-                // STEP 2: BUILD THE FIRST 3 REGION
-                // ---------------------------------------------------------
-                case 1:
-                    if ((cellIndex == TUTORIAL_THREE_NEAR ||
-                         cellIndex == TUTORIAL_THREE_FAR) &&
-                        (action == BoardInputAction.Paint ||
-                         action == BoardInputAction.DragPaint))
-                    {
-                        if (board.ValueAt(TUTORIAL_THREE_NEAR) == 3 &&
-                            board.ValueAt(TUTORIAL_THREE_FAR) == 3)
-                        {
-                            if (_tutorialBuildTransitionRoutine == null)
-                            {
-                                _tutorialBuildTransitionRoutine =
-                                    StartCoroutine(
-                                        CompleteBuildRegionLesson());
-                            }
-                        }
-                        else
-                        {
+                SetTutorialStep(3);
+                return;
+            }
 
-                            if (board.ValueAt(TUTORIAL_THREE_NEAR) == 0)
-                            {
-                                board.SetTutorialHighlights(
-                                    TUTORIAL_THREE_ANCHOR,
-                                    TUTORIAL_THREE_NEAR);
-                            }
-                            else
-                            {
-                                board.SetTutorialHighlights(
-                                    TUTORIAL_THREE_ANCHOR,
-                                    TUTORIAL_THREE_FAR);
-                            }
-                        }
-                    }
-
-                    break;
-
-                // ---------------------------------------------------------
-                // ---------------------------------------------------------
-                // STEP 3: OVERWRITE THE FILLED CELL
-                // ---------------------------------------------------------
-                case 2:
-                    bool changedOverwriteTarget =
-                        (cellIndex == TUTORIAL_THREE_NEAR &&
-                         action == BoardInputAction.DragOverwrite) ||
-                        (cellIndex == TUTORIAL_THREE_FAR &&
-                         action == BoardInputAction.DragPaint);
-
-                    if (changedOverwriteTarget &&
-                        board.ValueAt(TUTORIAL_THREE_NEAR) == 3 &&
-                        board.ValueAt(TUTORIAL_THREE_FAR) == 3)
-                    {
-                        SetTutorialStep(3);
-                    }
-
-                    break;
-
-                // STEP 4: ERASE ONE SQUARE, THEN RESTORE IT
-                // ---------------------------------------------------------
-                case 3:
-                    if (cellIndex == TUTORIAL_THREE_FAR &&
-                        action == BoardInputAction.EraseCell &&
-                        _tutorialSingleEraseRoutine == null)
-                    {
-                        _tutorialSingleEraseRoutine =
-                            StartCoroutine(RestoreTutorialErase());
-                    }
-
-                    break;
-
-                // ---------------------------------------------------------
-                // STEP 5: ERASE THE WHOLE REGION
-                // ---------------------------------------------------------
-                case 4:
-                    if (cellIndex == TUTORIAL_THREE_ANCHOR &&
-                        action == BoardInputAction.EraseRegion)
-                    {
-                        SetTutorialStep(5);
-                    }
-
-                    break;
-
-                // ---------------------------------------------------------
-                // STEP 6: SHARED ANCHORS
-                // ---------------------------------------------------------
-                case 5:
-                    if (cellIndex == TUTORIAL_SHARED_FILL &&
-                        (action == BoardInputAction.Paint ||
-                         action == BoardInputAction.DragPaint))
-                    {
-                        if (board.ValueAt(TUTORIAL_SHARED_FILL) == 3)
-                        {
-                            SetTutorialStep(6);
-                        }
-                    }
-
-                    break;
-
-                // ---------------------------------------------------------
-                // STEP 7: ILLEGAL MOVES
-                // ---------------------------------------------------------
-                case 6:
-                    if (cellIndex == TUTORIAL_ILLEGAL_LEFT &&
-                        action == BoardInputAction.IllegalMove &&
-                        !_tutorialFirstIllegalMoveComplete &&
-                        _tutorialIllegalMoveRoutine == null)
-                    {
-                        _tutorialIllegalMoveRoutine =
-                            StartCoroutine(AdvanceAfterFirstIllegalMove());
-                    }
-                    else if (cellIndex == TUTORIAL_ILLEGAL_ABOVE &&
-                             action == BoardInputAction.IllegalMove &&
-                             _tutorialFirstIllegalMoveComplete &&
-                             _tutorialIllegalMoveRoutine == null)
-                    {
-                        _tutorialIllegalMoveRoutine =
-                            StartCoroutine(CompleteIllegalMoveLesson());
-                    }
-
-                    break;
-
-                // ---------------------------------------------------------
-                // STEP 8: FREE SOLVING
-                // ---------------------------------------------------------
-                case 7:
-                    if (action == BoardInputAction.Paint ||
-                        action == BoardInputAction.DragPaint ||
-                        action == BoardInputAction.DragOverwrite ||
-                        action == BoardInputAction.EraseCell ||
-                        action == BoardInputAction.EraseRegion)
-                    {
-                        SetFinalTutorialHighlights();
-                    }
-
-                    break;
+            if (_tutorialStep == TUTORIAL_STEP_COUNT - 1 &&
+                (action == BoardInputAction.CommitRegion ||
+                 action == BoardInputAction.OverrideRegion ||
+                 action == BoardInputAction.RemoveRegion))
+            {
+                SetFinalTutorialHighlights();
             }
         }
 
@@ -3530,10 +3243,10 @@ namespace Shikaku.UI
             if (_solvedTitle != null)
             {
                 _solvedTitle.text = isTutorial
-                    ? "Tutorial Complete!"
+                    ? "Training Approved!"
                     : timeTrialSummary
                         ? "Time's Up!"
-                        : "Puzzle Solved!";
+                        : "Plan Approved!";
             }
 
             // ---------------------------------------------------------

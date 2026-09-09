@@ -1,6 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Screens/Gameplay/GameplayScreen.uss"/>
     <Style src="project://database/Assets/UI/Themes/DarkTheme.uss"/>
+    <Style src="project://database/Assets/UI/Themes/BlueprintTheme.uss"/>
     <ui:VisualElement name="gameplay-root" class="gameplay-root">
         <ui:Button name="gameplay-background-button" class="gameplay-background"/>
         <ui:VisualElement name="gameplay-safe-area" class="gameplay-safe-area" picking-mode="Ignore">

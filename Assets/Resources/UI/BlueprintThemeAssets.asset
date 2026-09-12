@@ -36,3 +36,10 @@ MonoBehaviour:
   whiteprintHatchOpacity: 0.13
   blueprintHatchOpacity: 0.12
   wallInkDuration: 0.14
+  whiteprintRoomBase: {r: 0.8862745, g: 0.94509804, b: 0.95686275, a: 1}
+  blueprintRoomBase: {r: 0.03137255, g: 0.13725491, b: 0.22745098, a: 1}
+  whiteprintPaletteStrength: 0.58
+  blueprintPaletteStrength: 0.62
+  whiteprintInvalidFill: {r: 0.9647059, g: 0.84313726, b: 0.8392157, a: 1}
+  blueprintInvalidFill: {r: 0.3019608, g: 0.13725491, b: 0.16862746, a: 1}
+  selectedRoomOutline: {r: 0.95686275, g: 0.7372549, b: 0.16862746, a: 1}

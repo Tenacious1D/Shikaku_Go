@@ -656,7 +656,7 @@ MonoBehaviour:
   m_StartCorner: 0
   m_StartAxis: 0
   m_CellSize: {x: 110, y: 110}
-  m_Spacing: {x: 8, y: 8}
+  m_Spacing: {x: 2, y: 2}
   m_Constraint: 0
   m_ConstraintCount: 8
 --- !u!114 &1129602243
@@ -754,7 +754,7 @@ MonoBehaviour:
   palette: {fileID: 11400000, guid: 177d60c217ce99f42ad1eaba5fc295de, type: 2}
   width: 8
   height: 8
-  spacing: 0
+  spacing: 2
   padding: 6
   minimumBoardLongSide: 650
   boardGrowthPerSizeStep: 95

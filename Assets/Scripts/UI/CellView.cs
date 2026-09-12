@@ -507,47 +507,23 @@ namespace Shikaku.UI
             if (bg == null)
                 return;
 
+            // The cell is a flat drawing surface and input target. Completed
+            // rectangles are rendered once, behind all cells, by the room layer.
+            bg.sprite = null;
             bg.type = Image.Type.Simple;
+            bg.raycastTarget = true;
 
             Shadow shadow = bg.GetComponent<Shadow>();
-            if (shadow == null)
-                shadow = bg.gameObject.AddComponent<Shadow>();
-
-            shadow.effectColor = _isDarkTheme
-                ? darkTileShadowColor
-                : tileShadowColor;
-            shadow.effectDistance = tileShadowOffset;
-            shadow.useGraphicAlpha = true;
+            if (shadow != null)
+                shadow.enabled = false;
 
             Transform existing = bg.transform.Find("BevelOverlay");
             if (existing != null)
-                _bevelOverlay = existing.GetComponent<Image>();
-
-            if (_bevelOverlay == null)
             {
-                GameObject overlayObject = new GameObject(
-                    "BevelOverlay",
-                    typeof(RectTransform),
-                    typeof(CanvasRenderer),
-                    typeof(Image));
-                overlayObject.layer = gameObject.layer;
-                overlayObject.transform.SetParent(bg.transform, false);
-                _bevelOverlay = overlayObject.GetComponent<Image>();
+                _bevelOverlay = existing.GetComponent<Image>();
+                if (_bevelOverlay != null)
+                    _bevelOverlay.enabled = false;
             }
-
-            RectTransform overlayRect = _bevelOverlay.rectTransform;
-            overlayRect.anchorMin = Vector2.zero;
-            overlayRect.anchorMax = Vector2.one;
-            overlayRect.offsetMin = Vector2.zero;
-            overlayRect.offsetMax = Vector2.zero;
-            overlayRect.localScale = Vector3.one;
-
-            _bevelOverlay.sprite = bevelSprite;
-            _bevelOverlay.type = Image.Type.Simple;
-            ApplyBevelTint(bg.color);
-            _bevelOverlay.raycastTarget = false;
-            _bevelOverlay.enabled = bevelSprite != null;
-            _bevelOverlay.transform.SetAsLastSibling();
 
             bg.SetVerticesDirty();
         }
@@ -558,7 +534,6 @@ namespace Shikaku.UI
                 return;
 
             bg.color = fillColor;
-            ApplyBevelTint(fillColor);
         }
 
         private void ApplyBevelTint(Color tileColor)
@@ -674,61 +649,16 @@ namespace Shikaku.UI
 
         private System.Collections.IEnumerator PlayBlankTapAnimation()
         {
-            if (bg == null) yield break;
-
-            if (_bgRect == null)
-                _bgRect = bg.rectTransform;
-
-            _bgRect.localScale = _bgBaseScale;
-            _bgRect.anchoredPosition = _bgBaseAnchoredPos;
-
-            float half = blankTapAnimDuration * 0.5f;
-            float t = 0f;
-
-            Vector3 downScale = _bgBaseScale * blankTapDownScale;
-            Vector2 downPos = _bgBaseAnchoredPos + new Vector2(0f, blankTapDownY);
-
-            // press down
-            while (t < half)
-            {
-                t += Time.unscaledDeltaTime;
-                float k = Mathf.Clamp01(t / half);
-                _bgRect.localScale = Vector3.Lerp(_bgBaseScale, downScale, k);
-                _bgRect.anchoredPosition = Vector2.Lerp(_bgBaseAnchoredPos, downPos, k);
-                yield return null;
-            }
-
-            // release
-            t = 0f;
-            while (t < half)
-            {
-                t += Time.unscaledDeltaTime;
-                float k = Mathf.Clamp01(t / half);
-                _bgRect.localScale = Vector3.Lerp(downScale, _bgBaseScale, k);
-                _bgRect.anchoredPosition = Vector2.Lerp(downPos, _bgBaseAnchoredPos, k);
-                yield return null;
-            }
-
-            _bgRect.localScale = _bgBaseScale;
-            _bgRect.anchoredPosition = _bgBaseAnchoredPos;
+            // Keep the drafting grid still under the finger. A single-frame
+            // acknowledgement preserves responsiveness without a 3D press.
+            yield return null;
+            ApplyPressedVisual(false);
             _blankTapRoutine = null;
         }
 
         public void SetDarkTheme(bool isDark)
         {
             _isDarkTheme = isDark;
-
-            if (bg != null)
-            {
-                Shadow shadow = bg.GetComponent<Shadow>();
-                if (shadow != null)
-                {
-                    shadow.effectColor = _isDarkTheme
-                        ? darkTileShadowColor
-                        : tileShadowColor;
-                }
-            }
-
             if (_board != null)
                 Render();
         }
@@ -763,58 +693,38 @@ namespace Shikaku.UI
             }
 
             Color fill = _isDarkTheme ? darkBlankCellColor : blankCellColor;
+            Color labelSurface = fill;
             if (isAssigned)
             {
-                Color blueprintBase = _isDarkTheme
-                    ? new Color32(18, 61, 91, 255)
-                    : new Color32(218, 238, 242, 255);
-                Color identity = _board.Palette != null
-                    ? _board.Palette.GetColorForNumber(
-                        _board.RegionPaletteIndexAt(_index))
-                    : (Color)new Color32(45, 145, 180, 255);
-                float identityBlend = _isDarkTheme ? 0.08f : 0.12f;
-                fill = Color.Lerp(blueprintBase, identity, identityBlend);
-                fill.a = 1f;
-            }
-            if (isDraft)
-            {
-                float blend = Mathf.Clamp01(previewFillColor.a);
-                fill = Color.Lerp(fill, new Color(
-                    previewFillColor.r,
-                    previewFillColor.g,
-                    previewFillColor.b,
-                    1f), blend);
+                labelSurface = _board.RegionFillColorAt(_index, _isDarkTheme);
+                fill = Color.clear;
             }
 
             ApplyTileFill(fill);
-            ApplyPressedVisual(isAssigned);
+            ApplyPressedVisual(false);
 
             if (isClue && label != null)
             {
                 ApplyAnchorLabelStyle();
                 label.text = _board.GivenNumberAt(_index).ToString();
                 label.alpha = 1f;
-                float luminance = (fill.r * 0.299f) + (fill.g * 0.587f) + (fill.b * 0.114f);
+                float luminance =
+                    (labelSurface.r * 0.299f) +
+                    (labelSurface.g * 0.587f) +
+                    (labelSurface.b * 0.114f);
                 label.color = luminance > 0.58f
-                    ? new Color32(47, 42, 35, 255)
-                    : new Color32(238, 247, 248, 255);
+                    ? new Color32(35, 43, 48, 255)
+                    : new Color32(240, 248, 249, 255);
             }
 
-            bool showCompleteFx = isValid && !isSelected && !isDraft;
-            ApplyCompleteFx(showCompleteFx);
-            if (_hasRenderedOnce && isValid && !_wasCompleteLastRender)
-            {
-                if (_completeSheenRoutine != null)
-                    StopCoroutine(_completeSheenRoutine);
-                _completeSheenRoutine = StartCoroutine(PlayCompleteSheenPulse());
-            }
+            // Completed-room fills and their animation now belong to the
+            // region layer, never to individual cell overlays.
+            ApplyCompleteFx(false);
             _wasCompleteLastRender = isValid;
             _hasRenderedOnce = true;
 
-            if (isDraft)
-                DrawDraftOutlineStrict();
-            else if (isAssigned)
-                DrawRegionOutlineStrict(regionId, isSelected, isValid);
+            if (isAssigned && !isValid)
+                DrawInvalidRegionGrid(regionId, isSelected);
 
             ApplyWrongHintBorderIfNeeded();
             ApplyTutorialHighlight();
@@ -839,6 +749,24 @@ namespace Shikaku.UI
             ApplyBorderColor(!valid
                 ? invalidRegionBorderColor
                 : selected ? selectedCellBorderColor : borderColor);
+        }
+
+        private void DrawInvalidRegionGrid(int regionId, bool selected)
+        {
+            SetBorderThickness(baseBorderThickness);
+
+            // Top and left edges draw each division once. Right and bottom
+            // close the room perimeter. Valid rooms skip this grid entirely.
+            Enable(top);
+            Enable(left);
+            if (!NeighborInSameRegion(regionId, _index, 1, 0))
+                Enable(right);
+            if (!NeighborInSameRegion(regionId, _index, 0, 1))
+                Enable(bottom);
+
+            Color gridColor = invalidRegionBorderColor;
+            gridColor.a = selected ? 1f : 0.68f;
+            ApplyBorderColor(gridColor);
         }
 
         private void DrawDraftOutlineStrict()

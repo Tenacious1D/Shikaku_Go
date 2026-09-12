@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using Shikaku.Logic;
 using Shikaku.Settings;
@@ -22,6 +23,7 @@ namespace Shikaku.UI
         public readonly int Width;
         public readonly int Height;
         public readonly int ClueValue;
+        public readonly int PaletteIndex;
         public readonly int HatchIndex;
         public readonly BlueprintRoomVisualState State;
 
@@ -35,7 +37,8 @@ namespace Shikaku.UI
             int height,
             int clueValue,
             int hatchIndex,
-            BlueprintRoomVisualState state)
+            BlueprintRoomVisualState state,
+            int paletteIndex = 1)
         {
             RegionId = regionId;
             X = x;
@@ -43,6 +46,7 @@ namespace Shikaku.UI
             Width = width;
             Height = height;
             ClueValue = clueValue;
+            PaletteIndex = paletteIndex;
             HatchIndex = hatchIndex;
             State = state;
         }
@@ -56,10 +60,12 @@ namespace Shikaku.UI
             public int RegionId;
             public int SeenGeneration;
             public RectTransform Rect;
+            public Image Fill;
             public RawImage Pattern;
             public Image[] Walls;
-            public Color TargetColor;
+            public Color WallColor;
             public float CreatedAt;
+            public Coroutine HintRoutine;
         }
 
         private const int HatchCount = 6;
@@ -73,7 +79,8 @@ namespace Shikaku.UI
         private readonly List<ShikakuRegion> _regionBuffer =
             new List<ShikakuRegion>(64);
 
-        private RectTransform _root;
+        private RectTransform _fillRoot;
+        private RectTransform _feedbackRoot;
         private RectTransform _previewRect;
         private RawImage _previewPattern;
         private TextMeshProUGUI _previewLabel;
@@ -84,6 +91,9 @@ namespace Shikaku.UI
         private int _generation;
         private BlueprintThemeAssets _theme;
         private bool _dark;
+        private int _lastPreviewWidth = -1;
+        private int _lastPreviewHeight = -1;
+        private bool _lastPreviewValid;
 
         public static BlueprintRoomDecorationLayer Create(
             RectTransform boardPanel)
@@ -92,25 +102,38 @@ namespace Shikaku.UI
                 return null;
 
             Transform existing = boardPanel.Find("BlueprintRooms");
-            if (existing != null)
+            BlueprintRoomDecorationLayer layer = existing != null
+                ? existing.GetComponent<BlueprintRoomDecorationLayer>()
+                : null;
+
+            if (layer == null)
             {
-                BlueprintRoomDecorationLayer layer =
-                    existing.GetComponent<BlueprintRoomDecorationLayer>();
-                if (layer != null)
-                {
-                    if (existing.GetComponent<RectMask2D>() == null)
-                        existing.gameObject.AddComponent<RectMask2D>();
-                    return layer;
-                }
+                GameObject fillObject = CreateLayerObject(
+                    boardPanel,
+                    "BlueprintRooms",
+                    true);
+                layer = fillObject.AddComponent<BlueprintRoomDecorationLayer>();
+                existing = fillObject.transform;
             }
 
+            RectTransform fillRoot = existing as RectTransform;
+            RectTransform feedbackRoot = EnsureFeedbackRoot(boardPanel);
+            layer.Initialize(fillRoot, feedbackRoot);
+            fillRoot.SetAsFirstSibling();
+            feedbackRoot.SetAsLastSibling();
+            return layer;
+        }
+
+        private static GameObject CreateLayerObject(
+            RectTransform boardPanel,
+            string objectName,
+            bool clipped)
+        {
             GameObject layerObject = new GameObject(
-                "BlueprintRooms",
+                objectName,
                 typeof(RectTransform),
                 typeof(CanvasGroup),
-                typeof(LayoutElement),
-                typeof(RectMask2D),
-                typeof(BlueprintRoomDecorationLayer));
+                typeof(LayoutElement));
             layerObject.layer = boardPanel.gameObject.layer;
             layerObject.transform.SetParent(boardPanel, false);
 
@@ -128,16 +151,34 @@ namespace Shikaku.UI
             canvasGroup.interactable = false;
             canvasGroup.blocksRaycasts = false;
 
-            BlueprintRoomDecorationLayer component =
-                layerObject.GetComponent<BlueprintRoomDecorationLayer>();
-            component.Initialize(rect);
-            rect.SetAsLastSibling();
-            return component;
+            if (clipped)
+                layerObject.AddComponent<RectMask2D>();
+
+            return layerObject;
         }
 
-        private void Initialize(RectTransform root)
+        private static RectTransform EnsureFeedbackRoot(RectTransform boardPanel)
         {
-            _root = root;
+            Transform existing = boardPanel.Find("BlueprintRoomFeedback");
+            if (existing != null)
+            {
+                if (existing.GetComponent<RectMask2D>() == null)
+                    existing.gameObject.AddComponent<RectMask2D>();
+                return existing as RectTransform;
+            }
+
+            return CreateLayerObject(
+                boardPanel,
+                "BlueprintRoomFeedback",
+                true).GetComponent<RectTransform>();
+        }
+
+        private void Initialize(
+            RectTransform fillRoot,
+            RectTransform feedbackRoot)
+        {
+            _fillRoot = fillRoot;
+            _feedbackRoot = feedbackRoot;
             EnsurePreview();
             EnsureRouteSweep();
         }
@@ -145,26 +186,50 @@ namespace Shikaku.UI
         public void Refresh(
             PuzzleModel model,
             CellView[] cells,
+            PuzzlePalette palette,
             BlueprintThemeAssets theme,
             bool dark,
             bool hasPreview,
             BlueprintRoomVisualDescriptor preview)
         {
-            if (_root == null)
-                _root = transform as RectTransform;
-            if (_root == null || model == null || cells == null)
+            if (_fillRoot == null)
+                _fillRoot = transform as RectTransform;
+            if (_feedbackRoot == null && _fillRoot != null)
+                _feedbackRoot = EnsureFeedbackRoot(_fillRoot.parent as RectTransform);
+            if (_fillRoot == null || _feedbackRoot == null ||
+                model == null || cells == null)
+            {
                 return;
+            }
 
             _theme = BlueprintThemeAssets.Resolve(theme);
             _dark = dark;
             _generation++;
             model.CopyRegionsTo(_regionBuffer);
 
+            int paletteCount = palette != null && palette.numberColors != null
+                ? palette.numberColors.Length - 1
+                : 0;
+
             for (int index = 0; index < _regionBuffer.Count; index++)
             {
                 ShikakuRegion region = _regionBuffer[index];
                 DecorationView view = GetOrCreate(region.Id);
                 view.SeenGeneration = _generation;
+
+                int paletteIndex = _theme.GetStablePaletteIndex(
+                    region,
+                    paletteCount);
+                Color identity = palette != null
+                    ? palette.GetColorForNumber(paletteIndex)
+                    : new Color32(45, 145, 180, 255);
+                bool selected = model.SelectedRegionId == region.Id;
+
+                view.Fill.color = _theme.GetRoomFill(
+                    identity,
+                    _dark,
+                    region.IsValid);
+
                 int hatchIndex = _theme.GetStableHatchIndex(region);
                 Texture2D hatch = _theme.GetRoomHatch(hatchIndex);
                 view.Pattern.texture = hatch != null
@@ -175,12 +240,15 @@ namespace Shikaku.UI
                     0f,
                     Mathf.Max(1f, region.Width * 0.7f),
                     Mathf.Max(1f, region.Height * 0.7f));
-                view.TargetColor = _theme.GetPatternColor(_dark);
-                view.Pattern.color = view.TargetColor;
-                view.Pattern.enabled = true;
-                Color wallColor = _theme.GetWallColor(_dark);
-                for (int wallIndex = 0; wallIndex < view.Walls.Length; wallIndex++)
-                    view.Walls[wallIndex].color = wallColor;
+                view.Pattern.color = _theme.GetPatternColor(_dark);
+                view.Pattern.enabled = region.IsValid;
+
+                view.WallColor = _theme.GetRoomOutline(
+                    identity,
+                    _dark,
+                    region.IsValid,
+                    selected);
+                ApplyRoomWalls(view, view.WallColor);
                 SetRegionRect(
                     view.Rect,
                     cells,
@@ -201,7 +269,8 @@ namespace Shikaku.UI
                 Release(_releaseBuffer[index]);
 
             RefreshPreview(cells, model.Width, hasPreview, preview);
-            _root.SetAsLastSibling();
+            _fillRoot.SetAsFirstSibling();
+            _feedbackRoot.SetAsLastSibling();
         }
 
         private DecorationView GetOrCreate(int regionId)
@@ -228,19 +297,44 @@ namespace Shikaku.UI
                 "BlueprintRoom",
                 typeof(RectTransform),
                 typeof(CanvasRenderer),
-                typeof(RawImage));
+                typeof(Image));
             viewObject.layer = gameObject.layer;
-            viewObject.transform.SetParent(_root, false);
-            RawImage pattern = viewObject.GetComponent<RawImage>();
-            pattern.raycastTarget = false;
-            pattern.maskable = true;
+            viewObject.transform.SetParent(_fillRoot, false);
+
+            Image fill = viewObject.GetComponent<Image>();
+            fill.raycastTarget = false;
+            fill.maskable = true;
+
             RectTransform roomRect = viewObject.GetComponent<RectTransform>();
+            RawImage pattern = CreatePattern(roomRect);
             return new DecorationView
             {
                 Rect = roomRect,
+                Fill = fill,
                 Pattern = pattern,
                 Walls = CreateWalls(roomRect, "RoomWall", 3f)
             };
+        }
+
+        private RawImage CreatePattern(RectTransform parent)
+        {
+            GameObject patternObject = new GameObject(
+                "RoomPattern",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(RawImage));
+            patternObject.layer = gameObject.layer;
+            patternObject.transform.SetParent(parent, false);
+            RectTransform patternRect = patternObject.GetComponent<RectTransform>();
+            patternRect.anchorMin = Vector2.zero;
+            patternRect.anchorMax = Vector2.one;
+            patternRect.offsetMin = Vector2.zero;
+            patternRect.offsetMax = Vector2.zero;
+            RawImage pattern = patternObject.GetComponent<RawImage>();
+            pattern.raycastTarget = false;
+            pattern.maskable = true;
+            pattern.enabled = false;
+            return pattern;
         }
 
         private Image[] CreateWalls(
@@ -282,19 +376,34 @@ namespace Shikaku.UI
             return wall;
         }
 
+        private void ApplyRoomWalls(DecorationView view, Color outline)
+        {
+            Color highlight = Color.Lerp(outline, Color.white, _dark ? 0.16f : 0.3f);
+            Color shadow = Color.Lerp(outline, Color.black, _dark ? 0.18f : 0.12f);
+            view.Walls[0].color = highlight;
+            view.Walls[1].color = shadow;
+            view.Walls[2].color = highlight;
+            view.Walls[3].color = shadow;
+        }
+
         private void Release(int regionId)
         {
             if (!_active.TryGetValue(regionId, out DecorationView view))
                 return;
 
             _active.Remove(regionId);
+            if (view.HintRoutine != null)
+            {
+                StopCoroutine(view.HintRoutine);
+                view.HintRoutine = null;
+            }
             view.Rect.gameObject.SetActive(false);
             _pool.Push(view);
         }
 
         private void EnsurePreview()
         {
-            if (_previewRect != null)
+            if (_previewRect != null || _feedbackRoot == null)
                 return;
 
             GameObject previewObject = new GameObject(
@@ -303,10 +412,11 @@ namespace Shikaku.UI
                 typeof(CanvasRenderer),
                 typeof(RawImage));
             previewObject.layer = gameObject.layer;
-            previewObject.transform.SetParent(_root, false);
+            previewObject.transform.SetParent(_feedbackRoot, false);
             _previewRect = previewObject.GetComponent<RectTransform>();
             _previewPattern = previewObject.GetComponent<RawImage>();
             _previewPattern.raycastTarget = false;
+            _previewPattern.maskable = true;
             _previewWalls = CreateWalls(_previewRect, "DraftWall", 4f);
 
             GameObject labelObject = new GameObject(
@@ -334,6 +444,49 @@ namespace Shikaku.UI
             _previewRect.gameObject.SetActive(false);
         }
 
+        public void PlayHintPulse(int regionId)
+        {
+            if (!_active.TryGetValue(regionId, out DecorationView view))
+                return;
+
+            if (view.HintRoutine != null)
+                StopCoroutine(view.HintRoutine);
+            view.HintRoutine = StartCoroutine(AnimateHintPulse(view));
+        }
+
+        private IEnumerator AnimateHintPulse(DecorationView view)
+        {
+            if (AppSettings.ReduceMotion)
+            {
+                ApplyRoomWalls(view, _theme.selectedRoomOutline);
+                yield return new WaitForSecondsRealtime(0.35f);
+                ApplyRoomWalls(view, view.WallColor);
+                view.HintRoutine = null;
+                yield break;
+            }
+
+            Color pulseColor = new Color32(255, 207, 57, 255);
+            const int pulseCount = 3;
+            const float pulseDuration = 0.28f;
+            for (int pulse = 0; pulse < pulseCount; pulse++)
+            {
+                float elapsed = 0f;
+                while (elapsed < pulseDuration)
+                {
+                    elapsed += Time.unscaledDeltaTime;
+                    float amount = Mathf.Sin(
+                        Mathf.Clamp01(elapsed / pulseDuration) * Mathf.PI);
+                    ApplyRoomWalls(
+                        view,
+                        Color.Lerp(view.WallColor, pulseColor, amount));
+                    yield return null;
+                }
+            }
+
+            ApplyRoomWalls(view, view.WallColor);
+            view.HintRoutine = null;
+        }
+
         public void PlaySolveSweep()
         {
             EnsureRouteSweep();
@@ -357,7 +510,7 @@ namespace Shikaku.UI
 
         private void EnsureRouteSweep()
         {
-            if (_routeSweep != null || _root == null)
+            if (_routeSweep != null || _feedbackRoot == null)
                 return;
 
             GameObject routeObject = new GameObject(
@@ -366,7 +519,7 @@ namespace Shikaku.UI
                 typeof(CanvasRenderer),
                 typeof(Image));
             routeObject.layer = gameObject.layer;
-            routeObject.transform.SetParent(_root, false);
+            routeObject.transform.SetParent(_feedbackRoot, false);
             _routeSweep = routeObject.GetComponent<RectTransform>();
             _routeSweep.anchorMin = new Vector2(0f, 0.5f);
             _routeSweep.anchorMax = new Vector2(0f, 0.5f);
@@ -378,12 +531,12 @@ namespace Shikaku.UI
             routeObject.SetActive(false);
         }
 
-        private System.Collections.IEnumerator AnimateRouteSweep()
+        private IEnumerator AnimateRouteSweep()
         {
             _routeSweep.gameObject.SetActive(true);
             _routeSweep.SetAsLastSibling();
-            float boardWidth = Mathf.Max(1f, _root.rect.width);
-            float boardHeight = Mathf.Max(1f, _root.rect.height);
+            float boardWidth = Mathf.Max(1f, _feedbackRoot.rect.width);
+            float boardHeight = Mathf.Max(1f, _feedbackRoot.rect.height);
             _routeSweep.sizeDelta = new Vector2(12f, boardHeight * 1.35f);
             const float duration = 0.42f;
             float elapsed = 0f;
@@ -408,6 +561,7 @@ namespace Shikaku.UI
             _routeSweep.gameObject.SetActive(false);
             _routeSweepRoutine = null;
         }
+
         private void RefreshPreview(
             CellView[] cells,
             int boardWidth,
@@ -415,6 +569,8 @@ namespace Shikaku.UI
             BlueprintRoomVisualDescriptor preview)
         {
             EnsurePreview();
+            if (_previewRect == null)
+                return;
             if (!hasPreview)
             {
                 _previewRect.gameObject.SetActive(false);
@@ -439,10 +595,12 @@ namespace Shikaku.UI
 
             bool valid = preview.State != BlueprintRoomVisualState.Invalid;
             _previewPattern.color = valid
-                ? new Color32(54, 138, 154, 40)
-                : new Color32(190, 52, 56, 36);
+                ? new Color32(54, 138, 154, 54)
+                : new Color32(190, 52, 56, 48);
             Color previewWallColor = valid
-                ? (_dark ? new Color32(221, 245, 248, 255) : new Color32(18, 86, 143, 255))
+                ? (_dark
+                    ? new Color32(221, 245, 248, 255)
+                    : new Color32(18, 86, 143, 255))
                 : new Color32(196, 55, 62, 255);
             for (int wallIndex = 0; wallIndex < _previewWalls.Length; wallIndex++)
                 _previewWalls[wallIndex].color = previewWallColor;
@@ -451,8 +609,16 @@ namespace Shikaku.UI
                     ? new Color32(221, 240, 238, 255)
                     : new Color32(27, 91, 102, 255))
                 : new Color32(190, 52, 56, 255);
-            _previewLabel.text =
-                $"{preview.Width} × {preview.Height} = {preview.Area}";
+            if (_lastPreviewWidth != preview.Width ||
+                _lastPreviewHeight != preview.Height ||
+                _lastPreviewValid != valid)
+            {
+                _previewLabel.text =
+                    $"{preview.Width} × {preview.Height} = {preview.Area}";
+                _lastPreviewWidth = preview.Width;
+                _lastPreviewHeight = preview.Height;
+                _lastPreviewValid = valid;
+            }
             _previewRect.SetAsLastSibling();
         }
 
@@ -497,7 +663,8 @@ namespace Shikaku.UI
 
             RectTransform first = cells[firstIndex].transform as RectTransform;
             RectTransform last = cells[lastIndex].transform as RectTransform;
-            if (first == null || last == null)
+            RectTransform coordinateRoot = target.parent as RectTransform;
+            if (first == null || last == null || coordinateRoot == null)
             {
                 target.gameObject.SetActive(false);
                 return;
@@ -505,13 +672,13 @@ namespace Shikaku.UI
 
             Bounds firstBounds =
                 RectTransformUtility.CalculateRelativeRectTransformBounds(
-                    _root,
+                    coordinateRoot,
                     first);
             Bounds lastBounds =
                 RectTransformUtility.CalculateRelativeRectTransformBounds(
-                    _root,
+                    coordinateRoot,
                     last);
-            ApplyLocalBounds(target, _root, firstBounds, lastBounds);
+            ApplyLocalBounds(target, coordinateRoot, firstBounds, lastBounds);
         }
 
         internal static void ApplyLocalBounds(
@@ -527,9 +694,6 @@ namespace Shikaku.UI
             Vector3 max = Vector3.Max(firstBounds.max, lastBounds.max);
             Vector3 center = (min + max) * 0.5f;
 
-            // Relative bounds are expressed around the root's pivot. Anchoring
-            // to that same pivot keeps anchoredPosition in the same coordinate
-            // space and prevents the old half-board left/down offset.
             target.anchorMin = root.pivot;
             target.anchorMax = root.pivot;
             target.pivot = new Vector2(0.5f, 0.5f);
@@ -565,28 +729,28 @@ namespace Shikaku.UI
                     bool mark;
                     switch (hatchIndex)
                     {
-                        case 0: // concrete stipple
+                        case 0:
                             int noise = (x * 17 + y * 31 + x * y * 3) & 31;
                             mark = noise == 0 || noise == 11;
                             break;
-                        case 1: // wood floor boards
+                        case 1:
                             int boardRow = y / 12;
                             mark = y % 12 == 0 ||
                                 (boardRow % 2 == 0 && x % 32 == 0) ||
                                 (boardRow % 2 == 1 && x % 32 == 16);
                             break;
-                        case 2: // ceramic tile grid
+                        case 2:
                             mark = x % 16 == 0 || y % 16 == 0;
                             break;
-                        case 3: // steel diagonal hatch
+                        case 3:
                             mark = (x + y) % 12 == 0;
                             break;
-                        case 4: // insulation zigzag
+                        case 4:
                             int segment = x % 16;
                             int ridge = segment < 8 ? segment : 15 - segment;
                             mark = Mathf.Abs((y % 16) - ridge * 2) < 2;
                             break;
-                        default: // survey crosshatch
+                        default:
                             mark = (x + y) % 16 == 0 ||
                                 (x - y + size) % 16 == 0;
                             break;

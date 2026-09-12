@@ -72,7 +72,7 @@ namespace Shikaku.UI
         [SerializeField] private int height = 8;
 
         [Header("Layout")]
-        [SerializeField] private float spacing = 8f;
+        [SerializeField] private float spacing = 2f;
         [SerializeField] private float padding = 12f;
 
         [Header("Responsive Board Layout")]
@@ -895,6 +895,7 @@ namespace Shikaku.UI
             _blueprintRooms.Refresh(
                 _model,
                 _cells,
+                palette,
                 blueprintTheme,
                 ThemeManager.IsDark,
                 hasPreview,
@@ -1162,19 +1163,18 @@ namespace Shikaku.UI
             int paletteCount = palette != null && palette.numberColors != null
                 ? palette.numberColors.Length - 1
                 : 0;
-            if (region == null || paletteCount <= 0)
-                return 1;
+            return BlueprintThemeAssets.Resolve(blueprintTheme)
+                .GetStablePaletteIndex(region, paletteCount);
+        }
 
-            unchecked
-            {
-                int hash = 23;
-                hash = hash * 31 + region.X;
-                hash = hash * 31 + region.Y;
-                hash = hash * 31 + region.Width;
-                hash = hash * 31 + region.Height;
-                hash = hash * 31 + region.ClueValue;
-                return Mathf.Abs(hash % paletteCount) + 1;
-            }
+        public Color RegionFillColorAt(int idx, bool dark)
+        {
+            bool valid = _model.IsRegionValidAt(idx);
+            Color identity = palette != null
+                ? palette.GetColorForNumber(RegionPaletteIndexAt(idx))
+                : new Color32(45, 145, 180, 255);
+            return BlueprintThemeAssets.Resolve(blueprintTheme)
+                .GetRoomFill(identity, dark, valid);
         }
         public bool IsCellAssigned(int idx) => _model.GetRegionIdAt(idx) >= 0;
         public bool IsRegionValidAt(int idx) => _model.IsRegionValidAt(idx);
@@ -1827,15 +1827,9 @@ namespace Shikaku.UI
                 return;
 
             RenderAll();
-            for (int y = target.y; y < target.y + target.height; y++)
-            {
-                for (int x = target.x; x < target.x + target.width; x++)
-                {
-                    int index = y * width + x;
-                    if (_cells != null && index >= 0 && index < _cells.Length)
-                        _cells[index]?.PlayHintCompletionPulse();
-                }
-            }
+            int hintedCell = target.y * width + target.x;
+            int hintedRegionId = _model.GetRegionIdAt(hintedCell);
+            _blueprintRooms?.PlayHintPulse(hintedRegionId);
 
             if (sfx != null)
                 sfx.PlayDraw(isDrag: false);

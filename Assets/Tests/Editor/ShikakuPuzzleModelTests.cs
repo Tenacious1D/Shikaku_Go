@@ -197,6 +197,16 @@ namespace Shikaku.Tests
                 Transform layer = board.Find("BlueprintRooms");
                 Assert.That(layer, Is.Not.Null);
                 Assert.That(layer.GetComponent<RectMask2D>(), Is.Not.Null);
+
+                Transform feedback = board.Find("BlueprintRoomFeedback");
+                Assert.That(feedback, Is.Not.Null);
+                Assert.That(feedback.GetComponent<RectMask2D>(), Is.Not.Null);
+                Assert.That(layer.GetSiblingIndex(),
+                    Is.LessThan(feedback.GetSiblingIndex()));
+                Assert.That(layer.GetComponent<CanvasGroup>().blocksRaycasts,
+                    Is.False);
+                Assert.That(feedback.GetComponent<CanvasGroup>().blocksRaycasts,
+                    Is.False);
             }
             finally
             {

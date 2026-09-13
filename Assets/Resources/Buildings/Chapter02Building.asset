@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83a74d2acc805e74c9484d953c9f0fe0, type: 3}
+  m_Name: Chapter02Building
+  m_EditorClassIdentifier:
+  buildingId: campaign_chapter02
+  displayName: Chapter 2
+  chapterPackPath: Story/Adventure_Chapter02
+  style: {fileID: 0}
+  appearanceSeed: 0
+  overrideArchitecture: 0
+  architecture: 0
+  overrideColors: 0
+  wallColor: {r: 0.827451, g: 0.596078, b: 0.462745, a: 1}
+  roofColor: {r: 0.301961, g: 0.427451, b: 0.462745, a: 1}
+  mapOffset: {x: 0, y: 0}

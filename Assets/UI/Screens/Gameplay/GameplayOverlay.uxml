@@ -50,6 +50,7 @@
                 <ui:Label name="gameplay-solved-title" text="Plan Approved!" class="gameplay-modal-title gameplay-solved-title"/>
                 <ui:VisualElement class="gameplay-modal-ornament"><ui:VisualElement class="gameplay-modal-line"/><ui:Label text="&#10003;" class="gameplay-solved-check"/><ui:VisualElement class="gameplay-modal-line"/></ui:VisualElement>
                 <ui:Label name="gameplay-solved-message" text="Solved in 0.00" class="gameplay-modal-message"/>
+                <ui:VisualElement name="gameplay-solved-building-host" class="gameplay-building-host screen-hidden" picking-mode="Ignore"/>
                 <ui:Button name="gameplay-solved-same-difficulty-button" text="Next Day's Medium" class="gameplay-modal-button gameplay-secondary-button screen-hidden"/>
                 <ui:Button name="gameplay-solved-primary-button" text="Next Puzzle" class="gameplay-modal-button gameplay-primary-button"/>
                 <ui:Button name="gameplay-solved-exit-button" text="Exit" class="gameplay-modal-button gameplay-secondary-button"/>

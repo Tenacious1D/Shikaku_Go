@@ -9,6 +9,7 @@ using Shikaku.Settings;
 using Shikaku.Achievements;
 using Shikaku.SaveSystem;
 using Shikaku.Services;
+using Shikaku.UI.Buildings;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -57,6 +58,12 @@ namespace Shikaku.UI
         private IVisualElementScheduledItem _hideAdStatusTask;
         private VisualElement _notQuiteWarning;
         private VisualElement _solvedModal;
+        private VisualElement _solvedBuildingHost;
+        private BuildingView _solvedBuilding;
+        private Label _solvedBuildingCaption;
+        private AdventureBuildingData _solvedBuildingData;
+        private bool[] _buildingBeforeSolve;
+        private int _newBuildingFloor = -1;
         private VisualElement _ratePromptModal;
         private Button _ratePromptRateButton;
         private Button _ratePromptLaterButton;
@@ -233,6 +240,7 @@ namespace Shikaku.UI
 
         private void OnDestroy()
         {
+            _solvedBuilding?.FinishConstruction();
             ThemeManager.Changed -= ApplyTheme;
             AdsManager.BannerPresentationChanged -=
                 OnBannerPresentationChanged;
@@ -297,6 +305,18 @@ namespace Shikaku.UI
             _notQuiteWarning = _overlayRoot.Q<VisualElement>(
                 "gameplay-not-quite-warning");
             _solvedModal = _overlayRoot.Q<VisualElement>("gameplay-solved-modal");
+            _solvedBuildingHost = _overlayRoot.Q<VisualElement>("gameplay-solved-building-host");
+            if (_solvedBuildingHost != null)
+            {
+                _solvedBuildingHost.Clear();
+                _solvedBuilding = new BuildingView();
+                _solvedBuilding.AddToClassList("gameplay-building-view");
+                _solvedBuildingCaption = new Label();
+                _solvedBuildingCaption.AddToClassList("gameplay-building-caption");
+                _solvedBuildingHost.Add(_solvedBuilding);
+                _solvedBuildingHost.Add(_solvedBuildingCaption);
+                _solvedBuilding.FloorConstructed += _ => RefreshBuildingCaption();
+            }
             _ratePromptModal = _overlayRoot.Q<VisualElement>(
                 "gameplay-rate-prompt-modal");
             _ratePromptRateButton = _overlayRoot.Q<Button>(
@@ -753,6 +773,7 @@ namespace Shikaku.UI
 
         private void OnPuzzleSolvedCore()
         {
+            CaptureBuildingBeforeSolve();
             bool isTimeTrial =
                 Shikaku.Menu.GameSession.Mode ==
                 Shikaku.Menu.MenuMode.TimeTrial;
@@ -3226,6 +3247,55 @@ namespace Shikaku.UI
             RefreshAll();
         }
 
+        private void CaptureBuildingBeforeSolve()
+        {
+            _solvedBuildingData = null;
+            _buildingBeforeSolve = null;
+            _newBuildingFloor = -1;
+            if (Shikaku.Menu.GameSession.IsTutorial ||
+                Shikaku.Menu.GameSession.Mode != Shikaku.Menu.MenuMode.Story) return;
+            _solvedBuildingData = AdventureBuildingData.Load(Shikaku.Menu.GameSession.PackPath);
+            if (_solvedBuildingData == null) return;
+            _buildingBeforeSolve = _solvedBuildingData.ReadCompletion();
+            int floor = _solvedBuildingData.FindFloor(Shikaku.Menu.GameSession.GetPuzzleId());
+            if (floor >= 0 && !_buildingBeforeSolve[floor]) _newBuildingFloor = floor;
+        }
+
+        private void ShowSolvedBuilding(bool timeTrialSummary)
+        {
+            if (_solvedBuildingHost == null || _solvedBuilding == null) return;
+            bool show = !timeTrialSummary && !Shikaku.Menu.GameSession.IsTutorial &&
+                Shikaku.Menu.GameSession.Mode == Shikaku.Menu.MenuMode.Story &&
+                _solvedBuildingData != null;
+            _solvedBuildingHost.EnableInClassList("screen-hidden", !show);
+            _solvedModal?.EnableInClassList("gameplay-solved-with-building", show);
+            if (!show) { _solvedBuilding.FinishConstruction(); return; }
+            _solvedBuilding.SetBuilding(_solvedBuildingData);
+            _solvedBuilding.SetCompletedFloors(
+                _buildingBeforeSolve ?? _solvedBuildingData.ReadCompletion());
+            if (_newBuildingFloor >= 0)
+                _solvedBuilding.AnimateFloor(_newBuildingFloor);
+            RefreshBuildingCaption();
+            // Consume the transient pre-save snapshot so reopening never rebuilds a floor.
+            _buildingBeforeSolve = null;
+            _newBuildingFloor = -1;
+        }
+
+        private void RefreshBuildingCaption()
+        {
+            if (_solvedBuildingCaption == null || _solvedBuildingData == null) return;
+            if (_newBuildingFloor >= 0)
+            {
+                var floor = _solvedBuildingData.Floors[_newBuildingFloor];
+                _solvedBuildingCaption.text =
+                    $"Building floor {_newBuildingFloor + 1} · {floor.Width} × {floor.Depth}";
+                return;
+            }
+            _solvedBuildingCaption.text = _solvedBuilding.IsComplete
+                ? "Building complete!"
+                : $"{_solvedBuilding.CompletedFloors} / {_solvedBuildingData.Floors.Count} floors built";
+        }
+
         private void ShowSolvedModal(bool timeTrialSummary)
         {
             SetHeaderNextVisible(false);
@@ -3364,6 +3434,7 @@ namespace Shikaku.UI
             }
 
             ShowModal(_solvedModal);
+            ShowSolvedBuilding(timeTrialSummary);
             ShowPendingHintCelebrations();
         }
 
@@ -3546,6 +3617,7 @@ namespace Shikaku.UI
 
         private void HideSolvedModal()
         {
+            _solvedBuilding?.FinishConstruction();
             HideStreakCelebrationImmediately();
             HideModal(_solvedModal);
             _solvedPrimaryButton?.SetEnabled(true);

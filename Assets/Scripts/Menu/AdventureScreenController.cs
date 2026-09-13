@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Shikaku.Ads;
 using Shikaku.UI;
+using Shikaku.UI.Buildings;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
@@ -211,6 +212,8 @@ namespace Shikaku.Menu
                 out string continuePackPath,
                 out _);
 
+            var city = new AdventureCityMap(packs.Count);
+            _mapRoot.Add(city);
             Button focusButton = null;
 
             // Reverse visual order: the highest chapter is above Chapter 1.
@@ -234,13 +237,6 @@ namespace Shikaku.Menu
                         pack.PackPath,
                         StringComparison.Ordinal);
 
-                VisualElement row = new VisualElement();
-                row.AddToClassList("adventure-map-row");
-                row.AddToClassList(
-                    chapterIndex % 2 == 0
-                        ? "adventure-map-row-left"
-                        : "adventure-map-row-right");
-
                 int capturedChapterIndex = chapterIndex;
                 Button chapterButton = CreateChapterButton(
                     chapterIndex,
@@ -250,6 +246,10 @@ namespace Shikaku.Menu
                     complete,
                     current);
 
+                var buildingData = AdventureBuildingData.Load(pack.PackPath);
+                city.AddChapter(chapterIndex, buildingData, chapterButton);
+                if (!string.IsNullOrWhiteSpace(buildingData?.Definition?.displayName))
+                    chapterButton.tooltip = buildingData.Definition.displayName;
                 if (unlocked)
                 {
                     chapterButton.clicked +=
@@ -261,8 +261,7 @@ namespace Shikaku.Menu
                         () => ShowLockedFeedback(chapterButton);
                 }
 
-                row.Add(chapterButton);
-                _mapRoot.Add(row);
+
 
                 if (focusButton == null &&
                     (string.Equals(
@@ -274,13 +273,6 @@ namespace Shikaku.Menu
                     focusButton = chapterButton;
                 }
 
-                if (chapterIndex > 0)
-                {
-                    bool routeActive =
-                        Progression.IsStoryChapterUnlocked(pack.PackPath);
-                    _mapRoot.Add(
-                        CreateRouteConnector(chapterIndex, routeActive));
-                }
             }
 
             if (focusButton == null)
@@ -340,73 +332,16 @@ namespace Shikaku.Menu
         }
 
         private static Button CreateChapterButton(
-            int chapterIndex,
-            int total,
-            int completed,
-            bool unlocked,
-            bool complete,
-            bool current)
+            int chapterIndex, int total, int completed, bool unlocked, bool complete, bool current)
         {
             int chapterNumber = chapterIndex + 1;
-
-            Button button = new Button
-            {
-                name = $"adventure-chapter-{chapterNumber}-button"
-            };
-
-            button.AddToClassList("adventure-chapter-button");
-
-            if (complete)
-                button.AddToClassList("adventure-chapter-complete");
-            else if (current)
-                button.AddToClassList("adventure-chapter-current");
-            else if (!unlocked)
-                button.AddToClassList("adventure-chapter-locked");
-            else
-                button.AddToClassList("adventure-chapter-unlocked");
-
-            VisualElement badge = new VisualElement();
-            badge.AddToClassList("adventure-chapter-badge");
-
-            Label number = new Label(chapterNumber.ToString());
-            number.AddToClassList("adventure-chapter-number");
-            badge.Add(number);
-
-            VisualElement copy = new VisualElement();
-            copy.AddToClassList("adventure-chapter-copy");
-
-            Label title = new Label($"Chapter {chapterNumber}");
-            title.AddToClassList("adventure-chapter-title");
-            copy.Add(title);
-
-            string progressText;
-            if (!unlocked)
-                progressText = "Locked";
-            else if (complete)
-                progressText = $"{total} / {total} complete";
-            else
-                progressText = $"{completed} / {total} complete";
-
-            Label progress = new Label(progressText);
-            progress.AddToClassList("adventure-chapter-progress");
-            copy.Add(progress);
-
-            Label state = new Label(
-                complete ? "✓" :
-                current ? string.Empty :
-                unlocked ? "›" :
-                string.Empty);
-            state.AddToClassList("adventure-chapter-state");
-            if (current)
-            {
-                state.AddToClassList("ui-play-icon");
-                state.AddToClassList("adventure-chapter-state-play");
-            }
-
-            button.Add(badge);
-            button.Add(copy);
-            button.Add(state);
-
+            var button = new Button { name = $"adventure-chapter-{chapterNumber}-button" };
+            button.AddToClassList("city-chapter-button");
+            button.AddToClassList(complete ? "city-chapter-complete" :
+                current ? "city-chapter-current" : unlocked ? "city-chapter-unlocked" : "city-chapter-locked");
+            string state = complete ? "✓ " : current ? "› " : !unlocked ? "• " : "";
+            button.text = $"{state}Chapter {chapterNumber}\n" +
+                (unlocked ? $"{completed} / {total} floors" : "Locked");
             return button;
         }
 
@@ -421,45 +356,6 @@ namespace Shikaku.Menu
                 () => button.RemoveFromClassList("adventure-chapter-denied"))
                 .StartingIn(110);
         }
-        private static VisualElement CreateRouteConnector(
-            int upperChapterIndex,
-            bool active)
-        {
-            VisualElement connector = new VisualElement();
-            connector.AddToClassList("adventure-route-connector");
-
-            float upper = upperChapterIndex % 2 == 0 ? 27f : 73f;
-            float lower = (upperChapterIndex - 1) % 2 == 0 ? 27f : 73f;
-
-            const int dashCount = 13;
-            for (int dashIndex = 0; dashIndex < dashCount; dashIndex++)
-            {
-                float t = dashIndex / (float)(dashCount - 1);
-                float curvedT = t * t * (3f - 2f * t);
-                float horizontalTangent =
-                    (lower - upper) * 6f * t * (1f - t) * 7f;
-                const float verticalTangent = 100f;
-                float angle =
-                    Mathf.Atan2(verticalTangent, horizontalTangent) * Mathf.Rad2Deg;
-                VisualElement dash = new VisualElement();
-                dash.AddToClassList("adventure-route-dash");
-
-                if (active)
-                    dash.AddToClassList("adventure-route-dash-active");
-
-                dash.style.left =
-                    new Length(Mathf.Lerp(upper, lower, curvedT), LengthUnit.Percent);
-                dash.style.top =
-                    new Length(Mathf.Lerp(4f, 84f, t), LengthUnit.Percent);
-                dash.style.rotate =
-                    new Rotate(new Angle(angle, AngleUnit.Degree));
-
-                connector.Add(dash);
-            }
-
-            return connector;
-        }
-
         private void ShowLevels(int chapterIndex)
         {
             IReadOnlyList<PuzzleCatalog.PackInfo> packs = PuzzleCatalog.StoryPacks;

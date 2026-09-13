@@ -579,7 +579,7 @@
                         <ui:VisualElement class="adventure-ornament-line"/>
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Label text="Choose a project" class="adventure-subtitle"/>
+                <ui:Label text="Build your neighborhood" class="adventure-subtitle"/>
                 <ui:VisualElement class="adventure-progress-chip">
                     <ui:Label name="adventure-map-progress" text="0 of 10 chapters completed" class="adventure-progress-label"/>
                 </ui:VisualElement>

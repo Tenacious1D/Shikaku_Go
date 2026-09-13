@@ -559,3 +559,53 @@
 .adventure-level-locked-label {
     color: rgba(92, 84, 71, 0.56);
 }
+/* The existing chapter controls remain below the shared building renderer. */
+.adventure-map-row { height: 378px; }
+.adventure-chapter-button { height: 364px; flex-direction: column; }
+.adventure-building-view { width: 100%; height: 220px; flex-shrink: 0; }
+.adventure-chapter-details {
+    width: 100%;
+    flex-grow: 1;
+    flex-direction: row;
+    align-items: center;
+}
+
+/* Adventure city map. ID scope keeps inherited Blueprint card/grid rules out. */
+#adventure-map-view {
+    max-width: none;
+    padding: 30px 14px 0 14px;
+    background-color: rgb(22, 43, 55);
+}
+#adventure-map-view .adventure-title-block { height: 128px; justify-content: center; }
+#adventure-map-view .adventure-title { font-size: 67px; color: rgb(240, 230, 203); -unity-text-outline-width: 0; }
+#adventure-map-view .adventure-title-ornament { display: none; }
+#adventure-map-view .adventure-subtitle { font-size: 25px; color: rgb(162, 196, 194); margin: 0 0 15px 0; }
+#adventure-map-view .adventure-progress-chip {
+    min-width: 0; height: 47px; margin-bottom: 16px; padding: 0 25px;
+    background-color: rgb(34, 65, 72); border-width: 1px; border-color: rgb(72, 115, 115); border-radius: 24px;
+}
+#adventure-map-view .adventure-progress-label { font-size: 22px; color: rgb(225, 216, 183); }
+#adventure-map-view .adventure-map-content { padding: 0; }
+#adventure-map-root {
+    padding: 0; border-width: 0; border-radius: 0;
+    background-color: rgba(0, 0, 0, 0); max-width: none;
+}
+#adventure-screen > .adventure-back-button { width: 76px; height: 76px; left: 26px; top: 57px; }
+#adventure-screen > .adventure-back-button .adventure-back-icon { width: 45px; height: 45px; }
+.adventure-city-map { background-color: rgb(22, 43, 55); overflow: hidden; }
+.city-building-node { align-items: center; }
+.city-building-view { flex-shrink: 0; }
+.city-chapter-button {
+    width: 82%; max-width: 285px; min-width: 0; margin: 8px 0 0 0; padding: 4px;
+    flex-shrink: 0; white-space: normal;
+    -unity-text-align: middle-center; -unity-font-style: bold;
+    color: rgb(219, 232, 224); background-color: rgb(37, 66, 78);
+    border-width: 2px; border-bottom-width: 4px; border-color: rgb(93, 130, 135); border-radius: 18px;
+    transition-duration: 0.08s; transition-property: translate;
+}
+.city-chapter-button:hover { background-color: rgb(49, 82, 92); }
+.city-chapter-button:active { translate: 0 3px; }
+.city-chapter-current { color: rgb(255, 232, 167); background-color: rgb(86, 72, 41); border-color: rgb(225, 180, 72); }
+.city-chapter-complete { color: rgb(203, 236, 207); border-color: rgb(106, 164, 127); }
+.city-chapter-locked { color: rgb(154, 177, 183); background-color: rgb(32, 51, 63); border-color: rgb(64, 90, 106); }
+.city-chapter-button.adventure-chapter-denied { translate: -7px 0; }

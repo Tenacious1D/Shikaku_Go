@@ -805,6 +805,68 @@ namespace Shikaku.SaveSystem
 #endif
 
 #if UNITY_EDITOR
+        /// <summary>
+        /// Editor-only reset of puzzle outcomes. Call outside Play Mode so live
+        /// gameplay cannot save an old board back into the newly reset progress.
+        /// Keeps economy, achievements, tutorial completion and device preferences.
+        /// </summary>
+        public static bool ResetPuzzleProgressForTesting(out string recoveryPath)
+        {
+            EnsureInitialized();
+            lock (Sync)
+            {
+                recoveryPath = null;
+                if (_batchDepth != 0)
+                    throw new InvalidOperationException("Finish the active save batch before resetting puzzle progress.");
+
+                SaveData previous = _data;
+                bool previousDirty = _dirty;
+                try
+                {
+                    string snapshot = JsonUtility.ToJson(previous, true);
+                    string snapshotPath = SavePath + ".before-progress-reset-" +
+                        DateTime.UtcNow.ToString("yyyyMMdd-HHmmss-fffffff", CultureInfo.InvariantCulture) + ".json";
+                    // A separate manual recovery file never participates in automatic loading.
+                    File.WriteAllText(snapshotPath, snapshot, new UTF8Encoding(false));
+                    recoveryPath = snapshotPath;
+                    SaveData reset = JsonUtility.FromJson<SaveData>(snapshot);
+                    reset.puzzles.Clear();
+                    reset.sizeProgress.Clear();
+                    reset.packProgress.Clear();
+                    reset.storyCurrentPack = string.Empty;
+                    reset.dailyCompletions.Clear();
+                    reset.timeTrialScores.Clear();
+                    reset.streak = new StreakSaveData();
+                    _data = reset;
+                    _dirty = true;
+                    if (!WriteNow())
+                    {
+                        _data = previous;
+                        _dirty = true;
+                        return false;
+                    }
+                    // Normal saves back up the previous version. After a deliberate reset,
+                    // recovery must also contain reset progress, not the old completion list.
+                    File.Copy(SavePath, BackupPath, true);
+                    if (!_skipLegacyImportForTests)
+                    {
+                        PlayerPrefs.SetInt(MigrationMarker, 1);
+                        PlayerPrefs.Save();
+                    }
+                    return true;
+                }
+                catch (Exception exception)
+                {
+                    // If writing began, restore the old in-memory state and mark it dirty
+                    // for a later retry. The recovery snapshot remains available on disk.
+                    bool changed = !ReferenceEquals(_data, previous);
+                    _data = previous;
+                    _dirty = changed || previousDirty;
+                    Debug.LogError("Puzzle progress reset could not finish: " + exception.Message);
+                    return false;
+                }
+            }
+        }
         public static void LoadIsolatedSaveForTesting(string path)
         {
             if (string.IsNullOrWhiteSpace(path))

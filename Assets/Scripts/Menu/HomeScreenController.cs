@@ -71,6 +71,7 @@ namespace Shikaku.Menu
             var document = GetComponent<UIDocument>();
             var root = document.rootVisualElement;
             _root = root;
+            Shikaku.UI.ModernBlueprintLayout.Install(root);
             ThemeManager.EnsureInitialized();
             ThemeManager.ApplyTo(_root);
             ThemeManager.Changed += ApplyTheme;
@@ -239,13 +240,18 @@ namespace Shikaku.Menu
             if (panelWidth <= 0f || panelHeight <= 0f)
                 return;
 
+            float aspectRatio = panelWidth / panelHeight;
             bool useTabletCards =
-                panelWidth >= 1180f && panelWidth / panelHeight >= 0.68f;
+                panelWidth >= 1180f && aspectRatio >= 0.68f;
+            bool useCompactCards = aspectRatio < 0.49f;
             VisualElement screenRoot =
                 _root.Q<VisualElement>("screen-root");
             screenRoot?.EnableInClassList(
                 "blueprint-tablet-layout",
                 useTabletCards);
+            screenRoot?.EnableInClassList(
+                "blueprint-compact-layout",
+                useCompactCards);
         }
 
         private void ApplyMenuBackButtonLayout()
@@ -275,6 +281,7 @@ namespace Shikaku.Menu
                 button.style.left = gameplayColumnOffset + safeLeft;
                 button.style.top = safeTop + 17f;
             }
+            Shikaku.UI.ModernBlueprintLayout.ApplySafeArea(_root);
         }
 
         private void Update()
@@ -788,6 +795,11 @@ namespace Shikaku.Menu
             _adventureScreenController?.Hide();
             if (_homeScreen != null)
                 _homeScreen.style.display = DisplayStyle.Flex;
+            var dailyStatus = _root.Q<Label>("home-daily-status");
+            if (dailyStatus != null)
+                dailyStatus.text = Progression.IsDailyDateFullyCompleted(System.DateTime.Today)
+                    ? "Today's puzzles complete"
+                    : "A fresh challenge every day";
             GameAnalytics.ScreenViewed("home");
         }
 

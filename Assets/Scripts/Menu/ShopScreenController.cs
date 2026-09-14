@@ -10,6 +10,8 @@ namespace Shikaku.Menu
         private readonly Action _returnHome;
         private readonly VisualElement _screen;
         private readonly Button _backButton;
+        private readonly Button _restorePurchasesButton;
+        private readonly Label _restorePurchasesStatus;
         private readonly Label _balanceLabel;
         private readonly Label _tenPriceLabel;
         private readonly Label _twentyFivePriceLabel;
@@ -71,6 +73,9 @@ namespace Shikaku.Menu
                 documentRoot,
                 "shop-buy-bundle-button");
 
+            _restorePurchasesButton = RequireElement<Button>(documentRoot, "shop-restore-purchases-button");
+            _restorePurchasesStatus = RequireElement<Label>(documentRoot, "shop-restore-purchases-status");
+            _restorePurchasesButton.clicked += RestorePurchases;
             _backButton.clicked += ReturnHome;
             _buyTenButton.clicked += BuyTenHints;
             _buyTwentyFiveButton.clicked += BuyTwentyFiveHints;
@@ -112,6 +117,7 @@ namespace Shikaku.Menu
 
         public void Dispose()
         {
+            _restorePurchasesButton.clicked -= RestorePurchases;
             _backButton.clicked -= ReturnHome;
             _buyTenButton.clicked -= BuyTenHints;
             _buyTwentyFiveButton.clicked -= BuyTwentyFiveHints;
@@ -172,6 +178,30 @@ namespace Shikaku.Menu
             RefreshHintProducts();
             RefreshPermanentProducts();
             RefreshPurchaseStatus();
+            RefreshRestorePurchases();
+        }
+
+        private void RestorePurchases()
+        {
+            RemoveAdsPurchaseService.RestorePurchases();
+            RefreshRestorePurchases();
+        }
+
+        private void RefreshRestorePurchases()
+        {
+            _restorePurchasesButton.SetEnabled(RemoveAdsPurchaseService.CanRestorePurchases);
+            string message = RemoveAdsPurchaseService.RestoreStatus switch
+            {
+                PurchaseRestoreStatus.InProgress => "Checking for purchases...",
+                PurchaseRestoreStatus.Succeeded => "Purchases restored.",
+                PurchaseRestoreStatus.NothingFound => "No purchases were found for this account.",
+                PurchaseRestoreStatus.Failed => "Could not restore purchases. Please try again.",
+                PurchaseRestoreStatus.Unavailable => "The store is unavailable. Please try again later.",
+                _ => string.Empty
+            };
+            _restorePurchasesStatus.text = message;
+            _restorePurchasesStatus.style.display = string.IsNullOrEmpty(message)
+                ? DisplayStyle.None : DisplayStyle.Flex;
         }
 
         private void RefreshPurchaseStatus()

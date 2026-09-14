@@ -692,7 +692,7 @@ namespace Shikaku.UI
                 colorLabel.alpha = 0f;
             }
 
-            Color fill = _isDarkTheme ? darkBlankCellColor : blankCellColor;
+            Color fill = _board.EmptyCellColor(_isDarkTheme);
             Color labelSurface = fill;
             if (isAssigned)
             {

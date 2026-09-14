@@ -64,18 +64,37 @@ only an active solved-floor animation schedules redraws.
 
 ## City map
 
-AdventureCityMap draws a winding street, branching cross streets, curbs, lane
-markings and planted islands behind independent building nodes. Buildings are
-not inside button/card backgrounds. Each has a compact chapter/progress button
-beneath it, with current/completed/locked states.
+AdventureCityMap groups five chapters into a compact neighborhood: two shared
+courtyards, a third building beside a public garden, and a diagonal main street
+with one branch. Ground paving, cars and garden pieces use BuildingGeometry's
+30-degree isometric projection. Streets separate groups rather than each chapter.
+Larger catalogs add mirrored neighborhoods above the existing ones; plot anchors
+stay fixed as construction progresses. Layout scales with the available width.
+Small author offsets are clamped to +/-2 horizontal and +/-4 vertical design units
+to keep neighboring building hit areas separate.
 
-Plots are generated in staggered neighborhood blocks on both sides of the road.
-A plot reserves the entire building's view height, keeping room for future floors.
-The map adapts its scale to its available width and remains vertically scrollable.
-Map positions affect presentation only: chapter unlocking and the existing
-chapter puzzle selector remain managed by AdventureScreenController/Progression.
-The Adventure map has a subdued local background; other game screens retain their
-existing theme behavior.
+Each chapter keeps the controller's original Button and navigation callbacks.
+The button has a transparent hit area covering its building and a small address
+plaque beneath it. Completed plaques show a check and chapter number; unfinished
+plaques show the chapter number and floor progress or Locked. Tooltips retain
+the full chapter/progress description, and focus/pressed states highlight the
+plaque. Picking ignores scenery and the building mesh so taps reach the button.
+
+AdventureCityScenery draws all streets and decorative props in one retained
+VisualElement behind the buildings. Reusable vector modules include tree canopies,
+parked cars, benches, planters, streetlights and a garden fountain. Planting sites
+are curated around sidewalks and the park, with small stable seeded variations
+per neighborhood. Nothing rerolls on theme changes, progress updates or revisits.
+No additional GameObjects, saved state, animation framework or idle Update loops
+are required. Public courtyards are scenery; each building's actual foundation
+and floor masks still come exclusively from the shared BuildingView.
+
+ThemeManager's existing light/dark ancestor classes select the map and plaque
+palettes in AdventureScreen.uss. The --city-sidewalk, --city-asphalt,
+--city-marking, --city-paving, --city-lawn, --city-leaf and --city-night custom
+properties also repaint the scenery. Daytime uses warm paving and green trees;
+nighttime uses cool courts, darker greenery and small warm streetlight halos.
+Chapter building colors and the solved panel renderer stay consistent.
 
 ## Solved panel and saves
 
@@ -107,7 +126,9 @@ Focused tests cover shipped dimensions and masks, Chapter 5's 43-cell foundation
 recessed boundaries, mask inheritance/overrides, invalid masks, odd/even alignment,
 stable style selection, asset isolation, replays, construction completion and
 detachment. Rendering tests capture the shared renderer and the real Adventure
-screen with its UXML/theme sheets, and check a 40-chapter layout.
+screen with its UXML/theme sheets in both themes, verify live street recoloring,
+check compact density, building hit targets and chapter navigation, and check a
+40-chapter layout for overlaps and narrow viewport bounds.
 
 Run EditMode tests matching Shikaku.Tests.AdventureBuilding with graphics enabled.
 Captures and test reports go to Logs/. Tests use a temporary UI host and isolated
@@ -117,3 +138,19 @@ copy to avoid interrupting the active editor.
 
 On-device touch target, safe-area and GPU performance checks are still recommended
 before release.
+
+## Resetting progress in the Unity editor
+
+Exit Play Mode, then choose Shikaku Go > Progress > Reset Puzzle Progress... .
+The confirmation explains the scope: all puzzle completion and best times,
+Free Play/Adventure unlocks and continue positions, Daily completion and streak,
+and Time Trial scores. Hints, purchase/reward records, achievements, tutorial
+completion and device preferences are preserved. Enter Play Mode again to see
+unbuilt chapter foundations and the first chapter unlocked.
+
+The command updates SaveManager's cached data, shikaku_save.json and its .bak
+recovery file. It also creates a separate timestamped before-progress-reset JSON
+snapshot beside the save; the Console prints its path. This snapshot is for manual
+recovery and is never loaded automatically. Clearing PlayerPrefs alone does not
+reset puzzle completion. The reset command is available only in the editor and
+is disabled during Play Mode or script compilation.

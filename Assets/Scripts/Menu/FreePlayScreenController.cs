@@ -217,7 +217,7 @@ namespace Shikaku.Menu
 
             int completed = CountCompleted(collection);
             var progress = new Label(
-                $"{completed:00} / {collection.TotalPuzzleCount:00} APPROVED");
+                $"{completed} / {collection.TotalPuzzleCount} completed");
             progress.AddToClassList("free-play-pack-progress");
             copy.Add(progress);
             copy.Add(CreateProgressBar(
@@ -226,7 +226,7 @@ namespace Shikaku.Menu
                 "free-play-pack-progress"));
             button.Add(copy);
 
-            var open = new Label("OPEN  \u203A");
+            var open = new Label("\u203A");
             open.AddToClassList("free-play-pack-arrow");
             button.Add(open);
 
@@ -389,7 +389,7 @@ namespace Shikaku.Menu
             int completed = CountCompleted(
                 PuzzleCatalog.GetPackPuzzleIds(sizePack.PackPath));
             var progress = new Label(
-                $"{completed:00} / {sizePack.Count:00} APPROVED");
+                $"{completed} / {sizePack.Count} done");
             progress.AddToClassList("free-play-size-progress");
             button.Add(progress);
             button.Add(CreateProgressBar(
@@ -436,10 +436,10 @@ namespace Shikaku.Menu
 
             _levelTitleLabel.text = $"{size}\u00D7{size}";
             _levelProgressLabel.text =
-                $"{completed:00} / {puzzleIds.Count:00} APPROVED";
+                $"{completed} / {puzzleIds.Count} completed";
             _continueLabel.text = allCompleted
-                ? "REOPEN PLAN 01"
-                : $"RESUME PLAN {_continueLevelIndex:00}";
+                ? "Play again · Puzzle 1"
+                : $"Continue puzzle {_continueLevelIndex}";
 
             BuildLevelGrid(puzzleIds, allCompleted ? -1 : nextPuzzleIndex);
             _levelScrollView.schedule.Execute(() =>
@@ -546,7 +546,7 @@ namespace Shikaku.Menu
             {
                 button.AddToClassList("free-play-level-next");
 
-                var nextLabel = new Label("NEXT");
+                var nextLabel = new Label("Next");
                 nextLabel.AddToClassList("free-play-level-next-label");
                 button.Add(nextLabel);
 
@@ -564,7 +564,7 @@ namespace Shikaku.Menu
             if (completed)
             {
                 button.AddToClassList("free-play-level-completed");
-                var stamp = new Label("APPROVED");
+                var stamp = new Label("Done");
                 stamp.AddToClassList("free-play-level-approved-stamp");
                 button.Add(stamp);
             }
@@ -577,7 +577,7 @@ namespace Shikaku.Menu
                 constructionLine.AddToClassList("free-play-level-lock-line");
                 button.Add(constructionLine);
 
-                var lockedLabel = new Label("HOLD");
+                var lockedLabel = new Label("Locked");
                 lockedLabel.AddToClassList("free-play-level-locked-label");
                 button.Add(lockedLabel);
             }
@@ -585,7 +585,7 @@ namespace Shikaku.Menu
             {
                 if (!completed && !isNext)
                 {
-                    var readyLabel = new Label("READY");
+                    var readyLabel = new Label("Play");
                     readyLabel.AddToClassList("free-play-level-ready-label");
                     button.Add(readyLabel);
                 }

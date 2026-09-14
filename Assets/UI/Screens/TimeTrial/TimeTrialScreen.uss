@@ -167,11 +167,6 @@
     opacity: 0.62;
 }
 
-.time-trial-sprint {
-    background-color: rgb(52, 140, 67);
-    border-color: rgb(35, 98, 47);
-}
-
 .time-trial-quick {
     background-color: rgb(42, 111, 176);
     border-color: rgb(28, 78, 128);

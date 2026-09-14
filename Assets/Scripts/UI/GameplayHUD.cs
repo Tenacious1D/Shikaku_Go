@@ -267,6 +267,7 @@ namespace Shikaku.UI
                 return;
             }
 
+            ModernBlueprintLayout.Install(_root);
             _safeArea = _root.Q<VisualElement>("gameplay-safe-area");
             _playCluster = _root.Q<VisualElement>("gameplay-play-cluster");
             _boardSlot = _root.Q<VisualElement>("gameplay-board-slot");
@@ -2392,7 +2393,7 @@ namespace Shikaku.UI
 
             string sizeLabel = BuildPackLabel();
 
-            titleText.text = $"LEVEL {level}";
+            titleText.text = $"Level {level}";
             if (_subtitleText != null)
                 _subtitleText.text = sizeLabel;
         }
@@ -2504,7 +2505,7 @@ namespace Shikaku.UI
             if (Shikaku.Menu.GameSession.Mode == Shikaku.Menu.MenuMode.Story)
             {
                 int chapter = ExtractChapterNumber(Shikaku.Menu.GameSession.PackPath);
-                return chapter > 0 ? $"CH {chapter}" : "CH";
+                return chapter > 0 ? $"Chapter {chapter}" : "Adventure";
             }
 
             // Example packPath: "FreePlay/freeplay_3x3_pack01"
@@ -2577,7 +2578,7 @@ namespace Shikaku.UI
                 _progressCaption.text =
                     Shikaku.Menu.GameSession.Mode == Shikaku.Menu.MenuMode.TimeTrial
                         ? "SCORE"
-                        : "FILLED";
+                        : "Filled";
             }
 
             // TIME TRIAL: show the player's current session score.
@@ -2653,7 +2654,7 @@ namespace Shikaku.UI
             }
 
             if (_bestCaption != null)
-                _bestCaption.text = "BEST";
+                _bestCaption.text = "Best";
 
             if (Shikaku.Menu.GameSession.Mode ==
                 Shikaku.Menu.MenuMode.TimeTrial)

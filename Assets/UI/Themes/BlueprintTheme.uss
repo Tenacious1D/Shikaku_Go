@@ -237,16 +237,6 @@
     -unity-background-image-tint-color: rgb(48, 139, 103);
 }
 
-.time-trial-sprint { border-left-width: 8px; border-left-color: rgb(48, 139, 103); }
-.time-trial-quick { border-left-width: 8px; border-left-color: rgb(34, 139, 181); }
-.time-trial-classic { border-left-width: 8px; border-left-color: rgb(230, 169, 29); }
-.time-trial-expert { border-left-width: 8px; border-left-color: rgb(196, 59, 69); }
-
-.shop-bundle-card {
-    border-top-width: 8px;
-    border-top-color: rgb(230, 169, 29);
-}
-
 .shop-best-value-badge {
     background-color: rgb(230, 169, 29);
 }
@@ -1938,4 +1928,1311 @@
 
 .theme-dark .free-play-level-lock-line {
     background-color: rgba(113, 172, 188, 0.26);
+}
+/* Blueprint inspection log and drafting bench */
+.blueprint-document-header {
+    flex-shrink: 0;
+    width: 100%;
+    height: 268px;
+    padding-top: 18px;
+    padding-right: 22px;
+    padding-bottom: 18px;
+    padding-left: 132px;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: rgba(239, 248, 249, 0.94);
+    border-width: 2px;
+    border-left-width: 7px;
+    border-color: rgb(78, 145, 178);
+    border-left-color: rgb(27, 132, 177);
+    border-radius: 4px;
+}
+
+.blueprint-header-index {
+    flex-shrink: 0;
+    height: 33px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.blueprint-header-kicker,
+.blueprint-header-sheet,
+.blueprint-metadata-label,
+.daily-work-order-tab,
+.daily-calendar-kicker,
+.daily-calendar-reference,
+.daily-calendar-legend-text,
+.daily-modal-tab,
+.daily-modal-prompt,
+.daily-difficulty-status,
+.daily-difficulty-action,
+.time-trial-section-title,
+.time-trial-section-caption,
+.time-trial-active-count,
+.time-trial-assignment-tab,
+.time-trial-assignment-caption,
+.time-trial-spec-label,
+.time-trial-assignment-action {
+    -unity-font-style: bold;
+    letter-spacing: 2px;
+}
+
+.blueprint-header-kicker,
+.blueprint-header-sheet {
+    margin: 0;
+    padding: 0;
+    color: rgb(47, 101, 136);
+    font-size: 19px;
+}
+
+.blueprint-header-sheet {
+    color: rgb(18, 116, 161);
+    letter-spacing: 1px;
+}
+
+.blueprint-document-title {
+    margin: 4px 0 2px 0;
+    padding: 0;
+    color: rgb(13, 58, 99);
+    font-size: 61px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    -unity-text-outline-width: 0;
+    white-space: nowrap;
+}
+
+.blueprint-header-rule {
+    flex-shrink: 0;
+    width: 100%;
+    height: 2px;
+    margin-top: 4px;
+    margin-bottom: 12px;
+    background-color: rgba(32, 112, 156, 0.55);
+}
+
+.blueprint-document-metadata {
+    flex-grow: 1;
+    min-height: 58px;
+    flex-direction: row;
+    align-items: stretch;
+    border-width: 1px;
+    border-color: rgba(32, 112, 156, 0.42);
+}
+
+.blueprint-metadata-field {
+    flex-grow: 1;
+    width: 33.333%;
+    min-width: 0;
+    padding-top: 7px;
+    padding-right: 12px;
+    padding-bottom: 5px;
+    padding-left: 12px;
+    justify-content: center;
+}
+
+.blueprint-metadata-field-middle {
+    border-right-width: 1px;
+    border-left-width: 1px;
+    border-color: rgba(32, 112, 156, 0.42);
+}
+
+.blueprint-metadata-label {
+    margin: 0 0 2px 0;
+    padding: 0;
+    color: rgb(74, 119, 145);
+    font-size: 13px;
+}
+
+.blueprint-metadata-value,
+.blueprint-metadata-unit {
+    margin: 0;
+    padding: 0;
+    color: rgb(19, 71, 108);
+    font-size: 19px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+}
+
+.blueprint-metadata-unit {
+    font-size: 13px;
+    color: rgb(74, 119, 145);
+}
+
+.daily-screen,
+.time-trial-screen {
+    align-items: center;
+}
+
+.daily-content,
+.time-trial-content {
+    flex-grow: 1;
+    width: 100%;
+    max-width: 1020px;
+    min-height: 100%;
+    padding-top: 54px;
+    padding-right: 30px;
+    padding-bottom: 42px;
+    padding-left: 30px;
+    align-items: stretch;
+}
+
+.daily-back-button,
+.time-trial-back-button {
+    left: 36px;
+    top: 72px;
+    width: 94px;
+    height: 94px;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(239, 247, 247);
+    border-width: 2px;
+    border-bottom-width: 5px;
+    border-color: rgb(47, 119, 158);
+    border-radius: 5px;
+}
+
+.daily-back-icon,
+.time-trial-back-icon {
+    width: 54px;
+    height: 54px;
+    background-image: url("project://database/Assets/Art/UI/Icons/icon_back.png");
+    -unity-background-scale-mode: scale-to-fit;
+    -unity-background-image-tint-color: rgb(18, 82, 126);
+}
+
+.daily-streak-value-row {
+    flex-direction: row;
+    align-items: center;
+}
+
+.daily-work-order {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    height: 166px;
+    margin-top: 18px;
+    padding: 0;
+    background-color: rgba(248, 248, 235, 0.98);
+    border-width: 2px;
+    border-left-width: 7px;
+    border-bottom-width: 5px;
+    border-color: rgb(77, 145, 177);
+    border-left-color: rgb(224, 163, 26);
+    border-radius: 4px;
+    color: rgb(16, 62, 96);
+}
+
+.daily-work-order:hover {
+    background-color: rgb(248, 252, 244);
+    border-color: rgb(30, 131, 173);
+    border-left-color: rgb(224, 163, 26);
+}
+
+.daily-work-order:active {
+    translate: 0 3px;
+    border-bottom-width: 2px;
+}
+
+.daily-work-order:disabled {
+    opacity: 0.65;
+}
+
+.daily-work-order-tab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 35px;
+    margin: 0;
+    padding: 7px 18px 0 18px;
+    background-color: rgb(224, 163, 26);
+    color: rgb(255, 252, 231);
+    font-size: 14px;
+}
+
+.daily-work-order-body {
+    flex-grow: 1;
+    padding-top: 38px;
+    padding-right: 22px;
+    padding-bottom: 12px;
+    padding-left: 18px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.daily-work-order-symbol {
+    width: 88px;
+    height: 88px;
+    margin-right: 20px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(235, 246, 247);
+    border-width: 2px;
+    border-color: rgb(73, 141, 173);
+    border-radius: 2px;
+}
+
+.daily-work-order-symbol .daily-date-icon {
+    position: absolute;
+    width: 52px;
+    height: 52px;
+    opacity: 0.22;
+    -unity-background-image-tint-color: rgb(22, 103, 148);
+}
+
+.daily-work-order-number {
+    margin: 0;
+    padding: 0;
+    color: rgb(20, 90, 132);
+    font-size: 31px;
+    -unity-font-style: bold;
+}
+
+.daily-work-order-copy {
+    flex-grow: 1;
+    min-width: 0;
+    justify-content: center;
+}
+
+.daily-work-order-title {
+    margin: 0;
+    padding: 0;
+    color: rgb(14, 59, 96);
+    font-size: 28px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.daily-work-order-status {
+    margin-top: 5px;
+    padding: 0;
+    color: rgb(49, 116, 145);
+    font-size: 15px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+}
+
+.daily-work-order-approved .daily-work-order-status {
+    color: rgb(34, 130, 88);
+}
+
+.daily-work-order-action {
+    width: 182px;
+    height: 72px;
+    padding-right: 14px;
+    padding-left: 14px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-left-width: 1px;
+    border-left-color: rgba(41, 119, 157, 0.44);
+}
+
+.daily-work-order-action-label,
+.daily-work-order-arrow {
+    color: rgb(18, 105, 151);
+    font-size: 17px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.daily-work-order-arrow {
+    font-size: 30px;
+}
+
+.daily-calendar-card {
+    flex-grow: 1;
+    min-height: 690px;
+    margin-top: 18px;
+    padding: 0;
+    background-color: rgba(247, 249, 239, 0.97);
+    border-width: 2px;
+    border-bottom-width: 5px;
+    border-color: rgb(78, 145, 178);
+    border-radius: 4px;
+}
+
+.daily-calendar-title-strip {
+    flex-shrink: 0;
+    height: 100px;
+    padding-right: 14px;
+    padding-left: 18px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(222, 239, 240, 0.82);
+    border-bottom-width: 2px;
+    border-bottom-color: rgb(75, 142, 175);
+}
+
+.daily-calendar-title-copy {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.daily-calendar-kicker {
+    margin: 0;
+    padding: 0;
+    color: rgb(18, 75, 114);
+    font-size: 18px;
+}
+
+.daily-calendar-reference {
+    margin-top: 4px;
+    padding: 0;
+    color: rgb(66, 117, 143);
+    font-size: 12px;
+}
+
+.daily-month-row {
+    flex-shrink: 0;
+    width: 440px;
+    height: 68px;
+    margin: 0;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.daily-month-button {
+    width: 64px;
+    height: 60px;
+    min-width: 64px;
+    min-height: 60px;
+    font-size: 25px;
+    background-color: rgb(240, 248, 247);
+    border-width: 2px;
+    border-bottom-width: 4px;
+    border-color: rgb(68, 135, 170);
+    border-radius: 3px;
+}
+
+.daily-month-button:disabled {
+    opacity: 0.34;
+}
+
+.daily-month-title {
+    width: 285px;
+    height: 58px;
+    margin: 0 10px;
+    padding: 0;
+    color: rgb(15, 64, 101);
+    font-size: 23px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    -unity-text-align: middle-center;
+}
+
+.daily-weekday-row {
+    flex-shrink: 0;
+    height: 48px;
+    padding-right: 8px;
+    padding-left: 8px;
+    flex-direction: row;
+    background-color: rgba(225, 241, 242, 0.5);
+    border-bottom-width: 1px;
+    border-bottom-color: rgba(63, 130, 164, 0.45);
+}
+
+.daily-weekday {
+    flex-grow: 1;
+    width: 14.285%;
+    margin: 0;
+    padding: 0;
+    color: rgb(57, 104, 132);
+    font-size: 13px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-calendar-grid {
+    flex-grow: 1;
+    min-height: 456px;
+    padding: 7px 8px 5px 8px;
+}
+
+.daily-calendar-row {
+    flex-grow: 1;
+    min-height: 72px;
+    flex-direction: row;
+}
+
+.daily-calendar-cell {
+    flex-grow: 1;
+    width: 14.285%;
+    min-width: 0;
+    min-height: 68px;
+    margin: 3px;
+}
+
+.daily-calendar-blank {
+    border-width: 1px;
+    border-color: rgba(82, 132, 154, 0.13);
+    background-color: rgba(220, 234, 234, 0.22);
+}
+
+.daily-day-button {
+    position: relative;
+    padding: 0;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: rgba(246, 249, 241, 0.96);
+    border-width: 1px;
+    border-color: rgba(66, 129, 160, 0.68);
+    border-radius: 1px;
+    color: rgb(17, 67, 104);
+}
+
+.daily-day-button:hover {
+    background-color: rgb(229, 245, 244);
+    border-color: rgb(22, 121, 166);
+    border-width: 2px;
+}
+
+.daily-day-button:disabled {
+    opacity: 1;
+}
+
+.daily-day-number {
+    height: 33px;
+    margin: 0;
+    padding-top: 7px;
+    padding-left: 8px;
+    color: rgb(17, 67, 104);
+    font-size: 19px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-left;
+}
+
+.daily-day-status-row {
+    height: 24px;
+    margin-right: 5px;
+    margin-left: 5px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.daily-day-status {
+    width: 27%;
+    margin: 0;
+    padding: 0;
+    font-size: 10px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    border-width: 1px;
+    border-color: rgba(65, 118, 143, 0.45);
+}
+
+.daily-day-status-complete {
+    color: rgb(246, 252, 244);
+    background-color: rgb(40, 137, 95);
+    border-color: rgb(40, 137, 95);
+}
+
+.daily-day-status-pending {
+    color: rgba(60, 102, 123, 0.56);
+}
+
+.daily-day-approved {
+    position: absolute;
+    right: 5px;
+    bottom: 3px;
+    margin: 0;
+    padding: 1px 3px;
+    color: rgb(35, 129, 88);
+    font-size: 7px;
+    letter-spacing: 1px;
+    -unity-font-style: bold;
+    rotate: -5deg;
+    border-width: 1px;
+    border-color: rgb(35, 129, 88);
+}
+
+.daily-day-today {
+    background-color: rgb(255, 249, 218);
+    border-width: 4px;
+    border-color: rgb(224, 163, 26);
+}
+
+.daily-day-completed {
+    background-color: rgb(235, 248, 238);
+    border-color: rgb(42, 138, 95);
+}
+
+.daily-day-today.daily-day-completed {
+    border-color: rgb(224, 163, 26);
+}
+
+.daily-day-future {
+    background-color: rgba(237, 243, 239, 0.56);
+    border-color: rgba(78, 127, 149, 0.3);
+}
+
+.daily-day-future .daily-day-number {
+    color: rgba(64, 103, 121, 0.42);
+}
+
+.daily-day-unavailable {
+    background-color: rgba(220, 230, 229, 0.56);
+    border-color: rgba(78, 127, 149, 0.22);
+}
+
+.daily-day-unavailable .daily-day-number {
+    color: rgba(64, 103, 121, 0.36);
+}
+
+.daily-calendar-legend {
+    flex-shrink: 0;
+    height: 38px;
+    padding-right: 12px;
+    padding-left: 12px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgba(224, 239, 240, 0.56);
+    border-top-width: 1px;
+    border-top-color: rgba(63, 130, 164, 0.45);
+}
+
+.daily-calendar-legend-text {
+    color: rgb(71, 112, 133);
+    font-size: 9px;
+}
+
+.daily-modal-card {
+    position: relative;
+    width: 760px;
+    min-height: 640px;
+    padding-top: 62px;
+    padding-right: 42px;
+    padding-bottom: 42px;
+    padding-left: 42px;
+    background-color: rgb(244, 249, 242);
+    border-width: 2px;
+    border-left-width: 7px;
+    border-bottom-width: 6px;
+    border-color: rgb(63, 137, 173);
+    border-left-color: rgb(224, 163, 26);
+    border-radius: 4px;
+}
+
+.daily-modal-tab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 38px;
+    margin: 0;
+    padding: 9px 18px 0 18px;
+    color: rgb(255, 252, 232);
+    background-color: rgb(224, 163, 26);
+    font-size: 14px;
+}
+
+.daily-modal-close {
+    right: 18px;
+    top: 14px;
+    width: 62px;
+    height: 58px;
+    min-width: 62px;
+    min-height: 58px;
+    padding: 0;
+    background-color: rgb(239, 247, 247);
+    color: rgb(18, 82, 126);
+    border-width: 2px;
+    border-color: rgb(66, 136, 171);
+    border-radius: 3px;
+    font-size: 30px;
+}
+
+.daily-modal-title {
+    height: 72px;
+    margin: 0;
+    padding: 0;
+    color: rgb(14, 59, 96);
+    font-size: 38px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    -unity-text-align: middle-left;
+}
+
+.daily-modal-date {
+    margin: 0;
+    padding: 0;
+    color: rgb(46, 111, 142);
+    font-size: 17px;
+    letter-spacing: 2px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.daily-modal-rule {
+    height: 2px;
+    margin-top: 14px;
+    margin-bottom: 16px;
+    background-color: rgba(41, 119, 157, 0.52);
+}
+
+.daily-modal-prompt {
+    height: 34px;
+    margin: 0 0 7px 0;
+    color: rgb(72, 116, 137);
+    font-size: 13px;
+    -unity-text-align: middle-left;
+}
+
+.daily-difficulty-button {
+    height: 110px;
+    min-height: 110px;
+    margin-top: 10px;
+    padding: 0 18px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgb(244, 248, 239);
+    border-width: 2px;
+    border-bottom-width: 4px;
+    border-color: rgb(75, 139, 170);
+    border-radius: 3px;
+    color: rgb(15, 62, 97);
+}
+
+.daily-difficulty-button:hover {
+    background-color: rgb(229, 244, 242);
+    border-color: rgb(23, 124, 168);
+}
+
+.daily-difficulty-badge {
+    width: 62px;
+    height: 62px;
+    margin: 0 18px 0 0;
+    padding: 0;
+    color: rgb(20, 91, 132);
+    background-color: rgb(226, 241, 242);
+    border-width: 2px;
+    border-color: rgb(52, 129, 164);
+    font-size: 25px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+}
+
+.daily-difficulty-copy {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.daily-difficulty-name {
+    margin: 0;
+    padding: 0;
+    color: rgb(14, 59, 96);
+    font-size: 22px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+}
+
+.daily-difficulty-status {
+    margin-top: 3px;
+    padding: 0;
+    color: rgb(72, 116, 137);
+    font-size: 11px;
+    -unity-text-align: middle-left;
+}
+
+.daily-difficulty-action {
+    width: 112px;
+    color: rgb(19, 111, 154);
+    font-size: 15px;
+    -unity-text-align: middle-right;
+}
+
+.daily-difficulty-complete {
+    background-color: rgb(235, 248, 238);
+    border-color: rgb(43, 139, 96);
+}
+
+.daily-difficulty-complete .daily-difficulty-badge {
+    color: rgb(246, 252, 244);
+    background-color: rgb(40, 137, 95);
+    border-color: rgb(40, 137, 95);
+}
+
+.daily-difficulty-complete .daily-difficulty-status,
+.daily-difficulty-complete .daily-difficulty-action {
+    color: rgb(35, 129, 88);
+}
+
+.time-trial-assignment-heading {
+    flex-shrink: 0;
+    height: 76px;
+    margin-top: 18px;
+    padding-right: 4px;
+    padding-left: 4px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom-width: 2px;
+    border-bottom-color: rgba(54, 122, 157, 0.54);
+}
+
+.time-trial-section-title {
+    margin: 0;
+    padding: 0;
+    color: rgb(17, 69, 105);
+    font-size: 20px;
+}
+
+.time-trial-section-caption {
+    margin-top: 3px;
+    padding: 0;
+    color: rgb(74, 118, 140);
+    font-size: 11px;
+}
+
+.time-trial-active-count {
+    margin: 0;
+    padding: 7px 11px;
+    color: rgb(25, 106, 146);
+    font-size: 12px;
+    border-width: 1px;
+    border-color: rgba(43, 121, 159, 0.6);
+}
+
+.time-trial-assignment-board {
+    flex-grow: 1;
+    min-height: 760px;
+    padding-top: 16px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-content: flex-start;
+}
+
+.time-trial-assignment {
+    position: relative;
+    width: 49%;
+    height: 420px;
+    margin: 0;
+    padding: 0;
+    background-color: rgba(247, 249, 239, 0.98);
+    border-width: 2px;
+    border-left-width: 7px;
+    border-bottom-width: 5px;
+    border-color: rgb(76, 143, 176);
+    border-radius: 4px;
+    color: rgb(14, 60, 97);
+}
+
+.time-trial-assignment:hover {
+    background-color: rgb(237, 248, 246);
+    border-color: rgb(25, 125, 169);
+}
+
+.time-trial-assignment:active {
+    translate: 0 3px;
+    border-bottom-width: 2px;
+}
+
+.time-trial-quick {
+    border-left-color: rgb(24, 145, 178);
+}
+
+.time-trial-classic {
+    border-left-color: rgb(218, 156, 26);
+}
+
+.time-trial-expert {
+    border-left-color: rgb(187, 65, 70);
+}
+
+.time-trial-assignment-tab {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 36px;
+    margin: 0;
+    padding: 8px 15px 0 15px;
+    color: rgb(249, 253, 247);
+    background-color: rgb(24, 145, 178);
+    font-size: 13px;
+}
+
+.time-trial-classic .time-trial-assignment-tab {
+    background-color: rgb(218, 156, 26);
+}
+
+.time-trial-expert .time-trial-assignment-tab {
+    background-color: rgb(187, 65, 70);
+}
+
+.time-trial-assignment-body {
+    flex-grow: 1;
+    padding-top: 52px;
+    padding-right: 22px;
+    padding-bottom: 18px;
+    padding-left: 22px;
+    align-items: stretch;
+}
+
+.time-trial-plan-preview {
+    position: relative;
+    flex-shrink: 0;
+    width: 100%;
+    height: 125px;
+    margin-bottom: 14px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgb(232, 244, 244);
+    border-width: 2px;
+    border-color: rgb(56, 132, 168);
+}
+
+
+.time-trial-plan-wall {
+    position: absolute;
+    background-color: rgba(42, 124, 162, 0.42);
+}
+
+.time-trial-plan-wall-v {
+    left: 34%;
+    top: 0;
+    width: 2px;
+    height: 100%;
+}
+
+.time-trial-plan-wall-h {
+    left: 0;
+    top: 57%;
+    width: 100%;
+    height: 2px;
+}
+
+.time-trial-plan-room {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 34%;
+    height: 57%;
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+    border-color: rgba(42, 124, 162, 0.42);
+}
+
+.time-trial-plan-size {
+    margin: 0;
+    padding: 0 9px 2px 9px;
+    color: rgb(16, 80, 119);
+    background-color: rgba(240, 248, 245, 0.92);
+    border-width: 1px;
+    border-color: rgb(54, 130, 166);
+    font-size: 36px;
+    -unity-font-style: bold;
+}
+
+.time-trial-assignment-name {
+    margin: 0;
+    padding: 0;
+    color: rgb(13, 58, 96);
+    font-size: 27px;
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+    -unity-text-align: middle-left;
+}
+
+.time-trial-assignment-caption {
+    margin-top: 3px;
+    padding: 0;
+    color: rgb(72, 116, 137);
+    font-size: 11px;
+    -unity-text-align: middle-left;
+}
+
+.time-trial-assignment-specs {
+    height: 67px;
+    margin-top: 13px;
+    flex-direction: row;
+    border-width: 1px;
+    border-color: rgba(58, 127, 160, 0.5);
+}
+
+.time-trial-spec {
+    flex-grow: 1;
+    width: 50%;
+    padding: 7px 10px 5px 10px;
+    justify-content: center;
+}
+
+.time-trial-spec-right {
+    border-left-width: 1px;
+    border-left-color: rgba(58, 127, 160, 0.5);
+}
+
+.time-trial-spec-label {
+    margin: 0;
+    padding: 0;
+    color: rgb(73, 117, 139);
+    font-size: 10px;
+    -unity-text-align: middle-left;
+}
+
+.time-trial-spec-value {
+    margin: 2px 0 0 0;
+    padding: 0;
+    color: rgb(16, 70, 106);
+    font-size: 16px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    white-space: nowrap;
+}
+
+.time-trial-assignment-action {
+    height: 44px;
+    margin-top: 11px;
+    padding-right: 11px;
+    padding-left: 11px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    color: rgb(18, 107, 151);
+    font-size: 13px;
+    border-top-width: 1px;
+    border-top-color: rgba(58, 127, 160, 0.5);
+}
+
+.time-trial-assignment-wide {
+    width: 100%;
+    height: 250px;
+    margin-top: 16px;
+}
+
+.time-trial-assignment-wide-body {
+    flex-direction: row;
+    align-items: center;
+}
+
+.time-trial-plan-preview-wide {
+    width: 205px;
+    height: 148px;
+    margin-right: 22px;
+    margin-bottom: 0;
+}
+
+.time-trial-wide-copy {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.time-trial-wide-specs {
+    width: 330px;
+    margin-top: 0;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.time-trial-wide-action {
+    width: 164px;
+    margin-top: 0;
+    border-top-width: 0;
+    border-left-width: 1px;
+    border-left-color: rgba(58, 127, 160, 0.5);
+}
+
+.blueprint-tablet-layout .daily-content,
+.blueprint-tablet-layout .time-trial-content {
+    max-width: 1180px;
+}
+
+.blueprint-compact-layout .time-trial-assignment-board {
+    min-height: 1090px;
+}
+
+.blueprint-compact-layout .time-trial-assignment {
+    width: 100%;
+    height: 345px;
+    margin-bottom: 14px;
+}
+
+.blueprint-compact-layout .time-trial-assignment-body,
+.blueprint-compact-layout .time-trial-assignment-wide-body {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.blueprint-compact-layout .time-trial-plan-preview,
+.blueprint-compact-layout .time-trial-plan-preview-wide {
+    width: 100%;
+    height: 88px;
+    margin-right: 0;
+    margin-bottom: 8px;
+}
+
+.blueprint-compact-layout .time-trial-wide-copy,
+.blueprint-compact-layout .time-trial-assignment-caption,
+.blueprint-compact-layout .time-trial-assignment-name {
+    width: 100%;
+}
+
+.blueprint-compact-layout .time-trial-assignment-specs,
+.blueprint-compact-layout .time-trial-wide-specs {
+    width: 100%;
+    height: 56px;
+    margin-top: 7px;
+    margin-right: 0;
+    margin-left: 0;
+}
+
+.blueprint-compact-layout .time-trial-assignment-action,
+.blueprint-compact-layout .time-trial-wide-action {
+    width: 100%;
+    height: 37px;
+    margin-top: 6px;
+    margin-left: 0;
+    border-top-width: 1px;
+    border-left-width: 0;
+}
+/* Night blueprint variants */
+.theme-dark .blueprint-document-header {
+    background-color: rgba(9, 43, 73, 0.97);
+    border-color: rgb(55, 132, 165);
+    border-left-color: rgb(81, 194, 217);
+}
+
+.theme-dark .blueprint-header-kicker,
+.theme-dark .blueprint-header-sheet,
+.theme-dark .blueprint-metadata-label,
+.theme-dark .blueprint-metadata-unit {
+    color: rgb(142, 204, 220);
+}
+
+.theme-dark .blueprint-document-title,
+.theme-dark .blueprint-metadata-value {
+    color: rgb(224, 242, 244);
+    -unity-text-outline-width: 0;
+}
+
+.theme-dark .blueprint-header-rule {
+    background-color: rgba(105, 199, 219, 0.62);
+}
+
+.theme-dark .blueprint-document-metadata,
+.theme-dark .blueprint-metadata-field-middle {
+    border-color: rgba(99, 185, 205, 0.48);
+}
+
+.theme-dark .daily-back-button,
+.theme-dark .time-trial-back-button {
+    background-color: rgb(12, 49, 81);
+    border-color: rgb(76, 171, 198);
+}
+
+.theme-dark .daily-back-icon,
+.theme-dark .time-trial-back-icon {
+    -unity-background-image-tint-color: rgb(199, 233, 239);
+}
+
+.theme-dark .daily-work-order,
+.theme-dark .daily-calendar-card,
+.theme-dark .daily-difficulty-button,
+.theme-dark .time-trial-assignment {
+    background-color: rgba(10, 45, 75, 0.98);
+    border-color: rgb(65, 145, 174);
+}
+
+.theme-dark .daily-work-order {
+    border-left-color: rgb(236, 180, 43);
+}
+
+.theme-dark .daily-work-order:hover,
+.theme-dark .daily-difficulty-button:hover,
+.theme-dark .time-trial-assignment:hover {
+    background-color: rgb(14, 57, 91);
+}
+
+.theme-dark .daily-work-order-symbol,
+.theme-dark .time-trial-plan-preview {
+    background-color: rgb(7, 36, 62);
+    border-color: rgb(71, 155, 183);
+}
+
+.theme-dark .daily-work-order-symbol .daily-date-icon {
+    -unity-background-image-tint-color: rgb(121, 208, 225);
+}
+
+.theme-dark .daily-work-order-number,
+.theme-dark .daily-work-order-title,
+.theme-dark .daily-month-title,
+.theme-dark .daily-modal-title,
+.theme-dark .daily-difficulty-name,
+.theme-dark .time-trial-section-title,
+.theme-dark .time-trial-plan-size,
+.theme-dark .time-trial-assignment-name,
+.theme-dark .time-trial-spec-value {
+    color: rgb(224, 242, 244);
+    -unity-text-outline-width: 0;
+}
+
+.theme-dark .daily-work-order-status,
+.theme-dark .daily-calendar-reference,
+.theme-dark .daily-calendar-legend-text,
+.theme-dark .daily-modal-date,
+.theme-dark .daily-modal-prompt,
+.theme-dark .daily-difficulty-status,
+.theme-dark .time-trial-section-caption,
+.theme-dark .time-trial-assignment-caption,
+.theme-dark .time-trial-spec-label {
+    color: rgb(139, 198, 214);
+}
+
+.theme-dark .daily-work-order-action,
+.theme-dark .time-trial-wide-action {
+    border-color: rgba(99, 185, 205, 0.48);
+}
+
+.theme-dark .daily-work-order-action-label,
+.theme-dark .daily-work-order-arrow,
+.theme-dark .daily-difficulty-action,
+.theme-dark .time-trial-assignment-action {
+    color: rgb(114, 211, 229);
+}
+
+.theme-dark .daily-calendar-title-strip,
+.theme-dark .daily-weekday-row,
+.theme-dark .daily-calendar-legend {
+    background-color: rgba(17, 65, 94, 0.88);
+    border-color: rgb(65, 145, 174);
+}
+
+.theme-dark .daily-calendar-kicker,
+.theme-dark .daily-weekday {
+    color: rgb(159, 215, 226);
+}
+
+.theme-dark .daily-month-button,
+.theme-dark .daily-modal-close {
+    background-color: rgb(11, 48, 79);
+    border-color: rgb(70, 155, 184);
+    color: rgb(208, 238, 242);
+}
+
+.theme-dark .daily-calendar-blank {
+    background-color: rgba(10, 40, 66, 0.52);
+    border-color: rgba(92, 162, 185, 0.18);
+}
+
+.theme-dark .daily-day-button {
+    background-color: rgba(11, 49, 79, 0.96);
+    border-color: rgba(80, 163, 190, 0.68);
+}
+
+.theme-dark .daily-day-button:hover {
+    background-color: rgb(15, 65, 98);
+    border-color: rgb(101, 207, 225);
+}
+
+.theme-dark .daily-day-number {
+    color: rgb(216, 237, 241);
+}
+
+.theme-dark .daily-day-status {
+    border-color: rgba(119, 190, 207, 0.48);
+}
+
+.theme-dark .daily-day-status-pending {
+    color: rgba(157, 207, 217, 0.56);
+}
+
+.theme-dark .daily-day-status-complete {
+    color: rgb(7, 42, 61);
+    background-color: rgb(94, 207, 157);
+    border-color: rgb(94, 207, 157);
+}
+
+.theme-dark .daily-day-today {
+    background-color: rgb(72, 61, 27);
+    border-color: rgb(240, 190, 60);
+}
+
+.theme-dark .daily-day-completed {
+    background-color: rgb(12, 66, 67);
+    border-color: rgb(80, 193, 147);
+}
+
+.theme-dark .daily-day-approved,
+.theme-dark .daily-work-order-approved .daily-work-order-status,
+.theme-dark .daily-difficulty-complete .daily-difficulty-status,
+.theme-dark .daily-difficulty-complete .daily-difficulty-action {
+    color: rgb(99, 220, 166);
+    border-color: rgb(99, 220, 166);
+}
+
+.theme-dark .daily-day-future,
+.theme-dark .daily-day-unavailable {
+    background-color: rgba(8, 37, 61, 0.62);
+    border-color: rgba(84, 147, 169, 0.24);
+}
+
+.theme-dark .daily-day-future .daily-day-number,
+.theme-dark .daily-day-unavailable .daily-day-number {
+    color: rgba(151, 195, 206, 0.38);
+}
+
+.theme-dark .daily-modal-card {
+    background-color: rgb(8, 39, 67);
+    border-color: rgb(65, 145, 174);
+    border-left-color: rgb(236, 180, 43);
+}
+
+.theme-dark .daily-difficulty-badge {
+    color: rgb(184, 226, 234);
+    background-color: rgb(13, 58, 90);
+    border-color: rgb(74, 161, 189);
+}
+
+.theme-dark .daily-difficulty-complete {
+    background-color: rgb(12, 66, 67);
+    border-color: rgb(80, 193, 147);
+}
+
+.theme-dark .daily-difficulty-complete .daily-difficulty-badge {
+    color: rgb(6, 41, 58);
+    background-color: rgb(94, 207, 157);
+    border-color: rgb(94, 207, 157);
+}
+
+.theme-dark .time-trial-assignment-heading {
+    border-color: rgba(99, 185, 205, 0.48);
+}
+
+.theme-dark .time-trial-active-count {
+    color: rgb(120, 210, 226);
+    border-color: rgba(99, 185, 205, 0.55);
+}
+
+.theme-dark .time-trial-quick {
+    border-left-color: rgb(78, 195, 216);
+}
+
+.theme-dark .time-trial-classic {
+    border-left-color: rgb(236, 180, 43);
+}
+
+.theme-dark .time-trial-expert {
+    border-left-color: rgb(220, 92, 98);
+}
+
+.theme-dark .time-trial-plan-wall {
+    background-color: rgba(104, 196, 215, 0.48);
+}
+
+.theme-dark .time-trial-plan-room,
+.theme-dark .time-trial-plan-size,
+.theme-dark .time-trial-assignment-specs,
+.theme-dark .time-trial-spec-right,
+.theme-dark .time-trial-assignment-action {
+    border-color: rgba(95, 181, 202, 0.52);
+}
+
+.theme-dark .time-trial-plan-size {
+    background-color: rgba(8, 39, 67, 0.92);
 }

@@ -249,7 +249,7 @@ namespace Shikaku.Menu
                 var buildingData = AdventureBuildingData.Load(pack.PackPath);
                 city.AddChapter(chapterIndex, buildingData, chapterButton);
                 if (!string.IsNullOrWhiteSpace(buildingData?.Definition?.displayName))
-                    chapterButton.tooltip = buildingData.Definition.displayName;
+                    chapterButton.tooltip = buildingData.Definition.displayName + " — " + chapterButton.tooltip;
                 if (unlocked)
                 {
                     chapterButton.clicked +=
@@ -340,8 +340,9 @@ namespace Shikaku.Menu
             button.AddToClassList(complete ? "city-chapter-complete" :
                 current ? "city-chapter-current" : unlocked ? "city-chapter-unlocked" : "city-chapter-locked");
             string state = complete ? "✓ " : current ? "› " : !unlocked ? "• " : "";
-            button.text = $"{state}Chapter {chapterNumber}\n" +
-                (unlocked ? $"{completed} / {total} floors" : "Locked");
+            button.tooltip = $"Chapter {chapterNumber}: " + (unlocked ? $"{completed} of {total} floors completed" : "Locked");
+            button.text = complete ? $"✓ {chapterNumber}" : $"{state}{chapterNumber}  ·  " +
+                (unlocked ? $"{completed}/{total}" : "Locked");
             return button;
         }
 

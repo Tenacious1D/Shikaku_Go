@@ -118,6 +118,84 @@ namespace Shikaku.EditorTests
         }
 
         [Test]
+        public void PuzzleResetClearsProgressAndBackupButPreservesOtherPlayerData()
+        {
+            var packs = Shikaku.Menu.PuzzleCatalog.StoryPacks;
+            Assert.That(packs.Count, Is.GreaterThan(1));
+            string pack = packs[1].PackPath;
+            string puzzle = Shikaku.Menu.PuzzleCatalog.GetPackPuzzleIds(pack)[0];
+            var day = new DateTime(2026, 9, 12);
+            SaveManager.MarkPuzzleCompleted(puzzle);
+            SaveManager.SaveBestTimeIfBetter(puzzle, 31f);
+            SaveManager.SetUnlockedLevel(5, 12);
+            SaveManager.SetUnlockedLevelForPack(pack, 8);
+            SaveManager.SetLastPlayedLevelForPack(pack, 7);
+            SaveManager.SetStoryCurrentPack(pack);
+            SaveManager.SetDailyCompleted(day, "Hard", true);
+            SaveManager.SetDailyStreak(4, 20260912);
+            SaveManager.SetDailyStreakRestorationGrantedDate(20260913);
+            SaveManager.SaveTimeTrialBestSquaresIfHigher(5, 90);
+            SaveManager.TryDeliverPurchasedHints("reset-test-purchase", 8);
+            SaveManager.TryClaimHintReward("reset-test-reward", 3);
+            SaveManager.RecordLifetimePuzzle(puzzle);
+            SaveManager.UnlockAchievement("adventurebegins");
+            SaveManager.AddAchievementTimeTrialMode(2);
+            SaveManager.SetHighestAchievementTimeTrialScore(90);
+            SaveManager.MarkTripleThreatObserved();
+            SaveManager.MarkTutorialCompleted();
+            var before = UnityEngine.JsonUtility.FromJson<SaveData>(File.ReadAllText(_savePath));
+
+            Assert.That(SaveManager.ResetPuzzleProgressForTesting(out string recovery), Is.True);
+            Assert.That(File.Exists(recovery), Is.True);
+            var snapshot = UnityEngine.JsonUtility.FromJson<SaveData>(File.ReadAllText(recovery));
+            Assert.That(snapshot.puzzles.Exists(record => record.puzzleId == puzzle && record.completed), Is.True);
+            Assert.That(SaveManager.IsPuzzleCompleted(puzzle), Is.False, "The cached state must reset immediately.");
+            Assert.That(SaveManager.TryGetBestTime(puzzle, out _), Is.False);
+            Assert.That(SaveManager.GetUnlockedLevel(5), Is.EqualTo(1));
+            Assert.That(SaveManager.GetUnlockedLevelForPack(pack), Is.EqualTo(1));
+            Assert.That(SaveManager.GetLastPlayedLevelForPack(pack), Is.EqualTo(1));
+            Assert.That(SaveManager.GetStoryCurrentPack(), Is.Empty);
+            Assert.That(SaveManager.IsDailyCompleted(day, "Hard"), Is.False);
+            Assert.That(SaveManager.DailyStreakCount, Is.Zero);
+            Assert.That(SaveManager.DailyStreakRestorationGrantedDate, Is.Zero);
+            Assert.That(SaveManager.GetTimeTrialBestSquares(5), Is.Zero);
+            Assert.That(Shikaku.Menu.Progression.GetHighestUnlockedStoryChapterIndex(), Is.Zero);
+            Assert.That(Shikaku.Menu.Progression.GetNextStoryLevel(packs[0].PackPath), Is.EqualTo(1));
+            Assert.That(Shikaku.Menu.Progression.IsStoryChapterUnlocked(pack), Is.False);
+            var after = UnityEngine.JsonUtility.FromJson<SaveData>(File.ReadAllText(_savePath));
+            Assert.That(UnityEngine.JsonUtility.ToJson(after.economy), Is.EqualTo(UnityEngine.JsonUtility.ToJson(before.economy)));
+            Assert.That(UnityEngine.JsonUtility.ToJson(after.achievements), Is.EqualTo(UnityEngine.JsonUtility.ToJson(before.achievements)));
+            Assert.That(after.tutorialCompleted, Is.True);
+            Assert.That(File.ReadAllText(SaveManager.BackupPath), Is.EqualTo(File.ReadAllText(_savePath)));
+
+            SaveManager.LoadIsolatedSaveForTesting(_savePath);
+            Assert.That(SaveManager.IsPuzzleCompleted(puzzle), Is.False, "Reset must survive a reload.");
+            // Recovery of a missing primary must not bring the old puzzle completion back.
+            File.Delete(_savePath);
+            SaveManager.LoadIsolatedSaveForTesting(_savePath);
+            Assert.That(SaveManager.IsPuzzleCompleted(puzzle), Is.False);
+            Assert.That(SaveManager.HintBalance, Is.EqualTo(11));
+            Assert.That(SaveManager.HasDeliveredHintPurchase("reset-test-purchase"), Is.True);
+            Assert.That(SaveManager.HasClaimedReward("reset-test-reward"), Is.True);
+            Assert.That(SaveManager.IsAchievementUnlocked("adventurebegins"), Is.True);
+            Assert.That(SaveManager.ResetPuzzleProgressForTesting(out string secondRecovery), Is.True);
+            Assert.That(secondRecovery, Is.Not.EqualTo(recovery));
+            Assert.That(File.Exists(recovery), Is.True, "Repeated resets must keep the earlier recovery snapshot.");
+        }
+
+        [Test]
+        public void PuzzleResetRejectsAnActiveSaveBatchWithoutChangingProgress()
+        {
+            using (SaveManager.BeginBatch())
+            {
+                SaveManager.MarkPuzzleCompleted("batched-puzzle");
+                Assert.Throws<InvalidOperationException>(() => SaveManager.ResetPuzzleProgressForTesting(out _));
+                Assert.That(SaveManager.IsPuzzleCompleted("batched-puzzle"), Is.True);
+            }
+            SaveManager.LoadIsolatedSaveForTesting(_savePath);
+            Assert.That(SaveManager.IsPuzzleCompleted("batched-puzzle"), Is.True);
+        }
+        [Test]
         public void CorruptPrimaryRecoversLastKnownGoodBackup()
         {
             SaveManager.MarkPuzzleCompleted("puzzle_003");

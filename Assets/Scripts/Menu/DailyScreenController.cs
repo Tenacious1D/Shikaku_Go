@@ -18,7 +18,11 @@ namespace Shikaku.Menu
         private readonly Action _returnHome;
         private readonly VisualElement _screen;
         private readonly Label _todayDateLabel;
+        private readonly Label _todayStatusLabel;
+        private readonly Label _todayWorkOrderNumberLabel;
         private readonly Label _monthTitleLabel;
+        private readonly Label _monthReferenceLabel;
+        private readonly Label _monthCompletedLabel;
         private readonly VisualElement _calendarGrid;
         private readonly Label _streakCountLabel;
         private readonly Button _backButton;
@@ -51,7 +55,11 @@ namespace Shikaku.Menu
 
             _screen = RequireElement<VisualElement>(documentRoot, "daily-screen");
             _todayDateLabel = RequireElement<Label>(documentRoot, "daily-today-date");
+            _todayStatusLabel = RequireElement<Label>(documentRoot, "daily-today-status");
+            _todayWorkOrderNumberLabel = RequireElement<Label>(documentRoot, "daily-work-order-number");
             _monthTitleLabel = RequireElement<Label>(documentRoot, "daily-month-title");
+            _monthReferenceLabel = RequireElement<Label>(documentRoot, "daily-month-reference");
+            _monthCompletedLabel = RequireElement<Label>(documentRoot, "daily-month-completed");
             _calendarGrid = RequireElement<VisualElement>(documentRoot, "daily-calendar-grid");
             _streakCountLabel = RequireElement<Label>(
                 documentRoot, "daily-streak-count");
@@ -89,11 +97,25 @@ namespace Shikaku.Menu
         {
             _isVisible = true;
             _screen.style.display = DisplayStyle.Flex;
-            _todayDateLabel.text = DateTime.Today.ToString("MMMM d, yyyy");
+            _todayDateLabel.text = DateTime.Today
+                .ToString("MMM d, yyyy");
             _streakCountLabel.text =
                 DailyStreakService.CurrentStreak.ToString();
-            _playTodayButton.SetEnabled(
-                IsDailyDateSelectable(DateTime.Today));
+            _todayWorkOrderNumberLabel.text =
+                DateTime.Today.Day.ToString("00");
+
+            bool todaySelectable = IsDailyDateSelectable(DateTime.Today);
+            bool todayApproved = todaySelectable &&
+                Progression.IsDailyDateFullyCompleted(DateTime.Today);
+            _todayStatusLabel.text = todayApproved
+                ? "Complete · Play again"
+                : todaySelectable
+                    ? "Choose your difficulty"
+                    : "No puzzle available today";
+            _playTodayButton.SetEnabled(todaySelectable);
+            _playTodayButton.EnableInClassList(
+                "daily-work-order-approved",
+                todayApproved);
             _visibleMonth = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1);
             CloseModal();
             GenerateCalendar();
@@ -187,7 +209,10 @@ namespace Shikaku.Menu
                 _visibleMonth = firstAvailableMonth;
 
             _calendarGrid.Clear();
-            _monthTitleLabel.text = _visibleMonth.ToString("MMMM yyyy");
+            _monthTitleLabel.text = _visibleMonth
+                .ToString("MMMM yyyy");
+            _monthReferenceLabel.text =
+                $"LOG {_visibleMonth:yyyy-MM}";
 
             DateTime today = DateTime.Today;
             DateTime firstDay = new DateTime(_visibleMonth.Year, _visibleMonth.Month, 1);
@@ -225,13 +250,44 @@ namespace Shikaku.Menu
             _previousMonthButton.SetEnabled(
                 _visibleMonth > firstAvailableMonth);
             _nextMonthButton.SetEnabled(_visibleMonth < currentMonth);
+            RefreshMonthCompletion(today, daysInMonth);
+        }
+
+        private void RefreshMonthCompletion(DateTime today, int daysInMonth)
+        {
+            int availableCount = 0;
+            int approvedCount = 0;
+
+            for (int day = 1; day <= daysInMonth; day++)
+            {
+                DateTime date = new DateTime(
+                    _visibleMonth.Year,
+                    _visibleMonth.Month,
+                    day);
+                if (date > today || !_availableDailyDates.Contains(date))
+                    continue;
+
+                availableCount++;
+                if (Progression.IsDailyDateFullyCompleted(date))
+                    approvedCount++;
+            }
+
+            _monthCompletedLabel.text =
+                $"{approvedCount} / {availableCount}";
         }
 
         private static Button CreateBaseDayButton(DateTime date)
         {
-            var button = new Button { text = date.Day.ToString(), name = $"daily-day-{date:yyyy-MM-dd}" };
+            var button = new Button
+            {
+                name = $"daily-day-{date:yyyy-MM-dd}"
+            };
             button.AddToClassList("daily-calendar-cell");
             button.AddToClassList("daily-day-button");
+
+            var dayNumber = new Label(date.Day.ToString());
+            dayNumber.AddToClassList("daily-day-number");
+            button.Add(dayNumber);
             return button;
         }
 
@@ -276,45 +332,38 @@ namespace Shikaku.Menu
             if (date == today && hasPuzzles)
                 button.AddToClassList("daily-day-today");
 
-            // ---------------------------------------------------------
-            // DAILY COMPLETION CHECKMARK
-            //
-            // Priority:
-            // All 3 -> Gold
-            // Any Hard -> Red
-            // Any Medium -> Blue
-            // Easy only -> Green
-            // ---------------------------------------------------------
-            if (easyCompleted || mediumCompleted || hardCompleted)
+            if (hasPuzzles)
             {
-                var completeMark = new Label("\u2713");
-                completeMark.AddToClassList("daily-complete-mark");
-
-                if (allCompleted)
-                {
-                    completeMark.AddToClassList("daily-complete-gold");
-
-                    // Gold outline around the entire day when all
-                    // three difficulties have been completed.
-                    button.AddToClassList("daily-day-completed");
-                }
-                else if (hardCompleted)
-                {
-                    completeMark.AddToClassList("daily-complete-hard");
-                }
-                else if (mediumCompleted)
-                {
-                    completeMark.AddToClassList("daily-complete-medium");
-                }
-                else
-                {
-                    completeMark.AddToClassList("daily-complete-easy");
-                }
-
-                button.Add(completeMark);
+                var statusRow = new VisualElement();
+                statusRow.AddToClassList("daily-day-status-row");
+                AddDifficultyMark(statusRow, "E", easyCompleted);
+                AddDifficultyMark(statusRow, "M", mediumCompleted);
+                AddDifficultyMark(statusRow, "H", hardCompleted);
+                button.Add(statusRow);
             }
 
+            if (allCompleted)
+            {
+                button.AddToClassList("daily-day-completed");
+                var approvedMark = new Label("APPROVED");
+                approvedMark.AddToClassList("daily-day-approved");
+                button.Add(approvedMark);
+            }
             return button;
+        }
+
+        private static void AddDifficultyMark(
+            VisualElement row,
+            string label,
+            bool completed)
+        {
+            var mark = new Label(label);
+            mark.AddToClassList("daily-day-status");
+            mark.AddToClassList(
+                completed
+                    ? "daily-day-status-complete"
+                    : "daily-day-status-pending");
+            row.Add(mark);
         }
 
         private void OpenDifficultyModal(DateTime date)
@@ -323,8 +372,11 @@ namespace Shikaku.Menu
                 return;
 
             _selectedDate = date.Date;
-            _modalTitleLabel.text = _selectedDate == DateTime.Today ? "Today's Puzzles" : "Daily Puzzles";
-            _modalDateLabel.text = _selectedDate.ToString("MMMM d, yyyy");
+            _modalTitleLabel.text = _selectedDate == DateTime.Today
+                ? "Today's puzzles"
+                : "Daily puzzles";
+            _modalDateLabel.text = _selectedDate
+                .ToString("MMMM d, yyyy");
 
             RefreshDifficultyButton(_easyButton, "Easy");
             RefreshDifficultyButton(_mediumButton, "Medium");
@@ -342,9 +394,22 @@ namespace Shikaku.Menu
 
         private void RefreshDifficultyButton(Button button, string difficulty)
         {
-            bool completed = Progression.IsDailyCompleted(_selectedDate, difficulty);
-            button.text = completed ? $"{difficulty}   \u2713" : difficulty;
-            button.EnableInClassList("daily-difficulty-complete", completed);
+            bool completed = Progression.IsDailyCompleted(
+                _selectedDate,
+                difficulty);
+            Label statusLabel = button.Q<Label>(
+                className: "daily-difficulty-status");
+            Label actionLabel = button.Q<Label>(
+                className: "daily-difficulty-action");
+
+            if (statusLabel != null)
+                statusLabel.text = completed ? "Completed" : "Ready to play";
+            if (actionLabel != null)
+                actionLabel.text = completed ? "Replay" : "Play";
+
+            button.EnableInClassList(
+                "daily-difficulty-complete",
+                completed);
         }
 
         private void StartEasy() => StartDailyPuzzle("Easy");

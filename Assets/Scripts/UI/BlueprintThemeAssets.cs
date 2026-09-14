@@ -7,6 +7,16 @@ namespace Shikaku.UI
         menuName = "Shikaku/Blueprint Workshop Theme")]
     public sealed class BlueprintThemeAssets : ScriptableObject
     {
+
+        [Header("Modern Board Surface")]
+        public Color lightBoardSurface = new Color32(251, 253, 254, 255);
+        public Color darkBoardSurface = new Color32(26, 42, 57, 255);
+        public Color lightBoardGrid = new Color32(209, 223, 233, 255);
+        public Color darkBoardGrid = new Color32(54, 77, 97, 255);
+
+        public Color GetBoardSurfaceColor(bool dark) => dark ? darkBoardSurface : lightBoardSurface;
+        public Color GetBoardGridColor(bool dark) => dark ? darkBoardGrid : lightBoardGrid;
+
         [Header("Drafting Paper")]
         public Texture2D whiteprintPaper;
         public Texture2D blueprintPaper;

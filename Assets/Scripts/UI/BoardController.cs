@@ -66,6 +66,8 @@ namespace Shikaku.UI
         [SerializeField] private PuzzlePalette palette;
         [SerializeField] private BlueprintThemeAssets blueprintTheme;
         public PuzzlePalette Palette => palette;
+        public Color EmptyCellColor(bool dark) =>
+            BlueprintThemeAssets.Resolve(blueprintTheme).GetBoardSurfaceColor(dark);
 
         [Header("Puzzle Size")]
         [SerializeField] private int width = 8;
@@ -584,26 +586,23 @@ namespace Shikaku.UI
             Image trayImage = _boardTray.GetComponent<Image>();
             trayImage.sprite = GetHudPanelSprite();
             trayImage.type = Image.Type.Sliced;
-            trayImage.color = ThemeManager.IsDark
-                ? darkBoardTrayColor
-                : boardTrayColor;
+            trayImage.color = BlueprintThemeAssets.Resolve(blueprintTheme).GetBoardGridColor(ThemeManager.IsDark);
             trayImage.raycastTarget = false;
 
             Outline trayEdge = _boardTray.GetComponent<Outline>();
             if (trayEdge == null)
                 trayEdge = _boardTray.gameObject.AddComponent<Outline>();
 
-            trayEdge.effectColor = ThemeManager.IsDark
-                ? darkBoardEdgeColor
-                : boardEdgeColor;
-            trayEdge.effectDistance = new Vector2(2f, -2f);
+            trayEdge.effectColor = trayImage.color;
+            trayEdge.effectDistance = new Vector2(1f, -1f);
             trayEdge.useGraphicAlpha = true;
 
             Shadow trayShadow = _boardTray.GetComponent<Shadow>();
             trayShadow.effectColor = ThemeManager.IsDark
                 ? darkBoardShadowColor
                 : boardShadowColor;
-            trayShadow.effectDistance = new Vector2(0f, -5f);
+            trayShadow.effectDistance = Vector2.zero;
+            trayShadow.enabled = false;
             trayShadow.useGraphicAlpha = true;
 
 
@@ -819,6 +818,9 @@ namespace Shikaku.UI
                 minimumLongSide + boardGrowthPerSizeStep * growthSteps,
                 minimumLongSide,
                 maximumLongSide);
+            // Keep small puzzles comfortably sized on the available canvas too.
+            desiredLongSide = Mathf.Max(desiredLongSide,
+                Mathf.Min(maximumLongSide, Mathf.Min(availableWidth, availableHeight) * 0.92f));
             float desiredCellSize =
                 (desiredLongSide - padding * 2f -
                     adaptiveSpacing * (longSideCellCount - 1)) /

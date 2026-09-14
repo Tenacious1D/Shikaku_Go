@@ -85,6 +85,39 @@ namespace Shikaku.Tests
             scroll.scrollOffset = Vector2.zero;
             for (int i = 0; i < 8; i++) yield return null;
             Capture("AdventureCity-portrait.png", folder);
+            var map = root.Q<AdventureCityMap>();
+            Assert.That(map.resolvedStyle.height, Is.LessThan(880), "Five chapters should share one compact neighborhood at the reference phone width.");
+            AssertNoPlotOverlaps(map);
+            var originalViews = map.Query<BuildingView>().ToList();
+            Assert.That(map.Query<AdventureCityScenery>().ToList().Count, Is.EqualTo(1), "All scenery should use one retained element.");
+            foreach (var view in originalViews)
+            {
+                var target = view.parent.Q<Button>();
+                Assert.That(target.resolvedStyle.backgroundColor.a, Is.Zero, "The hit area must not become a card.");
+                Assert.That(target.worldBound.Contains(view.worldBound.center), Is.True);
+                Assert.That(map.panel.Pick(new Vector2(view.worldBound.center.x, view.worldBound.yMax - 20)), Is.SameAs(target), "Tapping the building should hit its chapter button.");
+            }
+            Color darkBackground = map.resolvedStyle.backgroundColor;
+            var streetProperty = new CustomStyleProperty<Color>("--city-asphalt");
+            Assert.That(map.customStyle.TryGetValue(streetProperty, out Color darkStreet), Is.True);
+            // Switch the existing map in place, exactly as ThemeManager's ancestor classes do.
+            root.RemoveFromClassList("theme-dark");
+            root.AddToClassList("theme-light");
+            for (int i = 0; i < 8; i++) yield return null;
+            Assert.That(map.resolvedStyle.backgroundColor.grayscale, Is.GreaterThan(darkBackground.grayscale + 0.4f));
+            Assert.That(map.customStyle.TryGetValue(streetProperty, out Color lightStreet), Is.True);
+            Assert.That(lightStreet, Is.Not.EqualTo(darkStreet));
+            CollectionAssert.AreEqual(originalViews, map.Query<BuildingView>().ToList(), "Theme changes must reuse buildings and progress.");
+            Capture("AdventureCity-light.png", folder);
+            AssertStreetColor(ReadStreetPixel(map), lightStreet);
+            root.RemoveFromClassList("theme-light");
+            root.AddToClassList("theme-dark");
+            for (int i = 0; i < 8; i++) yield return null;
+            AssertStreetColor(ReadStreetPixel(map), darkStreet);
+            var firstChapter = root.Q<Button>("adventure-chapter-1-button");
+            using (var submit = NavigationSubmitEvent.GetPooled()) { submit.target = firstChapter; firstChapter.SendEvent(submit); }
+            for (int i = 0; i < 4; i++) yield return null;
+            Assert.That(root.Q("adventure-map-view").resolvedStyle.display, Is.EqualTo(DisplayStyle.None), "The original chapter selector must still open.");
             // Many future chapters remain lightweight and stay within the map width.
             _controller.Dispose(); _controller = null;
             root.Clear();
@@ -94,11 +127,56 @@ namespace Shikaku.Tests
                 city.AddChapter(i, AdventureBuildingData.Load(packs[i % packs.Count].PackPath), new Button { text = $"Chapter {i + 1}" });
             for (int i = 0; i < 4; i++) yield return null;
             Assert.That(city.Query<BuildingView>().ToList().Count, Is.EqualTo(40));
-            foreach (var view in city.Query<BuildingView>().ToList())
+            AssertNoPlotOverlaps(city);
+            root.style.width = 390;
+            for (int i = 0; i < 4; i++) yield return null;
+            AssertNoPlotOverlaps(city);
+            var narrowViews = city.Query<BuildingView>().ToList();
+            Assert.That(city.Query<AdventureCityScenery>().ToList().Count, Is.EqualTo(1));
+            Assert.That(narrowViews[0].worldBound.width, Is.GreaterThan(90), "Building touch areas must remain generous on a narrow viewport.");
+            foreach (var view in narrowViews)
             {
                 Assert.That(view.worldBound.xMin, Is.GreaterThanOrEqualTo(city.worldBound.xMin - 1));
                 Assert.That(view.worldBound.xMax, Is.LessThanOrEqualTo(city.worldBound.xMax + 1));
             }
+        }
+
+        private static void AssertNoPlotOverlaps(AdventureCityMap city)
+        {
+            var plots = city.Query(className: "city-building-node").ToList();
+            for (int i = 0; i < plots.Count; i++)
+            {
+                Assert.That(plots[i].worldBound.yMin, Is.GreaterThanOrEqualTo(city.worldBound.yMin));
+                Assert.That(plots[i].worldBound.yMax, Is.LessThanOrEqualTo(city.worldBound.yMax));
+                for (int j = i + 1; j < plots.Count; j++)
+                    Assert.That(plots[i].worldBound.Overlaps(plots[j].worldBound), Is.False, "Building and button plots must never overlap.");
+            }
+        }
+
+        private static void AssertStreetColor(Color32 actual, Color expected)
+        {
+            Color32 color = expected;
+            // Painter2D's render-target color conversion can round a channel by one byte.
+            Assert.That((int)actual.r, Is.EqualTo((int)color.r).Within(1), "Street red channel must follow the active palette.");
+            Assert.That((int)actual.g, Is.EqualTo((int)color.g).Within(1), "Street green channel must follow the active palette.");
+            Assert.That((int)actual.b, Is.EqualTo((int)color.b).Within(1), "Street blue channel must follow the active palette.");
+        }
+
+        private Color32 ReadStreetPixel(AdventureCityMap city)
+        {
+            var previous = RenderTexture.active;
+            var pixel = new Texture2D(1, 1, TextureFormat.RGBA32, false);
+            try
+            {
+                RenderTexture.active = _target;
+                // Inside asphalt, off the center marking and clear of a junction.
+                int x = Mathf.RoundToInt(city.worldBound.xMin + 15 * city.contentRect.width / 790);
+                int y = Mathf.RoundToInt(city.worldBound.yMin + 465 * city.contentRect.width / 790);
+                pixel.ReadPixels(new Rect(x, _target.height - 1 - y, 1, 1), 0, 0);
+                pixel.Apply();
+                return pixel.GetPixels32()[0];
+            }
+            finally { RenderTexture.active = previous; UnityEngine.Object.DestroyImmediate(pixel); }
         }
 
         private void Capture(string name, string folder)

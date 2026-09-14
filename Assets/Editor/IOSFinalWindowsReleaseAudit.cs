@@ -237,10 +237,6 @@ namespace Shikaku.EditorTools
         {
             RequireAsset(
                 errors,
-                FirebaseIOSConfiguration.AssetPath,
-                "Firebase Apple configuration");
-            RequireAsset(
-                errors,
                 IOSATTReleaseConfiguration.NativeBridgePath,
                 "ATT native bridge");
             RequireAsset(

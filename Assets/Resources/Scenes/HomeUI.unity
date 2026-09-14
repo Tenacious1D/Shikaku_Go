@@ -229,7 +229,7 @@ MonoBehaviour:
   enableBannerAds: 1
   bannerDockVisualTree: {fileID: 9197481963319205126, guid: a3dd49213f8043c695a6947ac9f4a3c7, type: 3}
   bannerDockPanelSettings: {fileID: 11400000, guid: c5f61f8b24d14c9db383f06e895e5b0f, type: 2}
-  disableAllAdsForTesting: 0
+  disableAllAdsForTesting: 1
   enableIntegrationTestSuite: 0
 --- !u!4 &359199653
 Transform:

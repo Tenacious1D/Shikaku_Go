@@ -1,0 +1,415 @@
+/* Modern blueprint UI; scoped to opted-in screens, preserving Adventure.
+   Dimensions use the existing 1080-wide reference panel. */
+.modern-ui {
+ --bp-background: #f3f7f9; --bp-surface: #ffffff; --bp-soft: #e8f1f6;
+ --bp-ink: #1b3144; --bp-muted: #586f81; --bp-line: #d1dfe9;
+ --bp-accent: #1e699c; --bp-on-accent: #ffffff;
+ --bp-success: #25735b; --bp-success-soft: #e4f3eb;
+ --bp-gold: #996a1d; --bp-gold-soft: #fcf3dd; --bp-danger: #ae3e46; --bp-disabled: #768b9b;
+ color: var(--bp-ink); font-size: 34px;
+ -unity-font: url("project://database/Assets/TextMesh Pro/Fonts/LiberationSans.ttf");
+ -unity-font-definition: initial;
+}
+.theme-dark .modern-ui, .theme-dark.modern-ui {
+ --bp-background: #111d2a; --bp-surface: #1a2a39; --bp-soft: #223648;
+ --bp-ink: #e8f1f7; --bp-muted: #a2b7c8; --bp-line: #364d61;
+ --bp-accent: #7cc5e9; --bp-on-accent: #0f2738;
+ --bp-success: #88d0b0; --bp-success-soft: #1d3e39;
+ --bp-gold: #eac679; --bp-gold-soft: #3d3525; --bp-danger: #f29297; --bp-disabled: #7a93a7;
+}
+.modern-ui.modern-ui Label { color: var(--bp-ink); -unity-text-outline-width: 0; letter-spacing: 0; }
+.modern-ui.modern-ui Button { color: var(--bp-ink); -unity-text-outline-width: 0; border-width: 2px; border-color: var(--bp-line); border-radius: 24px; background-color: var(--bp-surface); transition-property: background-color, border-color; transition-duration: 0.12s; }
+.modern-ui.modern-ui Button:hover { background-color: var(--bp-soft); }
+.modern-ui.modern-ui Button:active { translate: 0 0; background-color: var(--bp-soft); border-width: 2px; }
+.modern-ui.modern-ui Button:focus { border-color: var(--bp-accent); }
+.modern-ui.modern-ui Button:disabled { opacity: 0.55; }
+.modern-ui.modern-ui .blueprint-header-index,
+.modern-ui.modern-ui .blueprint-header-rule,
+.modern-ui.modern-ui .free-play-header-index,
+.modern-ui.modern-ui .free-play-header-rule,
+.modern-ui.modern-ui .settings-title-ornament,
+.modern-ui.modern-ui .shop-title-ornament,
+.modern-ui.modern-ui .gameplay-title-ornament,
+.modern-ui.modern-ui .gameplay-modal-ornament,
+.modern-ui.modern-ui .free-play-pack-tab,
+.modern-ui.modern-ui .free-play-pack-caption,
+.modern-ui.modern-ui .free-play-size-heading,
+.modern-ui.modern-ui .free-play-level-title-strip,
+.modern-ui.modern-ui .free-play-level-corner,
+.modern-ui.modern-ui .free-play-level-lock-line,
+.modern-ui.modern-ui .daily-work-order-tab,
+.modern-ui.modern-ui .daily-calendar-title-copy,
+.modern-ui.modern-ui .daily-modal-tab,
+.modern-ui.modern-ui .daily-modal-rule,
+.modern-ui.modern-ui .time-trial-assignment-heading,
+.modern-ui.modern-ui .time-trial-assignment-tab,
+.modern-ui.modern-ui .menu-button-divider,
+.modern-ui.modern-ui .tagline-rule { display: none; }
+.modern-ui.safe-area, .modern-ui.daily-screen, .modern-ui.time-trial-screen, .modern-ui.free-play-screen, .modern-ui.settings-screen, .modern-ui.shop-screen, .modern-ui.privacy-welcome-screen { background-color: var(--bp-background); background-image: none; }
+.modern-ui.modern-ui .gameplay-background,
+.modern-ui.modern-ui .gameplay-background:hover,
+.modern-ui.modern-ui .gameplay-background:focus,
+.modern-ui.modern-ui .gameplay-background:active { background-color: var(--bp-background); background-image: none; border-width: 0; border-radius: 0; }
+.modern-ui.modern-ui .daily-content,
+.modern-ui.modern-ui .time-trial-content,
+.modern-ui.modern-ui .free-play-view,
+.modern-ui.modern-ui .settings-content,
+.modern-ui.modern-ui .shop-content { width: 100%; max-width: 1080px; height: 100%; min-height: 0; padding: 64px 48px 40px 48px; align-items: stretch; }
+.modern-ui.modern-ui .modern-page-scroll { flex-grow: 1; min-height: 0; width: 100%; }
+.modern-ui.modern-ui .blueprint-document-header,
+.modern-ui.modern-ui .free-play-drawing-header { width: 100%; height: auto; min-height: 118px; flex-shrink: 0; margin: 0 0 36px 0; padding: 8px 0 0 118px; border-width: 0; background-color: transparent; }
+.modern-ui.modern-ui .blueprint-document-title,
+.modern-ui.modern-ui .free-play-drawing-title,
+.modern-ui.modern-ui .free-play-context-title,
+.modern-ui.modern-ui .settings-title,
+.modern-ui.modern-ui .shop-title { height: auto; margin: 0; padding: 0; font-size: 62px; -unity-font-style: bold; -unity-text-align: middle-left; white-space: normal; }
+.modern-ui.modern-ui .modern-page-description { margin: 8px 0 0; padding: 0; font-size: 32px; color: var(--bp-muted); white-space: normal; }
+.modern-ui.modern-ui .daily-back-button,
+.modern-ui.modern-ui .time-trial-back-button,
+.modern-ui.modern-ui .free-play-back-button,
+.modern-ui.modern-ui .settings-back-button,
+.modern-ui.modern-ui .shop-back-button,
+.modern-ui.modern-ui .gameplay-square-button { width: 104px; height: 104px; min-width: 104px; min-height: 104px; padding: 24px; margin: 0; border-width: 0; border-radius: 52px; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .daily-back-icon,
+.modern-ui.modern-ui .time-trial-back-icon,
+.modern-ui.modern-ui .free-play-back-icon,
+.modern-ui.modern-ui .settings-back-icon,
+.modern-ui.modern-ui .shop-back-icon,
+.modern-ui.modern-ui .gameplay-back-icon,
+.modern-ui.modern-ui .gameplay-next-icon,
+.modern-ui.modern-ui .gameplay-action-icon,
+.modern-ui.modern-ui .secondary-button-icon,
+.modern-ui.modern-ui .menu-button-icon { -unity-background-image-tint-color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-back-icon,
+.modern-ui.modern-ui .time-trial-back-icon,
+.modern-ui.modern-ui .free-play-back-icon,
+.modern-ui.modern-ui .settings-back-icon,
+.modern-ui.modern-ui .shop-back-icon,
+.modern-ui.modern-ui .gameplay-back-icon,
+.modern-ui.modern-ui .gameplay-next-icon { width: 52px; height: 52px; }
+
+/* Home */
+.modern-ui.safe-area { width: 100%; max-width: none; height: 100%; padding: 72px 48px 48px; justify-content: center; }
+.modern-ui.modern-ui .brand-section { height: 330px; min-height: 0; flex-shrink: 0; margin: 0; }
+.modern-ui.modern-ui .blueprint-eyebrow { display: none; }
+.modern-ui.modern-ui .brand-mark-scatter { scale: 0.72 0.72; height: 128px; margin: 0; }
+.modern-ui.modern-ui .brand-logo-tile { border-width: 2px; border-radius: 8px; }
+.modern-ui.modern-ui .brand-logo-number { font-size: 40px; }
+.modern-ui.modern-ui .brand-title-row { height: 100px; }
+.modern-ui.modern-ui .brand-title { font-size: 88px; height: auto; }
+.modern-ui.modern-ui .brand-title-gold { color: var(--bp-gold); }
+.modern-ui.modern-ui .tagline-row { height: 68px; }
+.modern-ui.modern-ui .tagline { font-size: 30px; color: var(--bp-muted); }
+.modern-ui.modern-ui .primary-actions { width: 100%; max-width: 984px; flex-grow: 0; align-self: center; flex-direction: column; flex-wrap: nowrap; }
+.modern-ui.modern-ui .home-feature-row { height: auto; width: 100%; flex-direction: column; }
+.modern-ui.modern-ui .main-menu-button { width: 100%; margin: 0; padding: 0; border-width: 2px; border-radius: 30px; }
+.modern-ui.modern-ui .home-adventure-feature { max-width: 100%; height: 212px; min-height: 212px; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .menu-button-inner { width: 100%; height: 100%; margin: 0; padding: 32px 36px; flex-direction: row; align-items: center; }
+.modern-ui.modern-ui .menu-button-icon { width: 100px; height: 100px; margin: 0 30px 0 0; flex-shrink: 0; }
+.modern-ui.modern-ui .menu-button-copy { flex-grow: 1; width: auto; min-width: 0; align-items: flex-start; }
+.modern-ui.modern-ui .menu-button-label { font-size: 46px; white-space: normal; -unity-text-align: middle-left; }
+.modern-ui.modern-ui .menu-button-note { display: flex; font-size: 30px; margin: 10px 0 0; color: var(--bp-muted); white-space: normal; -unity-text-align: middle-left; }
+.modern-ui.modern-ui .home-compact-stack { width: 100%; height: 272px; flex-direction: row; justify-content: space-between; margin-top: 24px; }
+.modern-ui.modern-ui .home-compact-button { width: 48.7%; height: 272px; min-height: 272px; }
+.modern-ui.modern-ui .home-compact-button .menu-button-inner { flex-direction: column; align-items: flex-start; padding: 28px 30px; }
+.modern-ui.modern-ui .home-compact-button .menu-button-icon { width: 66px; height: 66px; margin-bottom: 20px; }
+.modern-ui.modern-ui .home-compact-button .menu-button-label { font-size: 42px; }
+.modern-ui.modern-ui .home-compact-button .menu-button-note { font-size: 28px; }
+.modern-ui.modern-ui .home-daily-wide { height: 186px; min-height: 186px; margin-top: 24px; background-color: var(--bp-gold-soft); }
+.modern-ui.modern-ui .home-daily-wide .menu-button-icon { width: 78px; height: 78px; -unity-background-image-tint-color: var(--bp-gold); }
+.modern-ui.modern-ui .secondary-actions { width: 100%; max-width: 984px; align-self: center; height: 116px; margin-top: 28px; }
+.modern-ui.modern-ui .secondary-menu-button { width: 48.7%; height: 116px; flex-direction: row; justify-content: center; align-items: center; background-color: transparent; border-width: 0; }
+.modern-ui.modern-ui .secondary-button-icon { width: 46px; height: 46px; margin: 0 20px 0 0; }
+.modern-ui.modern-ui .secondary-button-label { font-size: 34px; }
+
+/* Daily: intrinsic calendar rows never stretch to fill the phone. */
+.modern-ui.modern-ui .blueprint-document-metadata { height: auto; min-height: 0; margin-top: 28px; flex-grow: 0; border-width: 0; }
+.modern-ui.modern-ui .blueprint-metadata-field { padding: 0 14px 0 0; border-width: 0; flex-grow: 1; min-width: 0; }
+.modern-ui.modern-ui .blueprint-metadata-label { font-size: 25px; color: var(--bp-muted); margin-bottom: 8px; }
+.modern-ui.modern-ui .blueprint-metadata-value,
+.modern-ui.modern-ui .blueprint-metadata-unit { font-size: 30px; white-space: normal; }
+.modern-ui.modern-ui .daily-work-order { width: 100%; min-height: 196px; height: auto; padding: 30px; margin: 6px 0 30px; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .daily-work-order-body { height: auto; padding: 0; }
+.modern-ui.modern-ui .daily-work-order-symbol { width: 106px; height: 112px; border-width: 0; border-radius: 22px; background-color: var(--bp-surface); margin-right: 26px; flex-shrink: 0; }
+.modern-ui.modern-ui .daily-work-order-symbol .daily-date-icon { display: none; }
+.modern-ui.modern-ui .daily-work-order-number { font-size: 48px; color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-work-order-title { font-size: 40px; white-space: normal; }
+.modern-ui.modern-ui .daily-work-order-status { font-size: 28px; color: var(--bp-muted); white-space: normal; }
+.modern-ui.modern-ui .daily-work-order-action { width: 124px; height: 88px; border-width: 0; padding: 0 0 0 14px; }
+.modern-ui.modern-ui .daily-work-order-action-label { font-size: 30px; color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-work-order-arrow { font-size: 38px; color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-calendar-card { height: auto; width: 100%; max-width: none; flex-grow: 0; flex-shrink: 0; min-height: 0; margin: 0; padding: 24px 16px; border-width: 2px; border-radius: 28px; border-color: var(--bp-line); background-color: var(--bp-surface); }
+.modern-ui.modern-ui .daily-calendar-title-strip { height: 110px; padding: 0 6px; border-width: 0; background-color: transparent; }
+.modern-ui.modern-ui .daily-month-row { width: 100%; height: 104px; justify-content: space-between; }
+.modern-ui.modern-ui .daily-month-title { width: auto; flex-grow: 1; font-size: 36px; height: auto; }
+.modern-ui.modern-ui .daily-month-button { width: 100px; height: 100px; min-width: 100px; min-height: 100px; font-size: 38px; background-color: transparent; border-width: 0; }
+.modern-ui.modern-ui .daily-weekday-row { height: 72px; padding: 0; background-color: transparent; border-width: 0; }
+.modern-ui.modern-ui .daily-weekday { font-size: 25px; color: var(--bp-muted); }
+.modern-ui.modern-ui .daily-calendar-grid { flex-grow: 0; min-height: 0; padding: 0; }
+.modern-ui.modern-ui .daily-calendar-row { flex-basis: auto; flex-grow: 0; flex-shrink: 0; height: 124px; min-height: 124px; }
+.modern-ui.modern-ui .daily-calendar-cell { flex-basis: 0; flex-grow: 1; width: auto; height: 112px; min-height: 112px; margin: 6px; }
+.modern-ui.modern-ui .daily-calendar-blank { border-width: 0; background-color: transparent; }
+.modern-ui.modern-ui .daily-day-button { border-width: 0; border-radius: 20px; background-color: var(--bp-soft); align-items: center; justify-content: center; }
+.modern-ui.modern-ui .daily-day-number { height: 56px; padding: 0; font-size: 36px; -unity-text-align: middle-center; }
+.modern-ui.modern-ui .daily-day-status-row { height: 25px; width: 86%; margin: 0; }
+.modern-ui.modern-ui .daily-day-status { font-size: 21px; border-width: 0; color: var(--bp-muted); }
+.modern-ui.modern-ui .daily-day-status-complete { color: var(--bp-success); background-color: transparent; -unity-font-style: bold; }
+.modern-ui.modern-ui .daily-day-approved { display: none; }
+.modern-ui.modern-ui .daily-day-today { border-width: 3px; border-color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-day-completed { background-color: var(--bp-success-soft); }
+.modern-ui.modern-ui .daily-day-completed .daily-day-number { color: var(--bp-success); }
+.modern-ui.modern-ui .daily-day-future,
+.modern-ui.modern-ui .daily-day-unavailable { opacity: 1; background-color: transparent; border-width: 0; }
+.modern-ui.modern-ui .daily-day-future .daily-day-number,
+.modern-ui.modern-ui .daily-day-unavailable .daily-day-number { color: var(--bp-disabled); }
+.modern-ui.modern-ui .daily-calendar-legend { height: auto; min-height: 60px; margin-top: 16px; padding: 8px; background-color: transparent; border-width: 0; justify-content: center; }
+.modern-ui.modern-ui .daily-calendar-legend-text { font-size: 25px; color: var(--bp-muted); white-space: normal; }
+
+/* Time Trial */
+.modern-ui.modern-ui .time-trial-assignment-board { width: 100%; height: auto; min-height: 0; flex-grow: 0; flex-direction: column; flex-wrap: nowrap; padding: 0; }
+.modern-ui.modern-ui .time-trial-assignment { width: 100%; height: 288px; min-height: 288px; flex-shrink: 0; margin: 0 0 26px; padding: 30px; }
+.modern-ui.modern-ui .time-trial-assignment-body { width: 100%; padding: 0; flex-direction: row; align-items: center; }
+.modern-ui.modern-ui .time-trial-plan-preview { width: 168px; height: 188px; margin: 0 32px 0 0; background-color: var(--bp-soft); border-color: var(--bp-line); border-width: 2px; border-radius: 14px; overflow: hidden; }
+.modern-ui.modern-ui .time-trial-plan-size { font-size: 42px; padding: 6px 8px; border-width: 0; background-color: var(--bp-soft); color: var(--bp-accent); }
+.modern-ui.modern-ui .time-trial-plan-wall { background-color: var(--bp-line); }
+.modern-ui.modern-ui .time-trial-plan-room { border-color: var(--bp-line); }
+.modern-ui.modern-ui .modern-trial-copy { flex-grow: 1; min-width: 0; }
+.modern-ui.modern-ui .time-trial-assignment-name { width: auto; font-size: 44px; white-space: normal; }
+.modern-ui.modern-ui .time-trial-assignment-caption { width: auto; font-size: 28px; color: var(--bp-muted); margin-top: 8px; white-space: normal; }
+.modern-ui.modern-ui .time-trial-assignment-specs { width: 100%; height: 74px; margin: 18px 0 0; border-width: 0; }
+.modern-ui.modern-ui .time-trial-spec { width: 50%; padding: 0; }
+.modern-ui.modern-ui .time-trial-spec-right { border-width: 0; }
+.modern-ui.modern-ui .time-trial-spec-label { font-size: 25px; color: var(--bp-muted); }
+.modern-ui.modern-ui .time-trial-spec-value { font-size: 32px; margin-top: 4px; }
+.modern-ui.modern-ui .time-trial-assignment-action { width: 78px; height: 78px; margin: 0 0 0 18px; padding: 0; justify-content: center; border-width: 0; border-radius: 39px; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .time-trial-assignment-action Label { font-size: 40px; color: var(--bp-accent); }
+
+/* Free Play */
+.modern-ui.modern-ui .free-play-header-meta { flex-grow: 0; border-width: 0; min-height: 0; margin-top: 20px; }
+.modern-ui.modern-ui .free-play-meta-field { border-width: 0; padding: 0 20px 0 0; }
+.modern-ui.modern-ui .free-play-meta-caption { font-size: 25px; color: var(--bp-muted); }
+.modern-ui.modern-ui .free-play-meta-value { font-size: 32px; white-space: normal; }
+.modern-ui.modern-ui .free-play-section-label { height: 72px; margin: 0 0 12px; padding: 0; font-size: 32px; color: var(--bp-muted); }
+.modern-ui.modern-ui .free-play-pack-button { height: auto; min-height: 230px; margin-bottom: 24px; padding: 32px; }
+.modern-ui.modern-ui .free-play-plan-preview { width: 154px; height: 142px; margin-right: 30px; border-width: 2px; border-color: var(--bp-accent); background-color: var(--bp-soft); }
+.modern-ui.modern-ui .free-play-plan-wall { background-color: var(--bp-accent); }
+.modern-ui.modern-ui .free-play-plan-marker { font-size: 27px; color: var(--bp-accent); }
+.modern-ui.modern-ui .free-play-pack-copy { height: auto; }
+.modern-ui.modern-ui .free-play-pack-name { font-size: 44px; white-space: normal; }
+.modern-ui.modern-ui .free-play-pack-progress { font-size: 30px; color: var(--bp-muted); margin: 8px 0 20px; }
+.modern-ui.modern-ui .free-play-pack-arrow { width: 46px; font-size: 46px; color: var(--bp-accent); }
+.modern-ui.modern-ui .free-play-pack-progress-track,
+.modern-ui.modern-ui .free-play-size-progress-track { height: 10px; border-width: 0; border-radius: 5px; background-color: var(--bp-soft); overflow: hidden; }
+.modern-ui.modern-ui .free-play-pack-progress-fill,
+.modern-ui.modern-ui .free-play-size-progress-fill { background-color: var(--bp-accent); }
+.modern-ui.modern-ui .free-play-size-row { height: auto; margin-bottom: 20px; }
+.modern-ui.modern-ui .free-play-size-button { height: 286px; padding: 24px; }
+.modern-ui.modern-ui .free-play-size-preview { height: 152px; margin-bottom: 18px; border-width: 0; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .free-play-size-grid-line { background-color: var(--bp-line); }
+.modern-ui.modern-ui .free-play-size-badge { font-size: 46px; background-color: var(--bp-soft); color: var(--bp-accent); border-width: 0; }
+.modern-ui.modern-ui .free-play-size-progress { font-size: 28px; color: var(--bp-muted); margin-bottom: 16px; }
+.modern-ui.modern-ui .free-play-continue-button { height: 150px; margin: 0 0 24px; padding: 24px; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .free-play-continue-marker { width: 76px; height: 76px; border-radius: 38px; background-color: var(--bp-accent); }
+.modern-ui.modern-ui .free-play-continue-marker-label { color: var(--bp-on-accent); }
+.modern-ui.modern-ui .free-play-continue-caption { display: none; }
+.modern-ui.modern-ui .free-play-continue-label { font-size: 36px; white-space: normal; }
+.modern-ui.modern-ui .free-play-continue-action { font-size: 30px; color: var(--bp-accent); }
+.modern-ui.modern-ui .free-play-level-row { height: 170px; }
+.modern-ui.modern-ui .free-play-level-button { height: 150px; margin: 8px; padding: 10px; justify-content: center; align-items: center; overflow: hidden; }
+.modern-ui.modern-ui .free-play-level-number { height: 65px; margin: 0; font-size: 46px; -unity-text-align: middle-center; }
+.modern-ui.modern-ui .free-play-level-next-label,
+.modern-ui.modern-ui .free-play-level-ready-label,
+.modern-ui.modern-ui .free-play-level-locked-label,
+.modern-ui.modern-ui .free-play-level-approved-stamp { position: relative; top: auto; right: auto; bottom: auto; left: auto; rotate: 0; margin: 0; padding: 0; border-width: 0; background-color: transparent; font-size: 24px; color: var(--bp-muted); }
+.modern-ui.modern-ui .free-play-level-next { border-color: var(--bp-accent); background-color: var(--bp-soft); }
+.modern-ui.modern-ui .free-play-level-completed { background-color: var(--bp-success-soft); }
+.modern-ui.modern-ui .free-play-level-completed Label { color: var(--bp-success); }
+
+/* Settings and Shop */
+.modern-ui.modern-ui .settings-title-block,
+.modern-ui.modern-ui .shop-title-block { width: 100%; height: 122px; min-height: 122px; margin-bottom: 28px; padding-left: 118px; align-items: flex-start; justify-content: center; }
+.modern-ui.modern-ui .settings-title-row,
+.modern-ui.modern-ui .shop-title-row { height: auto; }
+.modern-ui.modern-ui .privacy-preferences-title { font-size: 48px; }
+.modern-ui.modern-ui .settings-scroll-view,
+.modern-ui.modern-ui .shop-products { width: 100%; max-width: none; flex-grow: 1; min-height: 0; }
+.modern-ui.modern-ui .settings-scroll-content { width: 100%; max-width: none; padding: 0 0 24px; }
+.modern-ui.modern-ui .settings-section-card { width: 100%; margin: 0 0 26px; padding: 28px; border-width: 2px; border-radius: 28px; border-color: var(--bp-line); background-color: var(--bp-surface); }
+.modern-ui.modern-ui .settings-section-heading-row { height: 60px; margin-bottom: 10px; }
+.modern-ui.modern-ui .settings-section-accent { display: none; }
+.modern-ui.modern-ui .settings-section-heading { font-size: 27px; color: var(--bp-muted); }
+.modern-ui.modern-ui .settings-control-row { background-color: transparent; border-width: 0; border-radius: 0; min-height: 114px; height: auto; padding: 20px 0; border-color: var(--bp-line); }
+.modern-ui.modern-ui .settings-control-label,
+.modern-ui.modern-ui .settings-link-label { font-size: 35px; white-space: normal; }
+.modern-ui.modern-ui .settings-appearance-copy { flex-grow: 1; min-width: 0; margin-right: 24px; }
+.modern-ui.modern-ui .settings-appearance-note { font-size: 28px; color: var(--bp-muted); white-space: normal; margin-top: 8px; }
+.modern-ui.modern-ui .settings-link-button { width: 100%; min-height: 112px; height: auto; padding: 22px 0; border-width: 0; border-radius: 0; background-color: transparent; }
+.modern-ui.modern-ui .settings-link-chevron { font-size: 44px; color: var(--bp-muted); }
+.modern-ui.modern-ui .settings-danger-button .settings-link-label { color: var(--bp-danger); }
+.modern-ui.modern-ui .settings-switch { flex-shrink: 0; }
+.modern-ui.modern-ui .settings-switch .unity-toggle__input { background-color: var(--bp-line); border-color: var(--bp-line); }
+.modern-ui.modern-ui .settings-switch:checked .unity-toggle__input { background-color: var(--bp-accent); border-color: var(--bp-accent); }
+.modern-ui.modern-ui .settings-switch .unity-toggle__checkmark { background-color: var(--bp-surface); }
+.modern-ui.modern-ui .settings-volume-value { font-size: 34px; }
+.modern-ui.modern-ui .settings-volume-slider .unity-base-slider__tracker { background-color: var(--bp-line); }
+.modern-ui.modern-ui .settings-volume-slider .unity-base-slider__dragger { background-color: var(--bp-accent); border-width: 0; }
+.modern-ui.modern-ui .settings-version,
+.modern-ui.modern-ui .settings-company,
+.modern-ui.modern-ui .settings-restore-status { font-size: 28px; color: var(--bp-muted); }
+.modern-ui.modern-ui .shop-balance-chip { height: 98px; margin: 0 0 28px; padding: 20px 28px; border-width: 0; border-radius: 22px; background-color: var(--bp-soft); }
+.modern-ui.modern-ui .shop-balance-caption,
+.modern-ui.modern-ui .shop-balance-value { font-size: 34px; }
+.modern-ui.modern-ui .shop-pack-card { width: 100%; max-width: none; min-height: 230px; height: auto; margin: 0 0 24px; padding: 36px 26px; background-color: var(--bp-surface); border-width: 2px; border-color: var(--bp-line); border-radius: 28px; }
+.modern-ui.modern-ui .shop-pack-icon-shell { width: 126px; height: 136px; margin-right: 24px; border-width: 0; background-color: var(--bp-soft); border-radius: 18px; }
+.modern-ui.modern-ui .shop-pack-title { font-size: 38px; white-space: normal; }
+.modern-ui.modern-ui .shop-pack-price { font-size: 34px; margin-top: 10px; color: var(--bp-accent); }
+.modern-ui.modern-ui .shop-remove-ads-description { font-size: 28px; white-space: normal; color: var(--bp-muted); }
+.modern-ui.modern-ui .shop-pack-copy { flex-grow: 1; min-width: 0; }
+.modern-ui.modern-ui .shop-buy-button { width: 136px; height: 106px; min-width: 0; margin-left: 20px; font-size: 32px; background-color: var(--bp-accent); color: var(--bp-on-accent); border-width: 0; }
+.modern-ui.modern-ui .shop-best-value-badge { top: 10px; right: 22px; height: auto; padding: 2px 12px; font-size: 23px; border-width: 0; border-radius: 10px; background-color: var(--bp-gold-soft); color: var(--bp-gold); }
+.modern-ui.modern-ui .shop-bundle-card { padding-top: 52px; }
+.modern-ui.modern-ui .shop-footnote,
+.modern-ui.modern-ui .shop-status { font-size: 28px; color: var(--bp-muted); white-space: normal; }
+
+/* Gameplay */
+.modern-ui.modern-ui .gameplay-safe-area { max-width: 1080px; }
+.modern-ui.modern-ui .gameplay-top-balance-spacer { height: 0; flex-grow: 0; max-height: 0; }
+.modern-ui.modern-ui .gameplay-header { height: 132px; }
+.modern-ui.modern-ui .gameplay-title-card { height: 120px; }
+.modern-ui.modern-ui .gameplay-title { font-size: 54px; }
+.modern-ui.modern-ui .gameplay-subtitle { font-size: 30px; color: var(--bp-muted); margin-top: 8px; }
+.modern-ui.modern-ui .gameplay-status-card { width: 100%; max-width: 900px; height: 120px; margin: 18px 0 32px; padding: 12px 0; border-width: 0; border-radius: 0; background-color: transparent; }
+.modern-ui.modern-ui .gameplay-stat-caption { font-size: 26px; color: var(--bp-muted); }
+.modern-ui.modern-ui .gameplay-stat-value { font-size: 40px; margin-top: 6px; }
+.modern-ui.modern-ui .gameplay-stat-divider { height: 58px; background-color: var(--bp-line); }
+.modern-ui.modern-ui .gameplay-board-slot { background-color: transparent; border-width: 0; }
+.modern-ui.modern-ui .gameplay-actions { height: 204px; margin-top: 22px; }
+.modern-ui.modern-ui .gameplay-action-button { width: 238px; height: 136px; margin: 0 16px; padding: 18px; border-radius: 26px; }
+.modern-ui.modern-ui .gameplay-action-icon { width: 54px; height: 54px; flex-shrink: 0; }
+.modern-ui.modern-ui .modern-action-label { font-size: 29px; margin: 9px 0 0; }
+.modern-ui.modern-ui .gameplay-hint-badge { top: -20px; right: -12px; left: auto; width: auto; min-width: 56px; height: 46px; border-width: 0; border-radius: 23px; background-color: var(--bp-soft); color: var(--bp-accent); font-size: 27px; }
+.modern-ui.modern-ui .gameplay-hint-video-badge { padding: 0 14px; }
+.modern-ui.modern-ui .gameplay-hint-video-screen { display: none; }
+.modern-ui.modern-ui .modern-ad-label { font-size: 24px; color: var(--bp-accent); }
+.modern-ui.modern-ui .gameplay-ad-status { max-width: 90%; white-space: normal; background-color: var(--bp-surface); color: var(--bp-muted); border-color: var(--bp-line); }
+.modern-ui.modern-ui .gameplay-timer-penalty { color: var(--bp-danger); }
+
+/* Dialogs, tutorials, privacy */
+.modern-ui.modern-ui .daily-modal-card,
+.modern-ui.modern-ui .gameplay-modal-card,
+.modern-ui.modern-ui .analytics-modal-card,
+.modern-ui.modern-ui .settings-ad-report-card,
+.modern-ui.modern-ui .gameplay-tutorial-card,
+.modern-ui.modern-ui .gameplay-not-quite-warning { max-width: 90%; padding: 42px; border-width: 2px; border-color: var(--bp-line); border-radius: 32px; background-color: var(--bp-surface); }
+.modern-ui.modern-ui .daily-modal-card { width: 880px; min-height: 0; padding-top: 48px; }
+.modern-ui.modern-ui .daily-modal-title,
+.modern-ui.modern-ui .gameplay-modal-title,
+.modern-ui.modern-ui .analytics-modal-title,
+.modern-ui.modern-ui .settings-ad-report-title { font-size: 48px; white-space: normal; -unity-font-style: bold; }
+.modern-ui.modern-ui .daily-modal-date,
+.modern-ui.modern-ui .daily-modal-prompt,
+.modern-ui.modern-ui .gameplay-modal-message,
+.modern-ui.modern-ui .analytics-modal-copy,
+.modern-ui.modern-ui .settings-ad-report-copy { font-size: 32px; color: var(--bp-muted); white-space: normal; }
+.modern-ui.modern-ui .daily-modal-close { width: 88px; height: 88px; top: 20px; right: 20px; font-size: 42px; border-width: 0; background-color: transparent; }
+.modern-ui.modern-ui .daily-modal-title { padding-right: 70px; }
+.modern-ui.modern-ui .daily-difficulty-button { min-height: 156px; height: auto; padding: 24px; margin-top: 20px; }
+.modern-ui.modern-ui .daily-difficulty-badge { width: 74px; height: 74px; font-size: 32px; border-width: 0; border-radius: 18px; background-color: var(--bp-soft); color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-difficulty-name { font-size: 36px; }
+.modern-ui.modern-ui .daily-difficulty-status { font-size: 28px; color: var(--bp-muted); }
+.modern-ui.modern-ui .daily-difficulty-action { font-size: 30px; color: var(--bp-accent); }
+.modern-ui.modern-ui .daily-difficulty-complete { background-color: var(--bp-success-soft); }
+.modern-ui.modern-ui .gameplay-modal-button,
+.modern-ui.modern-ui .analytics-modal-button,
+.modern-ui.modern-ui .settings-ad-report-action,
+.modern-ui.modern-ui .settings-ad-report-cancel-button,
+.modern-ui.modern-ui .privacy-welcome-continue-button { min-height: 112px; height: auto; padding: 24px; font-size: 34px; border-radius: 22px; }
+.modern-ui.modern-ui .gameplay-primary-button,
+.modern-ui.modern-ui .analytics-primary-button,
+.modern-ui.modern-ui .settings-ad-report-email-button,
+.modern-ui.modern-ui .privacy-welcome-continue-button { background-color: var(--bp-accent); color: var(--bp-on-accent); border-color: var(--bp-accent); }
+.modern-ui.modern-ui .gameplay-danger-button,
+.modern-ui.modern-ui .analytics-danger-button { color: var(--bp-danger); background-color: var(--bp-surface); border-color: var(--bp-danger); }
+.modern-ui.modern-ui .gameplay-tutorial-title { font-size: 38px; }
+.modern-ui.modern-ui .gameplay-tutorial-message { font-size: 30px; color: var(--bp-muted); }
+.modern-ui.modern-ui .gameplay-tutorial-button { background-color: var(--bp-accent); color: var(--bp-on-accent); font-size: 30px; }
+.modern-ui.modern-ui .gameplay-tutorial-dot { background-color: var(--bp-line); }
+.modern-ui.modern-ui .gameplay-tutorial-dot-active { background-color: var(--bp-accent); }
+.modern-ui.modern-ui .gameplay-tutorial-action-bubble { border-color: var(--bp-line); background-color: var(--bp-surface); }
+.modern-ui.modern-ui .gameplay-tutorial-action { font-size: 30px; }
+.modern-ui.modern-ui .gameplay-streak-celebration { background-color: var(--bp-gold-soft); border-color: var(--bp-line); }
+.modern-ui.modern-ui .gameplay-streak-celebration Label { color: var(--bp-gold); }
+.modern-ui.modern-ui .privacy-welcome-content { max-width: 1000px; padding: 70px 48px; }
+.modern-ui.modern-ui .privacy-welcome-title { font-size: 58px; white-space: normal; }
+.modern-ui.modern-ui .privacy-welcome-legal-copy,
+.modern-ui.modern-ui .privacy-welcome-analytics-note { font-size: 30px; color: var(--bp-muted); }
+.modern-ui.modern-ui .privacy-welcome-analytics-card { border-color: var(--bp-line); border-radius: 24px; background-color: var(--bp-surface); }
+.modern-ui.modern-ui .privacy-welcome-analytics-title { font-size: 36px; }
+.modern-ui.modern-ui .privacy-welcome-link-button { color: var(--bp-accent); font-size: 30px; background-color: transparent; border-width: 0; }
+
+.modern-ui.modern-ui .modern-home-scroll { width: 100%; flex-grow: 1; min-height: 0; }
+.modern-ui.modern-ui .modern-home-content { width: 100%; align-items: center; padding: 30px 0; }
+.modern-ui.modern-ui .modern-home-scroll .unity-scroll-view__content-container { flex-grow: 1; justify-content: center; }
+.modern-ui .modern-blueprint-grid { --bp-grid: rgba(38, 99, 138, 0.055); }
+.theme-dark .modern-ui .modern-blueprint-grid { --bp-grid: rgba(144, 190, 220, 0.045); }
+.modern-ui.modern-ui .settings-switch .unity-toggle__input,
+.modern-ui.modern-ui .settings-switch .unity-toggle__checkmark { border-width: 0; }
+.modern-ui.modern-ui .analytics-modal-backdrop,
+.modern-ui.modern-ui .daily-modal-backdrop,
+.modern-ui.modern-ui .gameplay-modal-backdrop,
+.modern-ui.modern-ui .settings-ad-report-backdrop {
+    background-color: rgba(9, 21, 32, 0.62); border-width: 0; border-radius: 0;
+}
+.modern-ui.modern-ui .daily-work-order-title,
+.modern-ui.modern-ui .daily-work-order-status { -unity-text-align: middle-left; }
+.modern-ui.modern-ui .settings-appearance-dropdown { width: 280px; height: 104px; font-size: 32px; color: var(--bp-ink); }
+.modern-ui.modern-ui .settings-appearance-dropdown > .unity-base-field__input {
+    background-color: var(--bp-soft); border-width: 0; border-radius: 20px; color: var(--bp-ink);
+}
+.modern-ui.modern-ui .settings-appearance-dropdown .unity-base-popup-field__text { color: var(--bp-ink); font-size: 32px; }
+.modern-ui.modern-ui .settings-appearance-dropdown .unity-base-popup-field__arrow { -unity-background-image-tint-color: var(--bp-accent); }
+.modern-ui.modern-ui .shop-purchase-status { font-size: 30px; color: var(--bp-muted); white-space: normal; }
+.modern-ui.modern-ui .gameplay-primary-button:hover,
+.modern-ui.modern-ui .analytics-primary-button:hover,
+.modern-ui.modern-ui .shop-buy-button:hover,
+.modern-ui.modern-ui .settings-ad-report-email-button:hover,
+.modern-ui.modern-ui .privacy-welcome-continue-button:hover,
+.modern-ui.modern-ui .gameplay-primary-button:active,
+.modern-ui.modern-ui .analytics-primary-button:active,
+.modern-ui.modern-ui .shop-buy-button:active {
+    background-color: var(--bp-accent); color: var(--bp-on-accent); opacity: 0.9;
+}
+.modern-ui.modern-ui .free-play-size-button { border-width: 2px; border-radius: 24px; }
+.modern-ui.modern-ui .gameplay-streak-celebration-title { font-size: 26px; }
+.modern-ui.modern-ui .settings-section-card { max-width: none; }
+.modern-ui.modern-ui .shop-restore-button { height: 108px; margin: 20px 0; background-color: transparent; border-width: 0; color: var(--bp-accent); font-size: 32px; }
+.modern-ui.modern-ui .privacy-welcome-brand-mark { rotate: 0; background-color: var(--bp-soft); border-width: 2px; border-color: var(--bp-line); border-radius: 18px; }
+.modern-ui.modern-ui .privacy-welcome-brand-number { color: var(--bp-accent); }
+.modern-ui.modern-ui .privacy-welcome-analytics-card { border-width: 2px; }
+.theme-dark .modern-ui.modern-ui .settings-switch .unity-toggle__checkmark { background-color: var(--bp-muted); }
+.theme-dark .modern-ui.modern-ui .settings-switch:checked .unity-toggle__checkmark { background-color: var(--bp-on-accent); }
+/* Restore Rivet in tutorials and standard results; Adventure celebrates with its building. */
+.modern-ui.modern-ui .rivet { display: flex; }
+.modern-ui.modern-ui .gameplay-solved-card > .rivet { margin-bottom: 12px; }
+.modern-ui.modern-ui .gameplay-solved-with-building .gameplay-solved-card > .rivet { display: none; }
+.modern-ui.modern-ui .gameplay-building-view { display: flex; }
+.modern-ui.modern-ui .gameplay-tutorial-title { flex-shrink: 1; white-space: normal; }
+.modern-ui.modern-ui .gameplay-building-caption { color: var(--bp-muted); font-size: 30px; white-space: normal; }
+/* Explicit column geometry prevents the legacy row layout from leaking into size cards. */
+.modern-ui.modern-ui .free-play-size-button {
+    height: 320px; min-height: 320px; flex-shrink: 0; flex-direction: column;
+    align-items: stretch; justify-content: flex-start; overflow: hidden;
+}
+.modern-ui.modern-ui .free-play-size-preview {
+    position: relative; width: 100%; height: 152px; min-height: 152px;
+    flex-shrink: 0; margin: 0 0 18px; padding: 0;
+    align-items: center; justify-content: center; overflow: hidden;
+}
+.modern-ui.modern-ui .free-play-size-progress { height: 40px; min-height: 40px; margin: 0 0 16px; }
+.modern-ui.modern-ui .main-menu-button { border-color: var(--bp-line); }
+.modern-ui.modern-ui .main-menu-button:focus { border-color: var(--bp-accent); }
+.modern-layout-installed .unity-base-dropdown__container-outer { background-color: #ffffff; border-color: #d1dfe9; border-radius: 16px; }
+.modern-layout-installed .unity-base-dropdown__item { min-height: 86px; color: #1b3144; font-size: 32px; }
+.theme-dark.modern-layout-installed .unity-base-dropdown__container-outer { background-color: #1a2a39; border-color: #364d61; }
+.theme-dark.modern-layout-installed .unity-base-dropdown__item { color: #e8f1f7; }
+.theme-dark.modern-layout-installed .unity-base-dropdown__item:hover { background-color: #223648; }

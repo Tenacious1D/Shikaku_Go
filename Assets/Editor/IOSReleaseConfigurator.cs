@@ -291,12 +291,6 @@ namespace Shikaku.EditorTools
                 }
             }
 
-            foreach (string firebaseError in
-                     FirebaseIOSConfiguration.CollectErrors())
-            {
-                errors.Add(firebaseError);
-            }
-
             foreach (string attError in
                      IOSATTReleaseConfiguration.CollectErrors())
             {

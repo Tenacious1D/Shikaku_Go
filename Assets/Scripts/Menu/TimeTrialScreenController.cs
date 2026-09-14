@@ -10,11 +10,9 @@ namespace Shikaku.Menu
         private readonly Action _returnHome;
         private readonly VisualElement _screen;
         private readonly Button _backButton;
-        private readonly Button _sprintButton;
         private readonly Button _quickButton;
         private readonly Button _classicButton;
         private readonly Button _expertButton;
-        private readonly Label _sprintBestLabel;
         private readonly Label _quickBestLabel;
         private readonly Label _classicBestLabel;
         private readonly Label _expertBestLabel;
@@ -22,23 +20,38 @@ namespace Shikaku.Menu
         private bool _isVisible;
         private bool _isStarting;
 
-        public TimeTrialScreenController(VisualElement documentRoot, Action returnHome)
+        public TimeTrialScreenController(
+            VisualElement documentRoot,
+            Action returnHome)
         {
             _returnHome = returnHome;
-            _screen = RequireElement<VisualElement>(documentRoot, "time-trial-screen");
-            _backButton = RequireElement<Button>(documentRoot, "time-trial-back-button");
-            _sprintButton = RequireElement<Button>(documentRoot, "time-trial-sprint-button");
-            _quickButton = RequireElement<Button>(documentRoot, "time-trial-quick-button");
-            _classicButton = RequireElement<Button>(documentRoot, "time-trial-classic-button");
-            _expertButton = RequireElement<Button>(documentRoot, "time-trial-expert-button");
-            _sprintBestLabel = RequireElement<Label>(documentRoot, "time-trial-sprint-best");
-            _quickBestLabel = RequireElement<Label>(documentRoot, "time-trial-quick-best");
-            _classicBestLabel = RequireElement<Label>(documentRoot, "time-trial-classic-best");
-            _expertBestLabel = RequireElement<Label>(documentRoot, "time-trial-expert-best");
+            _screen = RequireElement<VisualElement>(
+                documentRoot,
+                "time-trial-screen");
+            _backButton = RequireElement<Button>(
+                documentRoot,
+                "time-trial-back-button");
+            _quickButton = RequireElement<Button>(
+                documentRoot,
+                "time-trial-quick-button");
+            _classicButton = RequireElement<Button>(
+                documentRoot,
+                "time-trial-classic-button");
+            _expertButton = RequireElement<Button>(
+                documentRoot,
+                "time-trial-expert-button");
+            _quickBestLabel = RequireElement<Label>(
+                documentRoot,
+                "time-trial-quick-best");
+            _classicBestLabel = RequireElement<Label>(
+                documentRoot,
+                "time-trial-classic-best");
+            _expertBestLabel = RequireElement<Label>(
+                documentRoot,
+                "time-trial-expert-best");
 
             _backButton.BringToFront();
             _backButton.clicked += ReturnHome;
-            _sprintButton.clicked += StartSprint;
             _quickButton.clicked += StartQuick;
             _classicButton.clicked += StartClassic;
             _expertButton.clicked += StartExpert;
@@ -73,20 +86,22 @@ namespace Shikaku.Menu
         public void Dispose()
         {
             _backButton.clicked -= ReturnHome;
-            _sprintButton.clicked -= StartSprint;
             _quickButton.clicked -= StartQuick;
             _classicButton.clicked -= StartClassic;
             _expertButton.clicked -= StartExpert;
         }
 
-        private static T RequireElement<T>(VisualElement root, string name)
+        private static T RequireElement<T>(
+            VisualElement root,
+            string name)
             where T : VisualElement
         {
             var element = root.Q<T>(name);
             if (element == null)
+            {
                 throw new InvalidOperationException(
-                    $"Time Trial UI element '{name}' was not found."
-                );
+                    $"Time Trial UI element '{name}' was not found.");
+            }
 
             return element;
         }
@@ -98,7 +113,6 @@ namespace Shikaku.Menu
 
         private void RefreshBestScores()
         {
-            RefreshBestScore(_sprintBestLabel, 3);
             RefreshBestScore(_quickBestLabel, 4);
             RefreshBestScore(_classicBestLabel, 5);
             RefreshBestScore(_expertBestLabel, 6);
@@ -108,11 +122,10 @@ namespace Shikaku.Menu
         {
             int best = GameSession.GetTimeTrialBestSquares(size);
             label.text = best > 0
-                ? $"Best: {best} {(best == 1 ? "square" : "squares")}"
-                : "Best: --";
+                ? $"{best} {(best == 1 ? "SQUARE" : "SQUARES")}"
+                : "--";
         }
 
-        private void StartSprint() => StartFixedTimeTrial(3, 30);
         private void StartQuick() => StartFixedTimeTrial(4, 60);
         private void StartClassic() => StartFixedTimeTrial(5, 90);
         private void StartExpert() => StartFixedTimeTrial(6, 120);
@@ -127,16 +140,20 @@ namespace Shikaku.Menu
 
             if (puzzleIds == null || puzzleIds.Count == 0)
             {
-                Debug.LogError($"No {size}x{size} puzzles found at {packPath}.");
+                Debug.LogError(
+                    $"No {size}x{size} puzzles found at {packPath}.");
                 return;
             }
 
             string chosenPuzzleId =
-                GameSession.PickTimeTrialPuzzleAvoidingRecent(size, puzzleIds);
+                GameSession.PickTimeTrialPuzzleAvoidingRecent(
+                    size,
+                    puzzleIds);
 
             if (string.IsNullOrEmpty(chosenPuzzleId))
             {
-                Debug.LogError($"Could not select a {size}x{size} Time Trial puzzle.");
+                Debug.LogError(
+                    $"Could not select a {size}x{size} Time Trial puzzle.");
                 return;
             }
 
@@ -158,7 +175,6 @@ namespace Shikaku.Menu
 
         private void SetModeButtonsEnabled(bool enabled)
         {
-            _sprintButton.SetEnabled(enabled);
             _quickButton.SetEnabled(enabled);
             _classicButton.SetEnabled(enabled);
             _expertButton.SetEnabled(enabled);

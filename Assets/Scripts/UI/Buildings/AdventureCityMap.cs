@@ -4,16 +4,25 @@ using UnityEngine.UIElements;
 
 namespace Shikaku.UI.Buildings
 {
-    // Five plots form a neighborhood, rather than five separate street blocks.
+    // Ten plots form a neighborhood, rather than ten separate street blocks.
     // Coordinates are design-space ground anchors, matching BuildingGeometry's projection.
     public sealed class AdventureCityMap : VisualElement
     {
+        public const int BuildingsPerDistrict = 10;
+        public const float DistrictSpan = 1360f;
+
         private static readonly Vector2[] Anchors = {
-            new Vector2(150, 720), new Vector2(355, 838), new Vector2(645, 720),
-            new Vector2(215, 355), new Vector2(420, 473)
+            // Chapters 1-4 occupy the former 6, 3, 2 and 1 positions respectively.
+            new Vector2(580, 1297), new Vector2(645, 1046),
+            new Vector2(364, 1172), new Vector2(147, 1047),
+            // Chapters 5-10 form a compact diamond around the central park.
+            new Vector2(390, 892), new Vector2(200, 782),
+            new Vector2(581, 782), new Vector2(200, 562),
+            new Vector2(390, 452), new Vector2(581, 562)
         };
         private readonly List<Plot> _plots = new List<Plot>();
-        private readonly AdventureCityScenery _scenery = new AdventureCityScenery();
+        private readonly AdventureCityScenery _backgroundScenery = new AdventureCityScenery(false);
+        private readonly AdventureCityScenery _foregroundScenery = new AdventureCityScenery(true);
         private readonly int _chapterCount;
         private sealed class Plot
         {
@@ -25,8 +34,8 @@ namespace Shikaku.UI.Buildings
             public Label Address;
         }
         private float ViewScale => contentRect.width / 790f;
-        private int Districts => Mathf.Max(1, Mathf.CeilToInt(_chapterCount / 5f));
-        private float MapHeight => (Districts * 920 + 30) * ViewScale;
+        private int Districts => Mathf.Max(1, Mathf.CeilToInt(_chapterCount / (float)BuildingsPerDistrict));
+        private float MapHeight => (Districts * DistrictSpan + 30) * ViewScale;
 
         public AdventureCityMap(int chapterCount)
         {
@@ -35,8 +44,13 @@ namespace Shikaku.UI.Buildings
             style.width = Length.Percent(100);
             style.position = Position.Relative;
             style.flexShrink = 0;
-            Add(_scenery);
-            RegisterCallback<CustomStyleResolvedEvent>(evt => _scenery.SetPalette(evt.customStyle));
+            Add(_backgroundScenery);
+            Add(_foregroundScenery);
+            RegisterCallback<CustomStyleResolvedEvent>(evt =>
+            {
+                _backgroundScenery.SetPalette(evt.customStyle);
+                _foregroundScenery.SetPalette(evt.customStyle);
+            });
             RegisterCallback<GeometryChangedEvent>(_ => LayoutPlots());
         }
 
@@ -60,6 +74,7 @@ namespace Shikaku.UI.Buildings
             button.Add(address);
             node.Add(button);
             Add(node);
+            _foregroundScenery.BringToFront();
             _plots.Add(new Plot { Index = index, Data = data, Node = node, Building = building, Button = button, Address = address });
             LayoutPlots();
             return building;
@@ -70,21 +85,25 @@ namespace Shikaku.UI.Buildings
             if (contentRect.width <= 0) return;
             float s = ViewScale;
             if (!Mathf.Approximately(resolvedStyle.height, MapHeight)) style.height = MapHeight;
-            _scenery.SetLayout(Districts, s);
+            _backgroundScenery.SetLayout(Districts, s);
+            _foregroundScenery.SetLayout(Districts, s);
             foreach (var plot in _plots)
             {
-                int district = plot.Index / 5;
-                Vector2 anchor = Anchors[plot.Index % 5];
+                int district = plot.Index / BuildingsPerDistrict;
+                int slot = plot.Index % BuildingsPerDistrict;
+                Vector2 anchor = Anchors[slot];
                 if ((district & 1) != 0) anchor.x = 790 - anchor.x;
-                anchor.y += (Districts - 1 - district) * 920;
+                anchor.y += (Districts - 1 - district) * DistrictSpan;
                 Vector2 offset = plot.Data?.Definition != null ? plot.Data.Definition.mapOffset : Vector2.zero;
                 anchor += new Vector2(Mathf.Clamp(offset.x, -2, 2), Mathf.Clamp(offset.y, -4, 4));
-                float badgeHeight = Mathf.Max(40, 38 * s);
+                bool fullHeightPlot = slot >= 1 && slot <= 3;
+                float buildingHeight = fullHeightPlot ? 255 : 205;
+                float badgeHeight = fullHeightPlot ? Mathf.Max(32, 38 * s) : Mathf.Max(20, 24 * s);
                 plot.Node.style.left = (anchor.x - 100) * s;
-                plot.Node.style.top = (anchor.y - 275) * s;
+                plot.Node.style.top = (anchor.y - buildingHeight) * s;
                 plot.Node.style.width = 200 * s;
-                plot.Node.style.height = 275 * s + badgeHeight;
-                plot.Building.style.height = 275 * s;
+                plot.Node.style.height = buildingHeight * s + badgeHeight;
+                plot.Building.style.height = buildingHeight * s;
                 plot.Building.style.width = Length.Percent(100);
                 plot.Button.style.position = Position.Absolute;
                 plot.Button.style.left = 0; plot.Button.style.right = 0;
@@ -97,6 +116,7 @@ namespace Shikaku.UI.Buildings
             // Back buildings first. Progress changes do not move plots or change hit ordering.
             _plots.Sort((a, b) => a.Node.style.top.value.value.CompareTo(b.Node.style.top.value.value));
             foreach (var plot in _plots) plot.Node.BringToFront();
+            _foregroundScenery.BringToFront();
         }
     }
 }

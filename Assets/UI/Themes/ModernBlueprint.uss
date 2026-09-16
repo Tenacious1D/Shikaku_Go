@@ -413,3 +413,78 @@
 .theme-dark.modern-layout-installed .unity-base-dropdown__container-outer { background-color: #1a2a39; border-color: #364d61; }
 .theme-dark.modern-layout-installed .unity-base-dropdown__item { color: #e8f1f7; }
 .theme-dark.modern-layout-installed .unity-base-dropdown__item:hover { background-color: #223648; }
+
+/* Character pass: warm paper, illustrated modes, and a small workshop vocabulary. */
+.modern-ui {
+ --bp-background: #f6f4ec; --bp-surface: #fffdf7; --bp-soft: #e9f1f1;
+ --bp-ink: #243d4b; --bp-muted: #5c7079; --bp-line: #d6e1df;
+ --character-ink: #326a88; --character-accent: #b87b20; --character-paper: #e2eff0;
+}
+.theme-dark .modern-ui, .theme-dark.modern-ui {
+ --bp-background: #10212d; --bp-surface: #1b303e; --bp-soft: #243e4d;
+ --bp-ink: #ecf2ee; --bp-muted: #aac0ca; --bp-line: #3b5463;
+ --character-ink: #9acfe1; --character-accent: #efc36f; --character-paper: #284956;
+}
+.modern-ui.modern-ui .brand-title { -unity-font-style: bold; letter-spacing: -2px; }
+.modern-ui.modern-ui .brand-title-gold { rotate: -4deg; margin-left: 12px; }
+.modern-ui.modern-ui .brand-logo-tile { border-radius: 6px; }
+.modern-ui.modern-ui .scatter-two { rotate: -5deg; }
+.modern-ui.modern-ui .scatter-five { rotate: 4deg; }
+.modern-ui.modern-ui .brand-section { height: 350px; }
+.modern-ui.modern-ui .blueprint-eyebrow { display: flex; font-size: 23px; color: var(--bp-muted); letter-spacing: 3px; margin-bottom: 12px; }
+.modern-ui.modern-ui .brand-mark-scatter { height: 116px; }
+.modern-ui.modern-ui .character-sketch { width: 100%; height: 100%; flex-shrink: 0; --character-ink: #326a88; --character-accent: #b87b20; --character-paper: #e2eff0; }
+.theme-dark .modern-ui.modern-ui .character-sketch { --character-ink: #9acfe1; --character-accent: #efc36f; --character-paper: #284956; }
+.modern-ui.modern-ui .character-home-art { background-image: none; width: 180px; height: 144px; margin-right: 26px; }
+.modern-ui.modern-ui .home-adventure-feature { height: 242px; min-height: 242px; border-color: var(--bp-line); }
+.modern-ui.modern-ui .home-compact-stack { height: 348px; }
+.modern-ui.modern-ui .home-compact-button { height: 348px; min-height: 348px; overflow: hidden; }
+.modern-ui.modern-ui .home-compact-button .character-home-art { width: 190px; height: 152px; margin: 0 0 12px; }
+.modern-ui.modern-ui .home-compact-button .menu-button-copy { flex-grow: 0; }
+.modern-ui.modern-ui .home-compact-button .menu-button-inner { padding: 24px 30px; }
+.modern-ui.modern-ui .free-play-button { background-color: var(--bp-soft); }
+.modern-ui.modern-ui .time-trial-button { background-color: var(--bp-surface); border-top-color: var(--bp-gold); }
+.modern-ui.modern-ui .home-daily-wide { height: 210px; min-height: 210px; border-color: var(--bp-gold-soft); }
+.modern-ui.modern-ui .home-daily-wide .character-home-art { width: 150px; height: 120px; }
+.modern-ui.modern-ui .character-header-art { position: absolute; right: 0; top: 0; width: 138px; height: 110px; }
+.modern-ui.modern-ui .character-page-title { padding-right: 150px; }
+.modern-ui.modern-ui .daily-work-order { background-color: var(--bp-gold-soft); border-color: var(--bp-gold-soft); }
+.modern-ui.modern-ui .daily-work-order-symbol { border-radius: 12px; border-top-width: 8px; border-top-color: var(--bp-gold); }
+.modern-ui.modern-ui .daily-work-order-number,
+.modern-ui.modern-ui .daily-work-order-action-label,
+.modern-ui.modern-ui .daily-work-order-arrow { color: var(--bp-gold); }
+.modern-ui.modern-ui .daily-day-completed { border-bottom-width: 3px; border-bottom-color: var(--bp-success); }
+.modern-ui.modern-ui .daily-streak-count { color: var(--bp-gold); -unity-font-style: bold; }
+.modern-ui.modern-ui .time-trial-assignment { border-left-width: 6px; border-left-color: var(--bp-accent); }
+.modern-ui.modern-ui .time-trial-classic { border-left-color: var(--bp-gold); }
+.modern-ui.modern-ui .time-trial-expert { border-left-color: var(--bp-success); }
+.modern-ui.modern-ui .time-trial-plan-preview { rotate: -3deg; border-radius: 8px; }
+.modern-ui.modern-ui .free-play-plan-preview { rotate: -3deg; border-radius: 6px; }
+.modern-ui.modern-ui .free-play-pack-button { border-bottom-width: 5px; }
+.modern-ui.modern-ui .free-play-level-completed .free-play-level-approved-stamp { color: var(--bp-success); border-width: 2px; border-color: var(--bp-success); border-radius: 6px; padding: 2px 10px; rotate: -5deg; }
+.modern-ui.modern-ui .settings-section-heading { color: var(--bp-accent); -unity-font-style: bold; letter-spacing: 1px; }
+.modern-ui.modern-ui .settings-section-accent { display: flex; width: 6px; background-color: var(--bp-gold); border-radius: 3px; margin-right: 14px; }
+.modern-ui.modern-ui .shop-balance-chip { background-color: var(--bp-gold-soft); }
+.modern-ui.modern-ui .shop-pack-icon-shell { border-radius: 12px; border-bottom-width: 4px; border-bottom-color: var(--bp-line); }
+.modern-ui.modern-ui .gameplay-tutorial-card { border-top-width: 5px; border-top-color: var(--bp-gold); }
+.modern-ui.modern-ui .gameplay-tutorial-heading .rivet { width: 112px; height: 112px; margin-right: 14px; }
+.modern-ui.modern-ui .gameplay-solved-card > .rivet { width: 180px; height: 180px; margin-bottom: 8px; }
+.modern-ui.modern-ui .gameplay-solved-card { border-top-width: 5px; border-top-color: var(--bp-success); }
+.modern-ui.modern-ui .character-approval { flex-direction: row; align-items: center; justify-content: center; margin: 10px 0 16px; padding: 2px 20px; border-width: 2px; border-color: var(--bp-success); border-radius: 10px; background-color: var(--bp-success-soft); }
+.modern-ui.modern-ui .character-approval Label { color: var(--bp-success); font-size: 26px; -unity-font-style: bold; white-space: normal; }
+.theme-dark .modern-ui.modern-ui .character-approval-mark,
+.modern-ui.modern-ui .character-approval-mark { width: 52px; height: 42px; margin-right: 6px; --character-accent: var(--bp-success); }
+.modern-ui.modern-ui .character-personal-best .character-approval { background-color: var(--bp-gold-soft); border-color: var(--bp-gold); }
+.modern-ui.modern-ui .character-personal-best .character-approval Label { color: var(--bp-gold); }
+.theme-dark .modern-ui.modern-ui .character-personal-best .character-approval-mark,
+.modern-ui.modern-ui .character-personal-best .character-approval-mark { --character-accent: var(--bp-gold); }
+.modern-ui.modern-ui .gameplay-solved-with-building .character-approval { display: none; }
+.modern-ui.modern-ui .gameplay-streak-celebration { border-width: 2px; border-color: var(--bp-gold); border-radius: 22px; }
+.modern-ui.modern-ui Button { transition-property: background-color, border-color, scale; transition-duration: 0.12s; }
+.modern-ui.modern-ui Button:active { scale: 0.98 0.98; }
+.character-reduced-motion .modern-ui.modern-ui Button,
+.character-reduced-motion.modern-ui.modern-ui Button { transition-duration: 0s; }
+.character-reduced-motion .modern-ui.modern-ui Button:active,
+.character-reduced-motion.modern-ui.modern-ui Button:active { scale: 1 1; }
+.character-reduced-motion .modern-ui.modern-ui .gameplay-streak-celebration,
+.character-reduced-motion .modern-ui.modern-ui .gameplay-streak-celebration-number { transition-duration: 0s; translate: 0 0; scale: 1 1; }

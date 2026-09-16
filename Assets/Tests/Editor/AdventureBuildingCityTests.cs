@@ -74,9 +74,12 @@ namespace Shikaku.Tests
                 Assert.That(view.parent, Is.Not.InstanceOf<Button>());
             Assert.That(root.Query(className: "city-chapter-button").ToList().Count, Is.EqualTo(packs.Count));
             Capture("AdventureCity-top.png", folder);
-            scroll.scrollOffset = new Vector2(0, 950);
+            scroll.scrollOffset = new Vector2(0, AdventureCityMap.DistrictSpan);
             for (int i = 0; i < 4; i++) yield return null;
             Capture("AdventureCity-lower.png", folder);
+            scroll.scrollOffset = new Vector2(0, AdventureCityMap.DistrictSpan + 420);
+            for (int i = 0; i < 4; i++) yield return null;
+            Capture("AdventureCity-district-bottom.png", folder);
             // Exercise a narrower portrait viewport with the real theme/UXML.
             _target.Release(); UnityEngine.Object.DestroyImmediate(_target);
             _target = new RenderTexture(720, 1280, 24); _target.Create();
@@ -86,16 +89,23 @@ namespace Shikaku.Tests
             for (int i = 0; i < 8; i++) yield return null;
             Capture("AdventureCity-portrait.png", folder);
             var map = root.Q<AdventureCityMap>();
-            Assert.That(map.resolvedStyle.height, Is.LessThan(880), "Five chapters should share one compact neighborhood at the reference phone width.");
+            int expectedDistricts = Mathf.Max(1,
+                Mathf.CeilToInt(packs.Count / (float)AdventureCityMap.BuildingsPerDistrict));
+            float expectedMapHeight =
+                (expectedDistricts * AdventureCityMap.DistrictSpan + 30) * map.contentRect.width / 790f;
+            Assert.That(map.resolvedStyle.height, Is.EqualTo(expectedMapHeight).Within(2),
+                "Each ten-chapter district should retain its authored height.");
             AssertNoPlotOverlaps(map);
             var originalViews = map.Query<BuildingView>().ToList();
-            Assert.That(map.Query<AdventureCityScenery>().ToList().Count, Is.EqualTo(1), "All scenery should use one retained element.");
+            Assert.That(map.Query<AdventureCityScenery>().ToList().Count, Is.EqualTo(2), "Scenery should use retained rear and foreground layers.");
             foreach (var view in originalViews)
             {
                 var target = view.parent.Q<Button>();
                 Assert.That(target.resolvedStyle.backgroundColor.a, Is.Zero, "The hit area must not become a card.");
                 Assert.That(target.worldBound.Contains(view.worldBound.center), Is.True);
-                Assert.That(map.panel.Pick(new Vector2(view.worldBound.center.x, view.worldBound.yMax - 20)), Is.SameAs(target), "Tapping the building should hit its chapter button.");
+                Vector2 pickPoint = new Vector2(view.worldBound.center.x, view.worldBound.yMax - 20);
+                if (root.worldBound.Contains(pickPoint))
+                    Assert.That(map.panel.Pick(pickPoint), Is.SameAs(target), "Tapping a visible building should hit its chapter button.");
             }
             Color darkBackground = map.resolvedStyle.backgroundColor;
             var streetProperty = new CustomStyleProperty<Color>("--city-asphalt");
@@ -132,7 +142,7 @@ namespace Shikaku.Tests
             for (int i = 0; i < 4; i++) yield return null;
             AssertNoPlotOverlaps(city);
             var narrowViews = city.Query<BuildingView>().ToList();
-            Assert.That(city.Query<AdventureCityScenery>().ToList().Count, Is.EqualTo(1));
+            Assert.That(city.Query<AdventureCityScenery>().ToList().Count, Is.EqualTo(2));
             Assert.That(narrowViews[0].worldBound.width, Is.GreaterThan(90), "Building touch areas must remain generous on a narrow viewport.");
             foreach (var view in narrowViews)
             {
@@ -149,7 +159,19 @@ namespace Shikaku.Tests
                 Assert.That(plots[i].worldBound.yMin, Is.GreaterThanOrEqualTo(city.worldBound.yMin));
                 Assert.That(plots[i].worldBound.yMax, Is.LessThanOrEqualTo(city.worldBound.yMax));
                 for (int j = i + 1; j < plots.Count; j++)
-                    Assert.That(plots[i].worldBound.Overlaps(plots[j].worldBound), Is.False, "Building and button plots must never overlap.");
+                {
+                    Rect a = plots[i].worldBound;
+                    Rect b = plots[j].worldBound;
+                    if (!a.Overlaps(b)) continue;
+
+                    // A shallow overlap is intentional where the upper court meets the road-side
+                    // plots. Perspective sorting keeps the nearer building and its hit target on top.
+                    float overlapX = Mathf.Min(a.xMax, b.xMax) - Mathf.Max(a.xMin, b.xMin);
+                    float overlapY = Mathf.Min(a.yMax, b.yMax) - Mathf.Max(a.yMin, b.yMin);
+                    float maxPerspectiveOverlap = 33f * city.contentRect.width / 790f;
+                    Assert.That(Mathf.Min(overlapX, overlapY), Is.LessThanOrEqualTo(maxPerspectiveOverlap),
+                        $"Building and button plots {i} {a} and {j} {b} overlap too deeply.");
+                }
             }
         }
 
@@ -171,7 +193,7 @@ namespace Shikaku.Tests
                 RenderTexture.active = _target;
                 // Inside asphalt, off the center marking and clear of a junction.
                 int x = Mathf.RoundToInt(city.worldBound.xMin + 15 * city.contentRect.width / 790);
-                int y = Mathf.RoundToInt(city.worldBound.yMin + 465 * city.contentRect.width / 790);
+                int y = Mathf.RoundToInt(city.worldBound.yMin + 785 * city.contentRect.width / 790);
                 pixel.ReadPixels(new Rect(x, _target.height - 1 - y, 1, 1), 0, 0);
                 pixel.Apply();
                 return pixel.GetPixels32()[0];

@@ -39,6 +39,16 @@ The restoration was checked separately in 24 Unity renders: standard solved resu
 
 See [Character plan](CharacterPlan.md) for the proposed next visual pass.
 
+## Character pass
+
+The character proposal is implemented. Home and page headers use original retained vector illustrations: a city elevation, plan sheets, stopwatch, calendar, drafting tools, and lightbulb. Warm paper and ink-blue surfaces retain readable light/dark contrast.
+
+Rivet changes expression through the tutorial and briefly celebrates non-Adventure results. Approval checks draw in, and saved personal bests receive a gold badge. Adventure results use the building alone. The existing Reduce Motion preference disables the new motion, and scheduled effects reset on detachment.
+
+Validation: game script compilation passed; 102 Unity captures covered 17 states in two themes and three sizes. Additional runtime preview assertions checked animation movement and completion, expression changes, reduced motion (including changing it during an animation), detachment cleanup, duplicate initialization, and Adventure badge exclusion. Dark illustration color inheritance was corrected during visual review.
+
+The captures in the index have been refreshed for these changed views. The gameplay board image and puzzle-model test report are from the earlier overhaul. Live device touch and platform service flows are not covered by these renders.
+
 ## Preview index
 
 | Screen | Light | Dark |
@@ -55,6 +65,7 @@ See [Character plan](CharacterPlan.md) for the proposed next visual pass.
 | Daily difficulty | [Preview](daily-modal-light.png) | [Preview](daily-modal-dark.png) |
 | Adventure result | [Preview](building-solved-light.png) | [Preview](building-solved-dark.png) |
 | Tutorial | [Preview](tutorial-light.png) | [Preview](tutorial-dark.png) |
+| Personal best | [Preview](personal-best-light.png) | [Preview](personal-best-dark.png) |
 | Puzzle result | [Preview](solved-modal-light.png) | [Preview](solved-modal-dark.png) |
 | Welcome | [Preview](privacy-welcome-screen-light.png) | [Preview](privacy-welcome-screen-dark.png) |
 | Privacy | [Preview](privacy-settings-light.png) | [Preview](privacy-settings-dark.png) |

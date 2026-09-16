@@ -111,6 +111,7 @@ namespace Shikaku.UI
         private int _analyticsHintsUsedThisPuzzle;
         private bool _exitAnalyticsRecorded;
         private bool _timeTrialAnalyticsRecorded;
+        private bool _newPersonalBest;
         private bool _tutorialSwipeTracking;
         private int _tutorialSwipePointerId = -1;
         private Vector2 _tutorialSwipeStart;
@@ -303,6 +304,7 @@ namespace Shikaku.UI
                 return;
             }
 
+            BlueprintCharacter.Install(_overlayRoot);
             _notQuiteWarning = _overlayRoot.Q<VisualElement>(
                 "gameplay-not-quite-warning");
             _solvedModal = _overlayRoot.Q<VisualElement>("gameplay-solved-modal");
@@ -797,14 +799,18 @@ namespace Shikaku.UI
 
             }
 
+            _newPersonalBest = false;
             if (ShouldShowBestTime())
             {
+                bool hadBest = Shikaku.Menu.PuzzleProgressStore.TryGetBestTime(
+                    CurrentPuzzleKey(), out _);
                 bool usedHint =
                     _analyticsHintsUsedThisPuzzle > 0;
 
-                SaveBestTimeIfBetter(
+                bool savedBest = SaveBestTimeIfBetter(
                     _elapsed,
                     usedHint);
+                _newPersonalBest = hadBest && savedBest;
 
                 RefreshBestTime();
             }
@@ -1167,6 +1173,7 @@ namespace Shikaku.UI
             string action,
             bool showContinue)
         {
+            BlueprintCharacter.Tutorial(_overlayRoot, _tutorialStep);
             if (_tutorialTitle != null)
                 _tutorialTitle.text = title;
             if (_tutorialMessage != null)
@@ -1986,6 +1993,8 @@ namespace Shikaku.UI
             AchievementService.RecordTimeTrialSessionFinished(
                 size,
                 totalScore);
+            int previousBest = Shikaku.Menu.GameSession.GetTimeTrialBestSquares(size);
+            _newPersonalBest = totalScore > previousBest && totalScore > 0;
             Shikaku.Menu.GameSession.SaveTimeTrialBestSquaresIfHigher(size, totalScore);
             PlayerPrefs.Save();
 
@@ -2695,11 +2704,11 @@ namespace Shikaku.UI
             }
         }
 
-        private void SaveBestTimeIfBetter(
+        private bool SaveBestTimeIfBetter(
     float seconds,
     bool usedHint)
         {
-            Shikaku.Menu.PuzzleProgressStore.SaveBestTimeIfBetter(
+            return Shikaku.Menu.PuzzleProgressStore.SaveBestTimeIfBetter(
                 CurrentPuzzleKey(),
                 seconds,
                 usedHint);
@@ -3275,7 +3284,11 @@ namespace Shikaku.UI
             _solvedBuilding.SetCompletedFloors(
                 _buildingBeforeSolve ?? _solvedBuildingData.ReadCompletion());
             if (_newBuildingFloor >= 0)
+            {
                 _solvedBuilding.AnimateFloor(_newBuildingFloor);
+                if (Shikaku.Settings.AppSettings.ReduceMotion)
+                    _solvedBuilding.FinishConstruction();
+            }
             RefreshBuildingCaption();
             // Consume the transient pre-save snapshot so reopening never rebuilds a floor.
             _buildingBeforeSolve = null;
@@ -3436,6 +3449,7 @@ namespace Shikaku.UI
 
             ShowModal(_solvedModal);
             ShowSolvedBuilding(timeTrialSummary);
+            BlueprintCharacter.Result(_solvedModal, _newPersonalBest, timeTrialSummary, isTutorial);
             ShowPendingHintCelebrations();
         }
 

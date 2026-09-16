@@ -23,6 +23,7 @@ namespace Shikaku.UI
                 root.AddToClassList("modern-layout-installed");
                 root.RegisterCallback<GeometryChangedEvent>(_ => ApplySafeArea(root));
             }
+            BlueprintCharacter.Install(root);
             ApplySafeArea(root);
         }
 

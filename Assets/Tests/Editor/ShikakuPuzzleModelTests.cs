@@ -215,6 +215,82 @@ namespace Shikaku.Tests
                     Object.DestroyImmediate(roomObject);
             }
         }
+
+        [Test]
+        public void BlueprintRoomDecoration_CellBoundsIgnoreOversizedDescendants()
+        {
+            var boardObject = new GameObject(
+                "Board",
+                typeof(RectTransform));
+            var cellObject = new GameObject(
+                "Cell",
+                typeof(RectTransform));
+            var labelObject = new GameObject(
+                "OversizedLabel",
+                typeof(RectTransform));
+
+            try
+            {
+                RectTransform board =
+                    boardObject.GetComponent<RectTransform>();
+                board.sizeDelta = new Vector2(400f, 300f);
+                board.pivot = new Vector2(0.5f, 0.5f);
+
+                RectTransform cell =
+                    cellObject.GetComponent<RectTransform>();
+                cell.SetParent(board, false);
+                cell.anchorMin = new Vector2(0.5f, 0.5f);
+                cell.anchorMax = new Vector2(0.5f, 0.5f);
+                cell.pivot = new Vector2(0.5f, 0.5f);
+                cell.anchoredPosition = new Vector2(25f, -30f);
+                cell.sizeDelta = new Vector2(40f, 36f);
+
+                RectTransform label =
+                    labelObject.GetComponent<RectTransform>();
+                label.SetParent(cell, false);
+                label.anchorMin = new Vector2(0.5f, 0.5f);
+                label.anchorMax = new Vector2(0.5f, 0.5f);
+                label.pivot = new Vector2(0.5f, 0.5f);
+                label.anchoredPosition = Vector2.zero;
+                label.sizeDelta = new Vector2(120f, 120f);
+
+                System.Type layerType =
+                    typeof(BlueprintThemeAssets).Assembly.GetType(
+                        "Shikaku.UI.BlueprintRoomDecorationLayer");
+                Assert.That(layerType, Is.Not.Null);
+
+                System.Reflection.MethodInfo calculateRectBounds =
+                    layerType.GetMethod(
+                        "CalculateRectBounds",
+                        System.Reflection.BindingFlags.Static |
+                        System.Reflection.BindingFlags.NonPublic);
+                Assert.That(calculateRectBounds, Is.Not.Null);
+
+                Bounds hierarchyBounds =
+                    RectTransformUtility.CalculateRelativeRectTransformBounds(
+                        board,
+                        cell);
+                Bounds cellBounds = (Bounds)calculateRectBounds.Invoke(
+                    null,
+                    new object[] { board, cell });
+
+                Assert.That(hierarchyBounds.size.x, Is.GreaterThan(40f));
+                Assert.That(hierarchyBounds.size.y, Is.GreaterThan(36f));
+                Assert.That(cellBounds.center.x,
+                    Is.EqualTo(25f).Within(0.001f));
+                Assert.That(cellBounds.center.y,
+                    Is.EqualTo(-30f).Within(0.001f));
+                Assert.That(cellBounds.size.x,
+                    Is.EqualTo(40f).Within(0.001f));
+                Assert.That(cellBounds.size.y,
+                    Is.EqualTo(36f).Within(0.001f));
+            }
+            finally
+            {
+                Object.DestroyImmediate(boardObject);
+            }
+        }
+
         [Test]
         public void BlueprintTheme_LoadsConfiguredArtSet()
         {

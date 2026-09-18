@@ -670,15 +670,32 @@ namespace Shikaku.UI
                 return;
             }
 
-            Bounds firstBounds =
-                RectTransformUtility.CalculateRelativeRectTransformBounds(
-                    coordinateRoot,
-                    first);
-            Bounds lastBounds =
-                RectTransformUtility.CalculateRelativeRectTransformBounds(
-                    coordinateRoot,
-                    last);
+            Bounds firstBounds = CalculateRectBounds(coordinateRoot, first);
+            Bounds lastBounds = CalculateRectBounds(coordinateRoot, last);
             ApplyLocalBounds(target, coordinateRoot, firstBounds, lastBounds);
+        }
+
+        internal static Bounds CalculateRectBounds(
+            RectTransform root,
+            RectTransform rect)
+        {
+            if (root == null || rect == null)
+                return default;
+
+            Rect localRect = rect.rect;
+            Matrix4x4 rectToRoot =
+                root.worldToLocalMatrix * rect.localToWorldMatrix;
+            Vector3 firstCorner = rectToRoot.MultiplyPoint3x4(
+                new Vector3(localRect.xMin, localRect.yMin, 0f));
+            var bounds = new Bounds(firstCorner, Vector3.zero);
+            bounds.Encapsulate(rectToRoot.MultiplyPoint3x4(
+                new Vector3(localRect.xMin, localRect.yMax, 0f)));
+            bounds.Encapsulate(rectToRoot.MultiplyPoint3x4(
+                new Vector3(localRect.xMax, localRect.yMax, 0f)));
+            bounds.Encapsulate(rectToRoot.MultiplyPoint3x4(
+                new Vector3(localRect.xMax, localRect.yMin, 0f)));
+
+            return bounds;
         }
 
         internal static void ApplyLocalBounds(

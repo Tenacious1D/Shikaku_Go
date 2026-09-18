@@ -129,6 +129,8 @@ namespace Shikaku.UI
 
         // Prevent spam resizing loops
         private bool _gridBuilt = false;
+        private int _builtGridWidth = -1;
+        private int _builtGridHeight = -1;
         private bool _useEdgeToEdgeBoardSlot;
 
         private SolutionRegion[] _solutionRegions;
@@ -439,7 +441,10 @@ namespace Shikaku.UI
 
         private void OnBoardReset()
         {
-            if (_cells == null || _cells.Length != width * height)
+            if (_cells == null ||
+                _cells.Length != width * height ||
+                _builtGridWidth != width ||
+                _builtGridHeight != height)
             {
                 BuildGrid();
                 _gridBuilt = true;
@@ -697,8 +702,16 @@ namespace Shikaku.UI
             grid.constraint = GridLayoutGroup.Constraint.FixedColumnCount;
             grid.constraintCount = width;
 
+            // The room fill and feedback layers are persistent board services.
+            // Destroying them together with the cells is unsafe because Destroy
+            // is deferred: Create() can find and return a layer that is already
+            // scheduled for destruction later in the same frame.
             for (int i = boardPanel.childCount - 1; i >= 0; i--)
-                Destroy(boardPanel.GetChild(i).gameObject);
+            {
+                Transform child = boardPanel.GetChild(i);
+                if (child.GetComponent<CellView>() != null)
+                    Destroy(child.gameObject);
+            }
 
             _cells = new CellView[width * height];
 
@@ -716,8 +729,15 @@ namespace Shikaku.UI
                 _cells[i] = view;
             }
 
-            _blueprintRooms =
-                BlueprintRoomDecorationLayer.Create(boardPanel);
+            _builtGridWidth = width;
+            _builtGridHeight = height;
+            EnsureBlueprintRoomLayer();
+        }
+
+        private void EnsureBlueprintRoomLayer()
+        {
+            if (_blueprintRooms == null && boardPanel != null)
+                _blueprintRooms = BlueprintRoomDecorationLayer.Create(boardPanel);
         }
 
         private void RefreshHoleVisuals()
@@ -887,8 +907,8 @@ namespace Shikaku.UI
 
         private void RefreshBlueprintRooms()
         {
-            if (_blueprintRooms == null || _model == null ||
-                _cells == null)
+            EnsureBlueprintRoomLayer();
+            if (_blueprintRooms == null || _model == null || _cells == null)
             {
                 return;
             }

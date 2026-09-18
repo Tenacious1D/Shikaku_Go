@@ -9,9 +9,11 @@ namespace Shikaku.UI.Buildings
     public sealed class AdventureCityMap : VisualElement
     {
         public const int BuildingsPerDistrict = 10;
-        public const float DistrictSpan = 1360f;
+        // District scenery intentionally overlaps slightly so the full map reads as one city.
+        public const float DistrictSpan = 1040f;
+        public const float DistrictCanvasHeight = 1390f;
 
-        private static readonly Vector2[] Anchors = {
+        private static readonly Vector2[] CityAnchors = {
             // Chapters 1-4 occupy the former 6, 3, 2 and 1 positions respectively.
             new Vector2(580, 1297), new Vector2(645, 1046),
             new Vector2(364, 1172), new Vector2(147, 1047),
@@ -19,6 +21,25 @@ namespace Shikaku.UI.Buildings
             new Vector2(390, 892), new Vector2(200, 782),
             new Vector2(581, 782), new Vector2(200, 562),
             new Vector2(390, 452), new Vector2(581, 562)
+        };
+        private static readonly Vector2[] NeighborhoodAnchors = {
+            // Lower street: 1-2 below the road, 3-5 above it.
+            new Vector2(333, 1172), new Vector2(125, 1052),
+            new Vector2(561, 1082), new Vector2(353, 962), new Vector2(145, 842),
+            // Upper street: 6-8 below the road, 9-10 above it.
+            new Vector2(541, 762), new Vector2(333, 642), new Vector2(125, 522),
+            new Vector2(508, 492), new Vector2(300, 372)
+        };
+        private static readonly Vector2[] WarehouseAnchors = {
+            // Lower diagonal: 1-2 below the road and 3-4 above it.
+            new Vector2(120, 1041), new Vector2(310, 1151),
+            new Vector2(290, 920), new Vector2(100, 810),
+            // Upper diagonal: 5 and 7 below; 6, 8 and 9 above.
+            new Vector2(500, 841), new Vector2(270, 706),
+            new Vector2(690, 732), new Vector2(440, 626),
+            new Vector2(630, 516),
+            // Chapter 10 fills the open lower-right area above the lower road.
+            new Vector2(675, 1080)
         };
         private readonly List<Plot> _plots = new List<Plot>();
         private readonly AdventureCityScenery _backgroundScenery = new AdventureCityScenery(false);
@@ -35,7 +56,12 @@ namespace Shikaku.UI.Buildings
         }
         private float ViewScale => contentRect.width / 790f;
         private int Districts => Mathf.Max(1, Mathf.CeilToInt(_chapterCount / (float)BuildingsPerDistrict));
-        private float MapHeight => (Districts * DistrictSpan + 30) * ViewScale;
+        private float MapHeight =>
+            ((Districts - 1) * DistrictSpan + DistrictCanvasHeight) * ViewScale;
+
+        private static int LayoutFamily(int district) => (district / 2) % 3;
+        public static bool UsesNeighborhoodLayout(int district) => LayoutFamily(district) == 1;
+        public static bool UsesWarehouseLayout(int district) => LayoutFamily(district) == 2;
 
         public AdventureCityMap(int chapterCount)
         {
@@ -91,12 +117,15 @@ namespace Shikaku.UI.Buildings
             {
                 int district = plot.Index / BuildingsPerDistrict;
                 int slot = plot.Index % BuildingsPerDistrict;
-                Vector2 anchor = Anchors[slot];
+                bool neighborhood = UsesNeighborhoodLayout(district);
+                bool warehouse = UsesWarehouseLayout(district);
+                Vector2 anchor = warehouse ? WarehouseAnchors[slot] :
+                    neighborhood ? NeighborhoodAnchors[slot] : CityAnchors[slot];
                 if ((district & 1) != 0) anchor.x = 790 - anchor.x;
                 anchor.y += (Districts - 1 - district) * DistrictSpan;
                 Vector2 offset = plot.Data?.Definition != null ? plot.Data.Definition.mapOffset : Vector2.zero;
                 anchor += new Vector2(Mathf.Clamp(offset.x, -2, 2), Mathf.Clamp(offset.y, -4, 4));
-                bool fullHeightPlot = slot >= 1 && slot <= 3;
+                bool fullHeightPlot = !neighborhood && !warehouse && slot >= 1 && slot <= 3;
                 float buildingHeight = fullHeightPlot ? 255 : 205;
                 float badgeHeight = fullHeightPlot ? Mathf.Max(32, 38 * s) : Mathf.Max(20, 24 * s);
                 plot.Node.style.left = (anchor.x - 100) * s;

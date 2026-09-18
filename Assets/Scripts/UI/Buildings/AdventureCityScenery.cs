@@ -40,6 +40,16 @@ namespace Shikaku.UI.Buildings
         private static readonly TreeSite[] ExpansionTreeSites = {
             new TreeSite(188, 250), new TreeSite(560, 238), new TreeSite(755, 285)
         };
+        private static readonly TreeSite[] NeighborhoodTreeSites = {
+            new TreeSite(70, 390), new TreeSite(720, 620), new TreeSite(65, 650),
+            new TreeSite(735, 940), new TreeSite(70, 930, true),
+            new TreeSite(720, 1160, true), new TreeSite(740, 1325, true)
+        };
+        private static readonly TreeSite[] WarehouseTreeSites = {
+            new TreeSite(55, 430), new TreeSite(740, 330), new TreeSite(55, 620),
+            new TreeSite(750, 870, true), new TreeSite(65, 1240, true),
+            new TreeSite(730, 1260, true)
+        };
 
         public AdventureCityScenery(bool foreground = false)
         {
@@ -82,11 +92,16 @@ namespace Shikaku.UI.Buildings
             {
                 _origin = (_districts - 1 - district) * AdventureCityMap.DistrictSpan;
                 _mirror = (district & 1) != 0;
-                DrawNeighborhood(district);
+                if (AdventureCityMap.UsesWarehouseLayout(district))
+                    DrawWarehouseDistrict(district);
+                else if (AdventureCityMap.UsesNeighborhoodLayout(district))
+                    DrawNeighborhoodDistrict(district);
+                else
+                    DrawCityDistrict(district);
             }
         }
 
-        private void DrawNeighborhood(int seed)
+        private void DrawCityDistrict(int seed)
         {
             if (!_foreground)
             {
@@ -114,6 +129,127 @@ namespace Shikaku.UI.Buildings
                 Planter(new Vector2(82, 525));
                 Planter(new Vector2(720, 560));
             }
+        }
+
+        private void DrawNeighborhoodDistrict(int seed)
+        {
+            _sectionOffset = 0;
+            if (!_foreground)
+            {
+                // Two rows of joined square lots sit on each side of two parallel streets.
+                Vector2[] courts = {
+                    new Vector2(333, 1130), new Vector2(125, 1010),
+                    new Vector2(561, 1040), new Vector2(353, 920), new Vector2(145, 800),
+                    new Vector2(541, 720), new Vector2(333, 600), new Vector2(125, 480),
+                    new Vector2(508, 450), new Vector2(300, 330)
+                };
+                for (int i = 0; i < courts.Length; i++)
+                    Box(courts[i], 240, 240, 3, _paving);
+
+                Vector2 upperWest = new Vector2(-80, 237);
+                Vector2 upperEast = new Vector2(870, 785);
+                Vector2 lowerWest = new Vector2(-80, 781);
+                Vector2 lowerEast = new Vector2(870, 1329);
+                DrawStraightRoad(upperWest, upperEast);
+                DrawStraightRoad(lowerWest, lowerEast);
+                Crosswalk(Vector2.Lerp(upperWest, upperEast, 0.18f),
+                    (upperEast - upperWest).normalized);
+                Crosswalk(Vector2.Lerp(upperWest, upperEast, 0.82f),
+                    (upperEast - upperWest).normalized);
+                Crosswalk(Vector2.Lerp(lowerWest, lowerEast, 0.22f),
+                    (lowerEast - lowerWest).normalized);
+                Crosswalk(Vector2.Lerp(lowerWest, lowerEast, 0.78f),
+                    (lowerEast - lowerWest).normalized);
+
+                Car(new Vector2(70, 323), false, new Color32(194, 126, 91, 255));
+                Car(new Vector2(680, 676), false, new Color32(103, 157, 178, 255));
+                Car(new Vector2(100, 885), false, new Color32(218, 192, 122, 255));
+                Car(new Vector2(665, 1211), false, new Color32(202, 211, 195, 255));
+                Lamp(new Vector2(245, 500), Vector2.up);
+                Lamp(new Vector2(610, 560), Vector2.down);
+                Lamp(new Vector2(260, 900), Vector2.down);
+                Lamp(new Vector2(650, 1110), Vector2.down);
+                Bench(new Vector2(735, 855));
+                Bench(new Vector2(60, 750));
+                Planter(new Vector2(755, 700));
+                Planter(new Vector2(55, 1130));
+            }
+
+            var random = new System.Random(1231 + seed * 7919);
+            DrawTrees(NeighborhoodTreeSites, random);
+        }
+
+        private void DrawStraightRoad(Vector2 start, Vector2 end)
+        {
+            for (int layer = 0; layer < 2; layer++)
+            {
+                float width = layer == 0 ? 68 : 45;
+                Stroke(start, end, width, layer == 0 ? _sidewalk : _asphalt);
+            }
+            Lane(start, end, 0, 0);
+        }
+
+        private void DrawWarehouseDistrict(int seed)
+        {
+            _sectionOffset = 0;
+            if (!_foreground)
+            {
+                Vector2[] courts = {
+                    new Vector2(120, 999), new Vector2(310, 1109),
+                    new Vector2(290, 878), new Vector2(100, 768),
+                    new Vector2(500, 799), new Vector2(270, 664),
+                    new Vector2(690, 690), new Vector2(440, 584),
+                    new Vector2(630, 474), new Vector2(675, 1038)
+                };
+                for (int i = 0; i < courts.Length; i++)
+                    Box(courts[i], 220, 220, 3, _paving);
+
+                Vector2 west = new Vector2(-80, 774);
+                Vector2 fork = new Vector2(128, 894);
+                Vector2 lowerEast = new Vector2(870, 1322);
+                Vector2 upperEast = new Vector2(870, 466);
+                for (int layer = 0; layer < 2; layer++)
+                {
+                    float width = layer == 0 ? 68 : 45;
+                    Color color = layer == 0 ? _sidewalk : _asphalt;
+                    Stroke(west, fork, width, color);
+                    Stroke(fork, lowerEast, width, color);
+                    Stroke(fork, upperEast, width, color);
+                    Circle(fork, width * 0.5f, color);
+                }
+                Lane(west, fork, 0, 34);
+                Lane(fork, lowerEast, 34, 0);
+                Lane(fork, upperEast, 34, 0);
+                Crosswalk(Vector2.Lerp(fork, lowerEast, 0.72f),
+                    (lowerEast - fork).normalized);
+                Crosswalk(Vector2.Lerp(fork, upperEast, 0.68f),
+                    (upperEast - fork).normalized);
+
+                Car(new Vector2(35, 840), false, new Color32(210, 133, 92, 255));
+                Car(new Vector2(650, 1195), false, new Color32(220, 198, 126, 255));
+                Car(new Vector2(500, 680), true, new Color32(104, 157, 178, 255));
+                Car(new Vector2(760, 530), true, new Color32(201, 211, 195, 255));
+                Lamp(new Vector2(245, 1010), Vector2.up);
+                Lamp(new Vector2(610, 1060), Vector2.down);
+                Lamp(new Vector2(390, 500), Vector2.down);
+                Lamp(new Vector2(690, 585), Vector2.up);
+                CargoStack(new Vector2(75, 520));
+                CargoStack(new Vector2(735, 790));
+                CargoStack(new Vector2(120, 258));
+                CargoStack(new Vector2(255, 390));
+            }
+
+            var random = new System.Random(2467 + seed * 7919);
+            DrawTrees(WarehouseTreeSites, random);
+        }
+
+        private void CargoStack(Vector2 center)
+        {
+            Color crate = new Color32(174, 132, 83, 255);
+            Plane(center + new Vector2(4, 4), 52, 34, new Color(0, 0, 0, 0.14f));
+            Box(center + Iso(-13, 0), 22, 24, 10, crate);
+            Box(center + Iso(13, 0), 22, 24, 10, Shade(crate, 0.08f));
+            Box(center + new Vector2(0, -12), 22, 24, 10, Color.Lerp(crate, Color.white, 0.08f));
         }
 
         private void DrawExpansionRoadAndCourts()

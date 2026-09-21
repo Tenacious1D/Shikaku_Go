@@ -60,9 +60,12 @@ namespace Shikaku.UI
             public int RegionId;
             public int SeenGeneration;
             public RectTransform Rect;
+            public CanvasGroup Canvas;
             public Image Fill;
             public RawImage Pattern;
-            public Image[] Walls;
+            public FloorplanFurnitureGraphic Furniture;
+            public CanvasGroup FurnitureCanvas;
+
             public Color WallColor;
             public float CreatedAt;
             public Coroutine HintRoutine;
@@ -79,6 +82,8 @@ namespace Shikaku.UI
         private readonly List<ShikakuRegion> _regionBuffer =
             new List<ShikakuRegion>(64);
 
+        private FloorplanWallGraphic _walls;
+        private RectTransform _furnitureRoot;
         private RectTransform _fillRoot;
         private RectTransform _feedbackRoot;
         private RectTransform _previewRect;
@@ -87,7 +92,14 @@ namespace Shikaku.UI
         private RectTransform _routeSweep;
         private Image _routeSweepImage;
         private Image[] _previewWalls;
+        private Image[] _previewCornerMarks;
         private Coroutine _routeSweepRoutine;
+        private RectTransform _completionRoot;
+        private CanvasGroup _completionCanvas;
+        private Image _completionPlate;
+        private TextMeshProUGUI _completionLabel;
+        private Image[] _completionWalls;
+        private Coroutine _completionRoutine;
         private int _generation;
         private BlueprintThemeAssets _theme;
         private bool _dark;
@@ -179,8 +191,26 @@ namespace Shikaku.UI
         {
             _fillRoot = fillRoot;
             _feedbackRoot = feedbackRoot;
+            if (_walls == null)
+            {
+                var wallObject = new GameObject("FloorplanWalls", typeof(RectTransform), typeof(CanvasRenderer), typeof(FloorplanWallGraphic));
+                wallObject.layer = gameObject.layer;
+                wallObject.transform.SetParent(_feedbackRoot, false);
+                var rect = (RectTransform)wallObject.transform;
+                rect.anchorMin = Vector2.zero; rect.anchorMax = Vector2.one;
+                rect.offsetMin = rect.offsetMax = Vector2.zero;
+                _walls = wallObject.GetComponent<FloorplanWallGraphic>();
+                wallObject.transform.SetAsFirstSibling();
+            }
+            if (_furnitureRoot == null)
+            {
+                _furnitureRoot = CreateLayerObject(_feedbackRoot, "FloorplanFurniture", false)
+                    .GetComponent<RectTransform>();
+                _furnitureRoot.SetAsFirstSibling();
+            }
             EnsurePreview();
             EnsureRouteSweep();
+            EnsureCompletionPresentation();
         }
 
         public void Refresh(
@@ -190,7 +220,8 @@ namespace Shikaku.UI
             BlueprintThemeAssets theme,
             bool dark,
             bool hasPreview,
-            BlueprintRoomVisualDescriptor preview)
+            BlueprintRoomVisualDescriptor preview,
+            bool showFurniture = true)
         {
             if (_fillRoot == null)
                 _fillRoot = transform as RectTransform;
@@ -207,9 +238,6 @@ namespace Shikaku.UI
             _generation++;
             model.CopyRegionsTo(_regionBuffer);
 
-            int paletteCount = palette != null && palette.numberColors != null
-                ? palette.numberColors.Length - 1
-                : 0;
 
             for (int index = 0; index < _regionBuffer.Count; index++)
             {
@@ -217,38 +245,14 @@ namespace Shikaku.UI
                 DecorationView view = GetOrCreate(region.Id);
                 view.SeenGeneration = _generation;
 
-                int paletteIndex = _theme.GetStablePaletteIndex(
-                    region,
-                    paletteCount);
-                Color identity = palette != null
-                    ? palette.GetColorForNumber(paletteIndex)
-                    : new Color32(45, 145, 180, 255);
                 bool selected = model.SelectedRegionId == region.Id;
 
-                view.Fill.color = _theme.GetRoomFill(
-                    identity,
-                    _dark,
-                    region.IsValid);
-
-                int hatchIndex = _theme.GetStableHatchIndex(region);
-                Texture2D hatch = _theme.GetRoomHatch(hatchIndex);
-                view.Pattern.texture = hatch != null
-                    ? hatch
-                    : GetFallbackHatch(hatchIndex);
-                view.Pattern.uvRect = new Rect(
-                    0f,
-                    0f,
-                    Mathf.Max(1f, region.Width * 0.7f),
-                    Mathf.Max(1f, region.Height * 0.7f));
-                view.Pattern.color = _theme.GetPatternColor(_dark);
-                view.Pattern.enabled = region.IsValid;
-
-                view.WallColor = _theme.GetRoomOutline(
-                    identity,
-                    _dark,
-                    region.IsValid,
-                    selected);
-                ApplyRoomWalls(view, view.WallColor);
+                view.Fill.color = _theme.GetFloorplanRoomFill(region, _dark);
+                // Solid floors keep furniture silhouettes readable in both themes.
+                view.Pattern.enabled = false;
+                view.Furniture.SetRoom(model, region, _dark, showFurniture);
+                view.WallColor = !region.IsValid ? _theme.invalidInk :
+                    selected ? _theme.GetFloorplanSelectionColor(_dark) : _theme.GetFloorplanWallColor(_dark);
                 SetRegionRect(
                     view.Rect,
                     cells,
@@ -257,6 +261,8 @@ namespace Shikaku.UI
                     region.Y,
                     region.Width,
                     region.Height);
+                SetRegionRect(view.Furniture.rectTransform, cells, model.Width,
+                    region.X, region.Y, region.Width, region.Height);
             }
 
             _releaseBuffer.Clear();
@@ -268,6 +274,7 @@ namespace Shikaku.UI
             for (int index = 0; index < _releaseBuffer.Count; index++)
                 Release(_releaseBuffer[index]);
 
+            _walls.SetBoard(model, cells, _theme, _dark);
             RefreshPreview(cells, model.Width, hasPreview, preview);
             _fillRoot.SetAsFirstSibling();
             _feedbackRoot.SetAsLastSibling();
@@ -283,10 +290,11 @@ namespace Shikaku.UI
                 : CreateView();
             view.RegionId = regionId;
             view.CreatedAt = Time.unscaledTime;
+            view.Canvas.alpha = AppSettings.ReduceMotion ? 1f : 0f;
+            view.FurnitureCanvas.alpha = view.Canvas.alpha;
             view.Rect.gameObject.SetActive(true);
-            view.Rect.localScale = AppSettings.ReduceMotion
-                ? Vector3.one
-                : new Vector3(0.985f, 0.985f, 1f);
+            view.Furniture.gameObject.SetActive(true);
+            view.Rect.localScale = Vector3.one;
             _active.Add(regionId, view);
             return view;
         }
@@ -297,7 +305,8 @@ namespace Shikaku.UI
                 "BlueprintRoom",
                 typeof(RectTransform),
                 typeof(CanvasRenderer),
-                typeof(Image));
+                typeof(Image),
+                typeof(CanvasGroup));
             viewObject.layer = gameObject.layer;
             viewObject.transform.SetParent(_fillRoot, false);
 
@@ -307,12 +316,22 @@ namespace Shikaku.UI
 
             RectTransform roomRect = viewObject.GetComponent<RectTransform>();
             RawImage pattern = CreatePattern(roomRect);
+            var furnitureObject = new GameObject("RoomFurniture", typeof(RectTransform),
+                typeof(CanvasRenderer), typeof(CanvasGroup), typeof(FloorplanFurnitureGraphic));
+            furnitureObject.layer = gameObject.layer;
+            furnitureObject.transform.SetParent(_furnitureRoot, false);
+            var furnitureRect = (RectTransform)furnitureObject.transform;
+            furnitureRect.anchorMin = Vector2.zero;
+            furnitureRect.anchorMax = Vector2.one;
+            furnitureRect.offsetMin = furnitureRect.offsetMax = Vector2.zero;
             return new DecorationView
             {
                 Rect = roomRect,
+                Canvas = viewObject.GetComponent<CanvasGroup>(),
                 Fill = fill,
                 Pattern = pattern,
-                Walls = CreateWalls(roomRect, "RoomWall", 3f)
+                Furniture = furnitureObject.GetComponent<FloorplanFurnitureGraphic>(),
+                FurnitureCanvas = furnitureObject.GetComponent<CanvasGroup>()
             };
         }
 
@@ -378,12 +397,7 @@ namespace Shikaku.UI
 
         private void ApplyRoomWalls(DecorationView view, Color outline)
         {
-            Color highlight = Color.Lerp(outline, Color.white, _dark ? 0.16f : 0.3f);
-            Color shadow = Color.Lerp(outline, Color.black, _dark ? 0.18f : 0.12f);
-            view.Walls[0].color = highlight;
-            view.Walls[1].color = shadow;
-            view.Walls[2].color = highlight;
-            view.Walls[3].color = shadow;
+            _walls?.SetHintColor(view.RegionId, outline);
         }
 
         private void Release(int regionId)
@@ -392,12 +406,14 @@ namespace Shikaku.UI
                 return;
 
             _active.Remove(regionId);
+            _walls?.ClearHintColor(regionId);
             if (view.HintRoutine != null)
             {
                 StopCoroutine(view.HintRoutine);
                 view.HintRoutine = null;
             }
             view.Rect.gameObject.SetActive(false);
+            view.Furniture.gameObject.SetActive(false);
             _pool.Push(view);
         }
 
@@ -418,6 +434,7 @@ namespace Shikaku.UI
             _previewPattern.raycastTarget = false;
             _previewPattern.maskable = true;
             _previewWalls = CreateWalls(_previewRect, "DraftWall", 4f);
+            _previewCornerMarks = CreateCornerMarks(_previewRect);
 
             GameObject labelObject = new GameObject(
                 "BlueprintDimensionLabel",
@@ -458,9 +475,9 @@ namespace Shikaku.UI
         {
             if (AppSettings.ReduceMotion)
             {
-                ApplyRoomWalls(view, _theme.selectedRoomOutline);
+                ApplyRoomWalls(view, _theme.GetFloorplanSelectionColor(_dark));
                 yield return new WaitForSecondsRealtime(0.35f);
-                ApplyRoomWalls(view, view.WallColor);
+                _walls?.ClearHintColor(view.RegionId);
                 view.HintRoutine = null;
                 yield break;
             }
@@ -483,14 +500,15 @@ namespace Shikaku.UI
                 }
             }
 
-            ApplyRoomWalls(view, view.WallColor);
+            _walls?.ClearHintColor(view.RegionId);
             view.HintRoutine = null;
         }
 
-        public void PlaySolveSweep()
+        public void PlaySolveSweep(string completionLabel)
         {
             EnsureRouteSweep();
-            if (_routeSweep == null)
+            EnsureCompletionPresentation();
+            if (_routeSweep == null || _completionRoot == null)
                 return;
 
             if (_routeSweepRoutine != null)
@@ -499,13 +517,63 @@ namespace Shikaku.UI
                 _routeSweepRoutine = null;
             }
 
-            if (AppSettings.ReduceMotion)
-            {
-                _routeSweep.gameObject.SetActive(false);
-                return;
-            }
+            if (_completionRoutine != null)
+                StopCoroutine(_completionRoutine);
 
-            _routeSweepRoutine = StartCoroutine(AnimateRouteSweep());
+            _completionLabel.text = string.IsNullOrWhiteSpace(completionLabel)
+                ? "FLOOR PLAN COMPLETE"
+                : completionLabel;
+            ApplyCompletionTheme();
+            _completionRoutine = StartCoroutine(AnimateCompletionPresentation());
+            if (!AppSettings.ReduceMotion)
+                _routeSweepRoutine = StartCoroutine(AnimateRouteSweep());
+        }
+
+        private Image[] CreateCornerMarks(RectTransform parent)
+        {
+            var marks = new List<Image>(8);
+            for (int y = 0; y <= 1; y++)
+            {
+                for (int x = 0; x <= 1; x++)
+                {
+                    Vector2 anchor = new Vector2(x, y);
+                    marks.Add(CreateCornerMark(
+                        parent,
+                        $"DraftCorner{x}{y}H",
+                        anchor,
+                        new Vector2(18f, 3f)));
+                    marks.Add(CreateCornerMark(
+                        parent,
+                        $"DraftCorner{x}{y}V",
+                        anchor,
+                        new Vector2(3f, 18f)));
+                }
+            }
+            return marks.ToArray();
+        }
+
+        private Image CreateCornerMark(
+            RectTransform parent,
+            string objectName,
+            Vector2 anchor,
+            Vector2 size)
+        {
+            GameObject markObject = new GameObject(
+                objectName,
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image));
+            markObject.layer = gameObject.layer;
+            markObject.transform.SetParent(parent, false);
+            RectTransform rect = markObject.GetComponent<RectTransform>();
+            rect.anchorMin = anchor;
+            rect.anchorMax = anchor;
+            rect.pivot = anchor;
+            rect.anchoredPosition = Vector2.zero;
+            rect.sizeDelta = size;
+            Image image = markObject.GetComponent<Image>();
+            image.raycastTarget = false;
+            return image;
         }
 
         private void EnsureRouteSweep()
@@ -531,6 +599,106 @@ namespace Shikaku.UI
             routeObject.SetActive(false);
         }
 
+        private void EnsureCompletionPresentation()
+        {
+            if (_completionRoot != null || _feedbackRoot == null)
+                return;
+
+            GameObject rootObject = new GameObject(
+                "BlueprintApproval",
+                typeof(RectTransform),
+                typeof(CanvasGroup));
+            rootObject.layer = gameObject.layer;
+            rootObject.transform.SetParent(_feedbackRoot, false);
+            _completionRoot = rootObject.GetComponent<RectTransform>();
+            _completionRoot.anchorMin = Vector2.zero;
+            _completionRoot.anchorMax = Vector2.one;
+            _completionRoot.offsetMin = new Vector2(2f, 2f);
+            _completionRoot.offsetMax = new Vector2(-2f, -2f);
+            _completionCanvas = rootObject.GetComponent<CanvasGroup>();
+            _completionCanvas.interactable = false;
+            _completionCanvas.blocksRaycasts = false;
+            _completionWalls = CreateWalls(
+                _completionRoot,
+                "ApprovalFrame",
+                6f);
+
+            GameObject plateObject = new GameObject(
+                "ApprovalPlate",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(Image));
+            plateObject.layer = gameObject.layer;
+            plateObject.transform.SetParent(_completionRoot, false);
+            RectTransform plateRect =
+                plateObject.GetComponent<RectTransform>();
+            plateRect.anchorMin = new Vector2(0.12f, 0.5f);
+            plateRect.anchorMax = new Vector2(0.88f, 0.5f);
+            plateRect.pivot = new Vector2(0.5f, 0.5f);
+            plateRect.anchoredPosition = Vector2.zero;
+            plateRect.sizeDelta = new Vector2(0f, 68f);
+            _completionPlate = plateObject.GetComponent<Image>();
+            _completionPlate.raycastTarget = false;
+
+            GameObject labelObject = new GameObject(
+                "ApprovalLabel",
+                typeof(RectTransform),
+                typeof(CanvasRenderer),
+                typeof(TextMeshProUGUI));
+            labelObject.layer = gameObject.layer;
+            labelObject.transform.SetParent(plateRect, false);
+            RectTransform labelRect =
+                labelObject.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = new Vector2(12f, 4f);
+            labelRect.offsetMax = new Vector2(-12f, -4f);
+            _completionLabel = labelObject.GetComponent<TextMeshProUGUI>();
+            _completionLabel.raycastTarget = false;
+            _completionLabel.alignment = TextAlignmentOptions.Center;
+            _completionLabel.fontStyle = FontStyles.Bold;
+            _completionLabel.enableAutoSizing = true;
+            _completionLabel.fontSizeMin = 14f;
+            _completionLabel.fontSizeMax = 31f;
+            _completionRoot.gameObject.SetActive(false);
+        }
+
+        private void ApplyCompletionTheme()
+        {
+            Color success = _dark
+                ? Color.Lerp(_theme.successInk, Color.white, 0.25f)
+                : _theme.successInk;
+            for (int index = 0; index < _completionWalls.Length; index++)
+                _completionWalls[index].color = success;
+            _completionLabel.color = success;
+            Color plate = _theme.GetBoardSurfaceColor(_dark);
+            plate.a = _dark ? 0.94f : 0.96f;
+            _completionPlate.color = plate;
+        }
+
+        private IEnumerator AnimateCompletionPresentation()
+        {
+            _completionRoot.gameObject.SetActive(true);
+            _completionRoot.SetAsLastSibling();
+            float duration = AppSettings.ReduceMotion ? 0.22f : 0.72f;
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                elapsed += Time.unscaledDeltaTime;
+                float t = Mathf.Clamp01(elapsed / duration);
+                float fadeIn = Mathf.SmoothStep(0f, 1f, t / 0.18f);
+                float fadeOut = 1f - Mathf.SmoothStep(
+                    0f,
+                    1f,
+                    Mathf.Clamp01((t - 0.72f) / 0.28f));
+                _completionCanvas.alpha = Mathf.Min(fadeIn, fadeOut);
+                yield return null;
+            }
+
+            _completionRoot.gameObject.SetActive(false);
+            _completionRoutine = null;
+        }
+
         private IEnumerator AnimateRouteSweep()
         {
             _routeSweep.gameObject.SetActive(true);
@@ -550,11 +718,9 @@ namespace Shikaku.UI
                     Mathf.Lerp(-24f, boardWidth + 24f, eased),
                     0f);
                 float fade = Mathf.Sin(t * Mathf.PI);
-                _routeSweepImage.color = new Color32(
-                    43,
-                    188,
-                    221,
-                    (byte)Mathf.RoundToInt(210f * fade));
+                Color sweepColor = _theme.GetInteractionColor(_dark);
+                sweepColor.a = 0.82f * fade;
+                _routeSweepImage.color = sweepColor;
                 yield return null;
             }
 
@@ -594,21 +760,21 @@ namespace Shikaku.UI
                 Mathf.Max(1f, preview.Height * 0.7f));
 
             bool valid = preview.State != BlueprintRoomVisualState.Invalid;
-            _previewPattern.color = valid
-                ? new Color32(54, 138, 154, 54)
-                : new Color32(190, 52, 56, 48);
+            Color previewFill = valid
+                ? _theme.GetInteractionColor(_dark)
+                : _theme.invalidInk;
+            previewFill.a = valid ? 0.20f : 0.18f;
+            _previewPattern.color = previewFill;
             Color previewWallColor = valid
-                ? (_dark
-                    ? new Color32(221, 245, 248, 255)
-                    : new Color32(18, 86, 143, 255))
-                : new Color32(196, 55, 62, 255);
+                ? _theme.GetInteractionColor(_dark)
+                : _theme.invalidInk;
             for (int wallIndex = 0; wallIndex < _previewWalls.Length; wallIndex++)
                 _previewWalls[wallIndex].color = previewWallColor;
+            for (int markIndex = 0; markIndex < _previewCornerMarks.Length; markIndex++)
+                _previewCornerMarks[markIndex].color = previewWallColor;
             _previewLabel.color = valid
-                ? (_dark
-                    ? new Color32(221, 240, 238, 255)
-                    : new Color32(27, 91, 102, 255))
-                : new Color32(190, 52, 56, 255);
+                ? _theme.GetInteractionColor(_dark)
+                : _theme.invalidInk;
             if (_lastPreviewWidth != preview.Width ||
                 _lastPreviewHeight != preview.Height ||
                 _lastPreviewValid != valid)
@@ -624,7 +790,7 @@ namespace Shikaku.UI
 
         private void Update()
         {
-            if (_theme == null || AppSettings.ReduceMotion)
+            if (_theme == null)
                 return;
 
             float duration = Mathf.Max(0.01f, _theme.wallInkDuration);
@@ -634,10 +800,9 @@ namespace Shikaku.UI
                 float t = Mathf.Clamp01(
                     (Time.unscaledTime - view.CreatedAt) / duration);
                 float eased = 1f - Mathf.Pow(1f - t, 3f);
-                view.Rect.localScale = Vector3.LerpUnclamped(
-                    new Vector3(0.985f, 0.985f, 1f),
-                    Vector3.one,
-                    eased);
+                view.Rect.localScale = Vector3.one;
+                view.Canvas.alpha = AppSettings.ReduceMotion ? 1f : eased;
+                view.FurnitureCanvas.alpha = view.Canvas.alpha;
             }
         }
 

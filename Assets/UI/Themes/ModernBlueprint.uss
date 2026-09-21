@@ -480,6 +480,232 @@
 .modern-ui.modern-ui .character-personal-best .character-approval-mark { --character-accent: var(--bp-gold); }
 .modern-ui.modern-ui .gameplay-solved-with-building .character-approval { display: none; }
 .modern-ui.modern-ui .gameplay-streak-celebration { border-width: 2px; border-color: var(--bp-gold); border-radius: 22px; }
+
+/* Puzzle page: a quiet architectural drawing sheet / CAD workspace. */
+.modern-ui.modern-ui.gameplay-root {
+    --draft-page: #f3f0e5;
+    --draft-surface: #fbfaf3;
+    --draft-line: #b8ccd4;
+    --draft-line-strong: #477b98;
+    --draft-annotation: #28485b;
+}
+
+.theme-dark.modern-ui.modern-ui.gameplay-root {
+    --draft-page: #0c1d2a;
+    --draft-surface: #102a3c;
+    --draft-line: #35556b;
+    --draft-line-strong: #6abbd6;
+    --draft-annotation: #dcecef;
+}
+
+.modern-ui.modern-ui .gameplay-background,
+.modern-ui.modern-ui .gameplay-background:hover,
+.modern-ui.modern-ui .gameplay-background:active,
+.modern-ui.modern-ui .gameplay-background:focus {
+    background-color: var(--draft-page);
+    background-image: none;
+    border-width: 0;
+    border-radius: 0;
+}
+
+.theme-dark .modern-ui.modern-ui .gameplay-background,
+.theme-dark .modern-ui.modern-ui .gameplay-background:hover,
+.theme-dark .modern-ui.modern-ui .gameplay-background:active,
+.theme-dark .modern-ui.modern-ui .gameplay-background:focus {
+    background-image: none;
+}
+
+.modern-ui.modern-ui .gameplay-header { height: 126px; }
+.modern-ui.modern-ui .gameplay-title-card {
+    position: relative;
+    height: 116px;
+    max-width: 720px;
+    margin: 0 22px;
+}
+.modern-ui.modern-ui .gameplay-title {
+    color: var(--bp-ink);
+    font-size: 50px;
+    letter-spacing: 1px;
+}
+.modern-ui.modern-ui .gameplay-subtitle {
+    margin-top: 6px;
+    color: var(--bp-accent);
+    font-size: 24px;
+    letter-spacing: 3px;
+}
+
+.modern-ui.modern-ui .gameplay-title-corner,
+.modern-ui.modern-ui .gameplay-board-corner {
+    position: absolute;
+    border-color: var(--draft-line-strong);
+}
+.modern-ui.modern-ui .gameplay-title-corner {
+    width: 24px;
+    height: 18px;
+    opacity: 0.72;
+}
+.modern-ui.modern-ui .gameplay-board-corner {
+    width: 32px;
+    height: 32px;
+    opacity: 0.42;
+}
+.modern-ui.modern-ui .gameplay-corner-top-left {
+    left: 0;
+    top: 0;
+    border-left-width: 2px;
+    border-top-width: 2px;
+}
+.modern-ui.modern-ui .gameplay-corner-top-right {
+    right: 0;
+    top: 0;
+    border-right-width: 2px;
+    border-top-width: 2px;
+}
+.modern-ui.modern-ui .gameplay-corner-bottom-left {
+    left: 0;
+    bottom: 0;
+    border-left-width: 2px;
+    border-bottom-width: 2px;
+}
+.modern-ui.modern-ui .gameplay-corner-bottom-right {
+    right: 0;
+    bottom: 0;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+}
+
+.modern-ui.modern-ui .gameplay-title-ornament {
+    width: 360px;
+    height: 18px;
+    margin-bottom: 4px;
+}
+.modern-ui.modern-ui .gameplay-ornament-line {
+    height: 1px;
+    background-color: var(--draft-line);
+}
+.modern-ui.modern-ui .gameplay-ornament-diamond {
+    width: 9px;
+    height: 9px;
+    margin: 0 18px;
+    background-color: var(--bp-gold);
+}
+
+.modern-ui.modern-ui .gameplay-status-card {
+    width: 100%;
+    max-width: 900px;
+    height: 104px;
+    margin: 12px 0 28px;
+    padding: 10px 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-right-width: 0;
+    border-left-width: 0;
+    border-radius: 0;
+    border-color: var(--draft-line);
+}
+.modern-ui.modern-ui .gameplay-stat-caption {
+    color: var(--bp-accent);
+    font-size: 21px;
+    letter-spacing: 3px;
+}
+.modern-ui.modern-ui .gameplay-stat-value {
+    color: var(--bp-ink);
+    font-size: 37px;
+    margin-top: 4px;
+}
+.modern-ui.modern-ui .gameplay-stat-divider {
+    width: 1px;
+    height: 54px;
+    background-color: var(--draft-line);
+}
+
+.modern-ui.modern-ui .gameplay-board-slot {
+    position: relative;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0;
+    border-radius: 0;
+    padding: 10px;
+}
+
+.modern-ui.modern-ui .gameplay-actions {
+    height: 174px;
+    margin-top: 20px;
+}
+.modern-ui.modern-ui .gameplay-action-button {
+    width: 218px;
+    height: 118px;
+    margin: 0 14px;
+    padding: 14px 22px;
+    background-color: var(--draft-surface);
+    border-width: 2px;
+    border-color: var(--draft-line);
+    border-radius: 12px;
+}
+.modern-ui.modern-ui .gameplay-action-button:hover {
+    background-color: var(--bp-soft);
+    border-color: var(--bp-accent);
+}
+.modern-ui.modern-ui .gameplay-action-button:active {
+    background-color: var(--bp-soft);
+    border-width: 2px;
+    translate: 0 0;
+}
+.modern-ui.modern-ui .gameplay-hint-button {
+    border-top-width: 4px;
+    border-top-color: var(--bp-gold);
+}
+.modern-ui.modern-ui .gameplay-reset-button {
+    border-top-width: 4px;
+    border-top-color: var(--bp-accent);
+}
+.modern-ui.modern-ui .gameplay-action-icon {
+    width: 46px;
+    height: 46px;
+    -unity-background-image-tint-color: var(--bp-accent);
+}
+.modern-ui.modern-ui .gameplay-hint-icon {
+    -unity-background-image-tint-color: var(--bp-gold);
+}
+.modern-ui.modern-ui .modern-action-label {
+    margin-top: 7px;
+    color: var(--bp-ink);
+    font-size: 27px;
+}
+.modern-ui.modern-ui .gameplay-hint-count-badge {
+    min-width: 52px;
+    height: 42px;
+    top: -17px;
+    right: -10px;
+    padding: 0 12px;
+    color: var(--bp-on-accent);
+    background-color: var(--bp-gold);
+    border-width: 2px;
+    border-color: var(--draft-surface);
+    border-radius: 8px;
+    font-size: 25px;
+}
+
+.modern-ui.modern-ui .gameplay-square-button {
+    width: 88px;
+    height: 88px;
+    min-width: 88px;
+    min-height: 88px;
+    background-color: var(--draft-surface);
+    border-width: 2px;
+    border-color: var(--draft-line);
+    border-radius: 10px;
+}
+.modern-ui.modern-ui .gameplay-square-button:active {
+    border-width: 2px;
+    translate: 0 0;
+}
+.modern-ui.modern-ui .gameplay-back-icon,
+.modern-ui.modern-ui .gameplay-next-icon {
+    width: 50px;
+    height: 50px;
+    -unity-background-image-tint-color: var(--bp-accent);
+}
 .modern-ui.modern-ui Button { transition-property: background-color, border-color, scale; transition-duration: 0.12s; }
 .modern-ui.modern-ui Button:active { scale: 0.98 0.98; }
 .character-reduced-motion .modern-ui.modern-ui Button,

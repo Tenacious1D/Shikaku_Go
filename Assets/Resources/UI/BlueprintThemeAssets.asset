@@ -35,7 +35,7 @@ MonoBehaviour:
   blueprintWall: {r: 0.8627451, g: 0.95686275, b: 0.972549, a: 1}
   whiteprintHatchOpacity: 0.13
   blueprintHatchOpacity: 0.12
-  wallInkDuration: 0.14
+  wallInkDuration: 0.22
   whiteprintRoomBase: {r: 0.8862745, g: 0.94509804, b: 0.95686275, a: 1}
   blueprintRoomBase: {r: 0.03137255, g: 0.13725491, b: 0.22745098, a: 1}
   whiteprintPaletteStrength: 0.58
@@ -43,3 +43,25 @@ MonoBehaviour:
   whiteprintInvalidFill: {r: 0.9647059, g: 0.84313726, b: 0.8392157, a: 1}
   blueprintInvalidFill: {r: 0.3019608, g: 0.13725491, b: 0.16862746, a: 1}
   selectedRoomOutline: {r: 0.95686275, g: 0.7372549, b: 0.16862746, a: 1}
+  lightBoardSurface: {r: 0.98039216, g: 0.97254902, b: 0.94509804, a: 1}
+  darkBoardSurface: {r: 0.08627451, g: 0.14509804, b: 0.18039216, a: 1}
+  lightBoardGrid: {r: 0.74509804, g: 0.8, b: 0.80392157, a: 1}
+  darkBoardGrid: {r: 0.23137255, g: 0.32156863, b: 0.36862745, a: 1}
+  lightInternalGrid: {r: 0.20784314, g: 0.28235294, b: 0.30196078, a: 0.10196078}
+  darkInternalGrid: {r: 0.70196078, g: 0.78823529, b: 0.81568627, a: 0.10980392}
+  lightFloorplanWall: {r: 0.20784314, g: 0.28235294, b: 0.30196078, a: 1}
+  darkFloorplanWall: {r: 0.70196078, g: 0.78823529, b: 0.81568627, a: 1}
+  lightRoomFloors:
+  - {r: 0.85882353, g: 0.91372549, b: 0.84705882, a: 1}
+  - {r: 0.85490196, g: 0.91372549, b: 0.95294118, a: 1}
+  - {r: 0.94901961, g: 0.90196078, b: 0.80392157, a: 1}
+  - {r: 0.94901961, g: 0.86666667, b: 0.82352941, a: 1}
+  - {r: 0.89803922, g: 0.8745098, b: 0.94117647, a: 1}
+  - {r: 0.83921569, g: 0.91764706, b: 0.89019608, a: 1}
+  darkRoomFloors:
+  - {r: 0.19215686, g: 0.28627451, b: 0.23921569, a: 1}
+  - {r: 0.16862745, g: 0.2627451, b: 0.33333333, a: 1}
+  - {r: 0.29803922, g: 0.25882353, b: 0.16862745, a: 1}
+  - {r: 0.30196078, g: 0.21176471, b: 0.18431373, a: 1}
+  - {r: 0.24313725, g: 0.21176471, b: 0.31372549, a: 1}
+  - {r: 0.15294118, g: 0.29411765, b: 0.25882353, a: 1}

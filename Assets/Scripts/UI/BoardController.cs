@@ -68,6 +68,39 @@ namespace Shikaku.UI
         public PuzzlePalette Palette => palette;
         public Color EmptyCellColor(bool dark) =>
             BlueprintThemeAssets.Resolve(blueprintTheme).GetBoardSurfaceColor(dark);
+        public Color UnplacedGridColor(bool dark) =>
+            BlueprintThemeAssets.Resolve(blueprintTheme).GetBoardGridColor(dark);
+        public Color CellGridColor(bool dark) =>
+            BlueprintThemeAssets.Resolve(blueprintTheme).GetInternalGridColor(dark);
+        public Color ClueTextColor(bool dark) =>
+            BlueprintThemeAssets.Resolve(blueprintTheme).GetClueTextColor(dark);
+
+        [Header("Floorplan Furniture")]
+        [Tooltip("Show geometric furniture in valid placed rooms. Can be changed in Play mode or overridden per game mode through SetRoomFurnitureEnabled.")]
+        [SerializeField] private bool showRoomFurniture = true;
+        private bool _furnitureRefreshPending;
+        public bool RoomFurnitureEnabled => showRoomFurniture;
+
+        /// <summary>Presentation-only switch for future mode policies; leaves puzzle state untouched.</summary>
+        public void SetRoomFurnitureEnabled(bool enabled)
+        {
+            if (showRoomFurniture == enabled) return;
+            showRoomFurniture = enabled;
+            RefreshBlueprintRooms();
+        }
+
+        private void OnValidate()
+        {
+            // OnValidate can run off the main thread. Defer all scene work to LateUpdate.
+            _furnitureRefreshPending = true;
+        }
+
+        private void LateUpdate()
+        {
+            if (!_furnitureRefreshPending) return;
+            _furnitureRefreshPending = false;
+            RefreshBlueprintRooms();
+        }
 
         [Header("Puzzle Size")]
         [SerializeField] private int width = 8;
@@ -589,15 +622,23 @@ namespace Shikaku.UI
             }
 
             Image trayImage = _boardTray.GetComponent<Image>();
-            trayImage.sprite = GetHudPanelSprite();
-            trayImage.type = Image.Type.Sliced;
-            trayImage.color = BlueprintThemeAssets.Resolve(blueprintTheme).GetBoardGridColor(ThemeManager.IsDark);
+            trayImage.sprite = null;
+            trayImage.type = Image.Type.Simple;
+            trayImage.color = Color.clear;
             trayImage.raycastTarget = false;
+
+            Image boardImage = boardPanel.GetComponent<Image>();
+            if (boardImage != null)
+            {
+                boardImage.color = Color.clear;
+                boardImage.raycastTarget = false;
+            }
 
             Outline trayEdge = _boardTray.GetComponent<Outline>();
             if (trayEdge == null)
                 trayEdge = _boardTray.gameObject.AddComponent<Outline>();
 
+            trayEdge.enabled = false;
             trayEdge.effectColor = trayImage.color;
             trayEdge.effectDistance = new Vector2(1f, -1f);
             trayEdge.useGraphicAlpha = true;
@@ -808,13 +849,8 @@ namespace Shikaku.UI
             if (availableWidth <= 1f || availableHeight <= 1f)
                 return false;
 
-            float approximateCellFit = Mathf.Min(
-                availableWidth / columns,
-                availableHeight / rows);
-            adaptiveSpacing = Mathf.Clamp(
-                approximateCellFit / 32f,
-                0f,
-                spacing);
+            // Grid lines are drawn explicitly; floors must meet without tile gutters.
+            adaptiveSpacing = 0f;
 
             float horizontalFixedSize =
                 padding * 2f + adaptiveSpacing * (columns - 1);
@@ -921,7 +957,8 @@ namespace Shikaku.UI
                 blueprintTheme,
                 ThemeManager.IsDark,
                 hasPreview,
-                preview);
+                preview,
+                showRoomFurniture);
         }
 
         private bool TryGetDraftVisual(
@@ -1191,12 +1228,8 @@ namespace Shikaku.UI
 
         public Color RegionFillColorAt(int idx, bool dark)
         {
-            bool valid = _model.IsRegionValidAt(idx);
-            Color identity = palette != null
-                ? palette.GetColorForNumber(RegionPaletteIndexAt(idx))
-                : new Color32(45, 145, 180, 255);
             return BlueprintThemeAssets.Resolve(blueprintTheme)
-                .GetRoomFill(identity, dark, valid);
+                .GetFloorplanRoomFill(_model.GetRegionAt(idx), dark);
         }
         public bool IsCellAssigned(int idx) => _model.GetRegionIdAt(idx) >= 0;
         public bool IsRegionValidAt(int idx) => _model.IsRegionValidAt(idx);
@@ -1726,7 +1759,12 @@ namespace Shikaku.UI
             {
                 if (_alreadySolved) return;
                 _alreadySolved = true;
-                _blueprintRooms?.PlaySolveSweep();
+                string completionLabel =
+                    Shikaku.Menu.GameSession.Mode ==
+                        Shikaku.Menu.MenuMode.Story
+                        ? $"FLOOR {Mathf.Max(1, Shikaku.Menu.GameSession.LevelIndex)} COMPLETE"
+                        : "FLOOR PLAN COMPLETE";
+                _blueprintRooms?.PlaySolveSweep(completionLabel);
 
                 // TIME TRIAL: no solved panel, immediately load next puzzle
                 if (Shikaku.Menu.GameSession.Mode == Shikaku.Menu.MenuMode.TimeTrial)

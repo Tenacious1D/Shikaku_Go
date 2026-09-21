@@ -132,6 +132,7 @@ namespace Shikaku.UI
         private bool _tutorialFirstIllegalMoveComplete;
         private bool _tutorialIllegalMoveTransitioning;
         private Coroutine _streakCelebrationRoutine;
+        private Coroutine _solvedPresentationRoutine;
         private DailyStreakUpdate _pendingStreakUpdate;
         private string _pendingCompletionRewardTitle;
         private int _pendingCompletionHintReward;
@@ -856,7 +857,7 @@ namespace Shikaku.UI
                         "You know the drafting rules and controls. You are ready to continue Adventure.";
                 }
 
-                ShowSolvedModal(false);
+                QueueSolvedModal();
                 return;
             }
 
@@ -864,7 +865,33 @@ namespace Shikaku.UI
                 solvedTimeText.text = $"Solved in {FormatResultTime(_elapsed)}";
 
             if (!isTimeTrial)
-                ShowSolvedModal(false);
+                QueueSolvedModal();
+        }
+
+        private void QueueSolvedModal()
+        {
+            CancelSolvedPresentation();
+            _solvedPresentationRoutine = StartCoroutine(
+                PresentSolvedModalAfterApproval());
+        }
+
+        private IEnumerator PresentSolvedModalAfterApproval()
+        {
+            // Saves, progression, achievements, and timer state are committed
+            // immediately. Only the modal waits for the board approval pass.
+            float delay = AppSettings.ReduceMotion ? 0.18f : 0.72f;
+            yield return new WaitForSecondsRealtime(delay);
+            _solvedPresentationRoutine = null;
+            ShowSolvedModal(false);
+        }
+
+        private void CancelSolvedPresentation()
+        {
+            if (_solvedPresentationRoutine == null)
+                return;
+
+            StopCoroutine(_solvedPresentationRoutine);
+            _solvedPresentationRoutine = null;
         }
         private System.Collections.IEnumerator Start()
         {
@@ -2384,7 +2411,8 @@ namespace Shikaku.UI
             {
                 titleText.text = "HOW TO PLAY";
                 if (_subtitleText != null)
-                    _subtitleText.text = "GUIDED PUZZLE";
+                    _subtitleText.text =
+                        $"GUIDED \u00B7 {BuildPlanSizeLabel()}";
                 return;
             }
 
@@ -2393,18 +2421,43 @@ namespace Shikaku.UI
             {
                 titleText.text = BuildDailyTitle();
                 if (_subtitleText != null)
-                    _subtitleText.text = "DAILY PUZZLE";
+                    _subtitleText.text =
+                        $"DAILY \u00B7 {BuildPlanSizeLabel()}";
                 return;
             }
 
             int level = Shikaku.Menu.GameSession.LevelIndex;
             if (level <= 0) level = 1;
 
-            string sizeLabel = BuildPackLabel();
+            if (Shikaku.Menu.GameSession.Mode ==
+                Shikaku.Menu.MenuMode.Story)
+            {
+                int chapter = ExtractChapterNumber(
+                    Shikaku.Menu.GameSession.PackPath);
+                titleText.text = $"Floor {level}";
+                if (_subtitleText != null)
+                {
+                    _subtitleText.text = chapter > 0
+                        ? $"CHAPTER {chapter} \u00B7 {BuildPlanSizeLabel()}"
+                        : $"ADVENTURE \u00B7 {BuildPlanSizeLabel()}";
+                }
+                return;
+            }
 
             titleText.text = $"Level {level}";
             if (_subtitleText != null)
-                _subtitleText.text = sizeLabel;
+                _subtitleText.text = BuildPlanSizeLabel();
+        }
+
+        private string BuildPlanSizeLabel()
+        {
+            if (board != null && board.Width > 0 && board.Height > 0)
+                return $"{board.Width} \u00D7 {board.Height} PLAN";
+
+            string packLabel = BuildPackLabel();
+            return string.IsNullOrEmpty(packLabel)
+                ? "FLOOR PLAN"
+                : $"{packLabel.ToUpperInvariant()} PLAN";
         }
         private string BuildDailyTitle()
         {
@@ -2490,6 +2543,7 @@ namespace Shikaku.UI
 
             SetPuzzleInteractionLocked(false);
             SetHeaderNextVisible(false);
+            CancelSolvedPresentation();
             HideSolvedModal();
 
             if (Shikaku.Menu.GameSession.Mode != Shikaku.Menu.MenuMode.TimeTrial)

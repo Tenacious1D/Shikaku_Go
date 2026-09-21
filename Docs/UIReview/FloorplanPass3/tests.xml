@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="29" result="Passed" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.4670597">
+  <test-suite type="TestSuite" id="1000" name="ShikakuFloorplanPass1-20260920" fullname="ShikakuFloorplanPass1-20260920" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.467060" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1035" name="Assembly-CSharp-Editor.dll" fullname="C:/Users/Derek Messer/AppData/Local/Temp/ShikakuFloorplanPass1-20260920/Library/ScriptAssemblies/Assembly-CSharp-Editor.dll" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.455252" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="46604" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1036" name="Shikaku" fullname="Shikaku" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.454838" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1037" name="Tests" fullname="Shikaku.Tests" runstate="Runnable" testcasecount="29" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.454657" total="29" passed="29" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestFixture" id="1001" name="FloorplanEdgeTests" fullname="Shikaku.Tests.FloorplanEdgeTests" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.055643" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="ParameterizedMethod" id="1005" name="EmptyBoard_OnlyDrawsItsPerimeter" fullname="Shikaku.Tests.FloorplanEdgeTests.EmptyBoard_OnlyDrawsItsPerimeter" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.031082" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1002" name="EmptyBoard_OnlyDrawsItsPerimeter(1,1)" fullname="Shikaku.Tests.FloorplanEdgeTests.EmptyBoard_OnlyDrawsItsPerimeter(1,1)" methodname="EmptyBoard_OnlyDrawsItsPerimeter" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="513800003" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.023731" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1003" name="EmptyBoard_OnlyDrawsItsPerimeter(1,9)" fullname="Shikaku.Tests.FloorplanEdgeTests.EmptyBoard_OnlyDrawsItsPerimeter(1,9)" methodname="EmptyBoard_OnlyDrawsItsPerimeter" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="129724637" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.000323" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1004" name="EmptyBoard_OnlyDrawsItsPerimeter(13,12)" fullname="Shikaku.Tests.FloorplanEdgeTests.EmptyBoard_OnlyDrawsItsPerimeter(13,12)" methodname="EmptyBoard_OnlyDrawsItsPerimeter" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="737027276" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.000123" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1011" name="EmptyMask_ProducesNoPhantomRectangle" fullname="Shikaku.Tests.FloorplanEdgeTests.EmptyMask_ProducesNoPhantomRectangle" methodname="EmptyMask_ProducesNoPhantomRectangle" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="1470615804" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.001046" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1006" name="EqualAreaNeighbors_HaveOneSharedPartition" fullname="Shikaku.Tests.FloorplanEdgeTests.EqualAreaNeighbors_HaveOneSharedPartition" methodname="EqualAreaNeighbors_HaveOneSharedPartition" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="1328884747" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.006925" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1010" name="GeometryIncludesInvalidRegionAndDoesNotMutateSelection" fullname="Shikaku.Tests.FloorplanEdgeTests.GeometryIncludesInvalidRegionAndDoesNotMutateSelection" methodname="GeometryIncludesInvalidRegionAndDoesNotMutateSelection" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="919127415" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.001211" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1007" name="MaskedCourtyard_HasItsOwnBoundaryWithoutFillingTheHole" fullname="Shikaku.Tests.FloorplanEdgeTests.MaskedCourtyard_HasItsOwnBoundaryWithoutFillingTheHole" methodname="MaskedCourtyard_HasItsOwnBoundaryWithoutFillingTheHole" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="1413761844" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.000760" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1009" name="RemoveAndRestart_DoNotLeaveGhostPartitions" fullname="Shikaku.Tests.FloorplanEdgeTests.RemoveAndRestart_DoNotLeaveGhostPartitions" methodname="RemoveAndRestart_DoNotLeaveGhostPartitions" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="1902735414" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.001235" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1008" name="TJunction_PartitionsStopAtTheirOwningRooms" fullname="Shikaku.Tests.FloorplanEdgeTests.TJunction_PartitionsStopAtTheirOwningRooms" methodname="TJunction_PartitionsStopAtTheirOwningRooms" classname="Shikaku.Tests.FloorplanEdgeTests" runstate="Runnable" seed="2001937660" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.000723" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1012" name="FloorplanFurnitureTests" fullname="Shikaku.Tests.FloorplanFurnitureTests" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" testcasecount="9" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.272461" total="9" passed="9" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1017" name="Catalog_AllFurnitureFamiliesAppearWithoutReadingSolutionData" fullname="Shikaku.Tests.FloorplanFurnitureTests.Catalog_AllFurnitureFamiliesAppearWithoutReadingSolutionData" methodname="Catalog_AllFurnitureFamiliesAppearWithoutReadingSolutionData" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="1201516511" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:00Z" duration="0.016011" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1013" name="EveryCluePosition_KeepsAllFootprintsInsideWallsAndOutsideClueCell" fullname="Shikaku.Tests.FloorplanFurnitureTests.EveryCluePosition_KeepsAllFootprintsInsideWallsAndOutsideClueCell" methodname="EveryCluePosition_KeepsAllFootprintsInsideWallsAndOutsideClueCell" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="916727629" result="Passed" start-time="2026-09-21 14:55:00Z" end-time="2026-09-21 14:55:01Z" duration="0.160209" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1021" name="EveryFurnitureMesh_StaysInItsFootprintInBothOrientations" fullname="Shikaku.Tests.FloorplanFurnitureTests.EveryFurnitureMesh_StaysInItsFootprintInBothOrientations" methodname="EveryFurnitureMesh_StaysInItsFootprintInBothOrientations" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="1330366977" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.052360" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1022" name="GraphicToggle_DoesNotChangePuzzleAndNeverInterceptsTouches" fullname="Shikaku.Tests.FloorplanFurnitureTests.GraphicToggle_DoesNotChangePuzzleAndNeverInterceptsTouches" methodname="GraphicToggle_DoesNotChangePuzzleAndNeverInterceptsTouches" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="1516712528" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.001253" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1016" name="InvalidAndSingleCellRooms_RemainUnfurnished" fullname="Shikaku.Tests.FloorplanFurnitureTests.InvalidAndSingleCellRooms_RemainUnfurnished" methodname="InvalidAndSingleCellRooms_RemainUnfurnished" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="413660818" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000408" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-suite type="ParameterizedMethod" id="1020" name="NarrowRooms_OrientStorageAlongTheLongWall" fullname="Shikaku.Tests.FloorplanFurnitureTests.NarrowRooms_OrientStorageAlongTheLongWall" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.022679" total="2" passed="2" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-case id="1018" name="NarrowRooms_OrientStorageAlongTheLongWall(1,5,True)" fullname="Shikaku.Tests.FloorplanFurnitureTests.NarrowRooms_OrientStorageAlongTheLongWall(1,5,True)" methodname="NarrowRooms_OrientStorageAlongTheLongWall" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="764477398" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.002950" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+              <test-case id="1019" name="NarrowRooms_OrientStorageAlongTheLongWall(5,1,False)" fullname="Shikaku.Tests.FloorplanFurnitureTests.NarrowRooms_OrientStorageAlongTheLongWall(5,1,False)" methodname="NarrowRooms_OrientStorageAlongTheLongWall" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="1108289423" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000143" asserts="0">
+                <properties>
+                  <property name="retryIteration" value="0" />
+                  <property name="repeatIteration" value="0" />
+                </properties>
+              </test-case>
+            </test-suite>
+            <test-case id="1014" name="RecommitSameGeometry_DoesNotRerollFurniture" fullname="Shikaku.Tests.FloorplanFurnitureTests.RecommitSameGeometry_DoesNotRerollFurniture" methodname="RecommitSameGeometry_DoesNotRerollFurniture" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="1190455139" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.002899" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1015" name="SmallerCells_ShrinkMainPropAndRemoveAccessories" fullname="Shikaku.Tests.FloorplanFurnitureTests.SmallerCells_ShrinkMainPropAndRemoveAccessories" methodname="SmallerCells_ShrinkMainPropAndRemoveAccessories" classname="Shikaku.Tests.FloorplanFurnitureTests" runstate="Runnable" seed="531848938" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.001007" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+          </test-suite>
+          <test-suite type="TestFixture" id="1023" name="ShikakuPuzzleModelTests" fullname="Shikaku.Tests.ShikakuPuzzleModelTests" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" testcasecount="11" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.125384" total="11" passed="11" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-case id="1027" name="AdjacentEqualAreaRectangles_RemainDistinctAndSolve" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.AdjacentEqualAreaRectangles_RemainDistinctAndSolve" methodname="AdjacentEqualAreaRectangles_RemainDistinctAndSolve" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1794178111" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000886" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1032" name="BlueprintRoomDecoration_CellBoundsIgnoreOversizedDescendants" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.BlueprintRoomDecoration_CellBoundsIgnoreOversizedDescendants" methodname="BlueprintRoomDecoration_CellBoundsIgnoreOversizedDescendants" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1327635189" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.007254" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1031" name="BlueprintRoomDecoration_UsesRootCoordinatesAndClipsOverflow" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.BlueprintRoomDecoration_UsesRootCoordinatesAndClipsOverflow" methodname="BlueprintRoomDecoration_UsesRootCoordinatesAndClipsOverflow" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="141183998" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.090765" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1033" name="BlueprintTheme_LoadsConfiguredArtSet" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.BlueprintTheme_LoadsConfiguredArtSet" methodname="BlueprintTheme_LoadsConfiguredArtSet" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1996931947" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.013036" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1024" name="CanCommitRegion_DoesNotMutateBoard" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.CanCommitRegion_DoesNotMutateBoard" methodname="CanCommitRegion_DoesNotMutateBoard" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1679621014" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000560" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1034" name="ClassicalFreeplayPack_LoadsCanonicalRectangles" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.ClassicalFreeplayPack_LoadsCanonicalRectangles" methodname="ClassicalFreeplayPack_LoadsCanonicalRectangles" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1316620936" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.007677" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1025" name="CommitRegion_OverridesWholeTouchedRegionsOnlyAtCommit" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.CommitRegion_OverridesWholeTouchedRegionsOnlyAtCommit" methodname="CommitRegion_OverridesWholeTouchedRegionsOnlyAtCommit" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="200163003" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.001016" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1030" name="EvaluateRegionCandidate_RejectsAreaMismatchAndMultipleClues" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.EvaluateRegionCandidate_RejectsAreaMismatchAndMultipleClues" methodname="EvaluateRegionCandidate_RejectsAreaMismatchAndMultipleClues" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1368033752" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000645" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1029" name="EvaluateRegionCandidate_ReportsDimensionsAndValidRule" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.EvaluateRegionCandidate_ReportsDimensionsAndValidRule" methodname="EvaluateRegionCandidate_ReportsDimensionsAndValidRule" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1380364946" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000349" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1028" name="GeometricButWrongRectangle_CommitsButDoesNotSolve" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.GeometricButWrongRectangle_CommitsButDoesNotSolve" methodname="GeometricButWrongRectangle_CommitsButDoesNotSolve" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="1387799331" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000194" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+            </test-case>
+            <test-case id="1026" name="MaskedDraft_IsRejectedWithoutChangingExistingRegion" fullname="Shikaku.Tests.ShikakuPuzzleModelTests.MaskedDraft_IsRejectedWithoutChangingExistingRegion" methodname="MaskedDraft_IsRejectedWithoutChangingExistingRegion" classname="Shikaku.Tests.ShikakuPuzzleModelTests" runstate="Runnable" seed="704033833" result="Passed" start-time="2026-09-21 14:55:01Z" end-time="2026-09-21 14:55:01Z" duration="0.000281" asserts="0">
+              <properties>
+                <property name="retryIteration" value="0" />
+                <property name="repeatIteration" value="0" />
+              </properties>
+              <output><![CDATA[Saving results to: C:/Users/Derek Messer/AppData/Local/Temp/ShikakuFloorplanPass1-20260920/tests-pass3.xml
+]]></output>
+            </test-case>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

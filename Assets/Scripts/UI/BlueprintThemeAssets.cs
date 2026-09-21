@@ -9,14 +9,54 @@ namespace Shikaku.UI
     {
 
         [Header("Modern Board Surface")]
-        public Color lightBoardSurface = new Color32(251, 253, 254, 255);
-        public Color darkBoardSurface = new Color32(26, 42, 57, 255);
-        public Color lightBoardGrid = new Color32(209, 223, 233, 255);
-        public Color darkBoardGrid = new Color32(54, 77, 97, 255);
+        public Color lightBoardSurface = new Color32(250, 248, 241, 255);
+        public Color darkBoardSurface = new Color32(22, 37, 46, 255);
+        public Color lightBoardGrid = new Color32(190, 204, 205, 255);
+        public Color darkBoardGrid = new Color32(59, 82, 94, 255);
+        public Color lightBoardOutline = new Color32(35, 91, 126, 255);
+        public Color darkBoardOutline = new Color32(103, 185, 216, 255);
+        public Color lightInternalGrid = new Color32(53, 72, 77, 26);
+        public Color darkInternalGrid = new Color32(179, 201, 208, 28);
+        public Color lightClueText = new Color32(28, 48, 64, 255);
+        public Color darkClueText = new Color32(241, 238, 218, 255);
+        public Color lightInteraction = new Color32(25, 120, 171, 255);
+        public Color darkInteraction = new Color32(80, 205, 232, 255);
+        public Color constructionGold = new Color32(210, 154, 46, 255);
+        public Color successInk = new Color32(55, 151, 111, 255);
+        public Color invalidInk = new Color32(196, 67, 70, 255);
 
         public Color GetBoardSurfaceColor(bool dark) => dark ? darkBoardSurface : lightBoardSurface;
         public Color GetBoardGridColor(bool dark) => dark ? darkBoardGrid : lightBoardGrid;
+        public Color GetBoardOutlineColor(bool dark) => dark ? darkBoardOutline : lightBoardOutline;
+        public Color GetInternalGridColor(bool dark) => dark ? darkInternalGrid : lightInternalGrid;
+        public Color GetClueTextColor(bool dark) => dark ? darkClueText : lightClueText;
+        public Color GetInteractionColor(bool dark) => dark ? darkInteraction : lightInteraction;
 
+        [Header("Floorplan Foundation")]
+        public Color lightFloorplanWall = new Color32(53, 72, 77, 255);
+        public Color darkFloorplanWall = new Color32(179, 201, 208, 255);
+        public Color[] lightRoomFloors = {
+            new Color32(219, 233, 216, 255), new Color32(218, 233, 243, 255),
+            new Color32(242, 230, 205, 255), new Color32(242, 221, 210, 255),
+            new Color32(229, 223, 240, 255), new Color32(214, 234, 227, 255)
+        };
+        public Color[] darkRoomFloors = {
+            new Color32(49, 73, 61, 255), new Color32(43, 67, 85, 255),
+            new Color32(76, 66, 43, 255), new Color32(77, 54, 47, 255),
+            new Color32(62, 54, 80, 255), new Color32(39, 75, 66, 255)
+        };
+
+        public Color GetFloorplanWallColor(bool dark) => dark ? darkFloorplanWall : lightFloorplanWall;
+        public Color GetFloorplanSelectionColor(bool dark) => dark
+            ? new Color32(247, 201, 92, 255) : new Color32(169, 105, 18, 255);
+        public Color GetFloorplanRoomFill(Shikaku.Logic.ShikakuRegion region, bool dark)
+        {
+            if (region == null) return GetBoardSurfaceColor(dark);
+            if (!region.IsValid) return dark ? blueprintInvalidFill : whiteprintInvalidFill;
+            Color[] floors = dark ? darkRoomFloors : lightRoomFloors;
+            if (floors == null || floors.Length == 0) return dark ? blueprintRoomBase : whiteprintRoomBase;
+            return floors[GetStableRegionSeed(region) % (uint)floors.Length];
+        }
         [Header("Drafting Paper")]
         public Texture2D whiteprintPaper;
         public Texture2D blueprintPaper;
@@ -44,7 +84,7 @@ namespace Shikaku.UI
         public Color blueprintWall = new Color32(220, 244, 248, 255);
         [Range(0f, 0.4f)] public float whiteprintHatchOpacity = 0.13f;
         [Range(0f, 0.4f)] public float blueprintHatchOpacity = 0.12f;
-        [Min(0f)] public float wallInkDuration = 0.14f;
+        [Min(0f)] public float wallInkDuration = 0.22f;
 
         [Header("Solid Room Fill")]
         public Color whiteprintRoomBase = new Color32(226, 241, 244, 255);
@@ -119,9 +159,9 @@ namespace Shikaku.UI
             bool selected)
         {
             if (!valid)
-                return new Color32(204, 62, 67, 255);
+                return invalidInk;
             if (selected)
-                return selectedRoomOutline;
+                return constructionGold;
 
             Color ink = GetWallColor(dark);
             return dark

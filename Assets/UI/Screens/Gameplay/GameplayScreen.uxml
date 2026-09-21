@@ -12,6 +12,10 @@
                     <ui:VisualElement class="gameplay-back-icon" />
                 </ui:Button>
                 <ui:VisualElement class="gameplay-title-card" picking-mode="Ignore">
+                    <ui:VisualElement class="gameplay-title-corner gameplay-corner-top-left" picking-mode="Ignore" />
+                    <ui:VisualElement class="gameplay-title-corner gameplay-corner-top-right" picking-mode="Ignore" />
+                    <ui:VisualElement class="gameplay-title-corner gameplay-corner-bottom-left" picking-mode="Ignore" />
+                    <ui:VisualElement class="gameplay-title-corner gameplay-corner-bottom-right" picking-mode="Ignore" />
                     <ui:Label name="gameplay-title" text="LEVEL 1" class="gameplay-title" />
                     <ui:Label name="gameplay-subtitle" text="3x3" class="gameplay-subtitle" />
                 </ui:VisualElement>
@@ -46,7 +50,12 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="gameplay-play-cluster" class="gameplay-play-cluster" picking-mode="Ignore">
-                <ui:VisualElement name="gameplay-board-slot" class="gameplay-board-slot" picking-mode="Ignore" />
+                <ui:VisualElement name="gameplay-board-slot" class="gameplay-board-slot" picking-mode="Ignore">
+                    <ui:VisualElement class="gameplay-board-corner gameplay-corner-top-left" picking-mode="Ignore" />
+                    <ui:VisualElement class="gameplay-board-corner gameplay-corner-top-right" picking-mode="Ignore" />
+                    <ui:VisualElement class="gameplay-board-corner gameplay-corner-bottom-left" picking-mode="Ignore" />
+                    <ui:VisualElement class="gameplay-board-corner gameplay-corner-bottom-right" picking-mode="Ignore" />
+                </ui:VisualElement>
                 <ui:VisualElement name="gameplay-actions" class="gameplay-actions" picking-mode="Ignore">
                     <ui:Button name="gameplay-hint-button" tooltip="Hint" class="gameplay-action-button gameplay-hint-button">
                         <ui:VisualElement class="gameplay-action-icon gameplay-hint-icon" />

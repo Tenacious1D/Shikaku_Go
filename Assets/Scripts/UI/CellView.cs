@@ -693,10 +693,8 @@ namespace Shikaku.UI
             }
 
             Color fill = _board.EmptyCellColor(_isDarkTheme);
-            Color labelSurface = fill;
             if (isAssigned)
             {
-                labelSurface = _board.RegionFillColorAt(_index, _isDarkTheme);
                 fill = Color.clear;
             }
 
@@ -708,13 +706,7 @@ namespace Shikaku.UI
                 ApplyAnchorLabelStyle();
                 label.text = _board.GivenNumberAt(_index).ToString();
                 label.alpha = 1f;
-                float luminance =
-                    (labelSurface.r * 0.299f) +
-                    (labelSurface.g * 0.587f) +
-                    (labelSurface.b * 0.114f);
-                label.color = luminance > 0.58f
-                    ? new Color32(35, 43, 48, 255)
-                    : new Color32(240, 248, 249, 255);
+                label.color = _board.ClueTextColor(_isDarkTheme);
             }
 
             // Completed-room fills and their animation now belong to the
@@ -723,9 +715,15 @@ namespace Shikaku.UI
             _wasCompleteLastRender = isValid;
             _hasRenderedOnce = true;
 
-            if (isAssigned && !isValid)
-                DrawInvalidRegionGrid(regionId, isSelected);
+            if (isAssigned)
+            {
+                if (isValid)
+                    DrawCompletedRegionGrid(regionId);
+                else
+                    DrawInvalidRegionGrid(regionId, isSelected);
+            }
 
+            if (!isAssigned) DrawUnplacedGrid();
             ApplyWrongHintBorderIfNeeded();
             ApplyTutorialHighlight();
         }
@@ -751,22 +749,36 @@ namespace Shikaku.UI
                 : selected ? selectedCellBorderColor : borderColor);
         }
 
+        private void DrawUnplacedGrid()
+        {
+            SetBorderThickness(1.25f);
+            if (_index >= _board.Width && _board.IsPlayableCell(_index - _board.Width)) Enable(top);
+            if (_index % _board.Width > 0 && _board.IsPlayableCell(_index - 1)) Enable(left);
+            ApplyBorderColor(_board.UnplacedGridColor(_isDarkTheme));
+        }
+
         private void DrawInvalidRegionGrid(int regionId, bool selected)
         {
-            SetBorderThickness(baseBorderThickness);
-
-            // Top and left edges draw each division once. Right and bottom
-            // close the room perimeter. Valid rooms skip this grid entirely.
-            Enable(top);
-            Enable(left);
-            if (!NeighborInSameRegion(regionId, _index, 1, 0))
-                Enable(right);
-            if (!NeighborInSameRegion(regionId, _index, 0, 1))
-                Enable(bottom);
-
+            // Shared walls own the error outline; retain a subdued counting grid inside.
+            SetBorderThickness(1.25f);
+            if (NeighborInSameRegion(regionId, _index, 0, -1)) Enable(top);
+            if (NeighborInSameRegion(regionId, _index, -1, 0)) Enable(left);
             Color gridColor = invalidRegionBorderColor;
-            gridColor.a = selected ? 1f : 0.68f;
+            gridColor.a = 0.24f;
             ApplyBorderColor(gridColor);
+        }
+
+        private void DrawCompletedRegionGrid(int regionId)
+        {
+            // Room walls are rendered by the pooled region layer. Keep only a
+            // quiet construction grid inside the room so the puzzle footprint
+            // remains legible without making each cell look like a separate tile.
+            SetBorderThickness(Mathf.Max(1f, baseBorderThickness * 0.65f));
+            if (NeighborInSameRegion(regionId, _index, 0, -1))
+                Enable(top);
+            if (NeighborInSameRegion(regionId, _index, -1, 0))
+                Enable(left);
+            ApplyBorderColor(_board.CellGridColor(_isDarkTheme));
         }
 
         private void DrawDraftOutlineStrict()

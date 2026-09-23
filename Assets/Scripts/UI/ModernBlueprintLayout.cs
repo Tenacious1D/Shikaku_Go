@@ -11,19 +11,13 @@ namespace Shikaku.UI
             if (root == null)
                 return;
 
-            foreach (string name in new[] { "safe-area", "daily-screen", "time-trial-screen",
-                "free-play-screen", "settings-screen", "shop-screen", "privacy-welcome-screen" })
-            {
-                var surface = root.Q<VisualElement>(name);
-                if (surface != null && surface.ClassListContains("modern-ui") && surface.Q("modern-blueprint-grid") == null)
-                    surface.Insert(0, new BlueprintGrid());
-            }
             if (!root.ClassListContains("modern-layout-installed"))
             {
                 root.AddToClassList("modern-layout-installed");
                 root.RegisterCallback<GeometryChangedEvent>(_ => ApplySafeArea(root));
             }
             BlueprintCharacter.Install(root);
+            FloorplanMenuArt.Install(root);
             ApplySafeArea(root);
         }
 
@@ -70,45 +64,5 @@ namespace Shikaku.UI
             }
         }
 
-        // Retained vector lines stay crisp as the panel changes resolution.
-        private sealed class BlueprintGrid : VisualElement
-        {
-            private static readonly CustomStyleProperty<Color> GridColor = new("--bp-grid");
-            private Color _line = new Color(0.15f, 0.39f, 0.54f, 0.055f);
-            public BlueprintGrid()
-            {
-                name = "modern-blueprint-grid";
-                AddToClassList("modern-blueprint-grid");
-                pickingMode = PickingMode.Ignore;
-                style.position = Position.Absolute;
-                style.left = style.right = style.top = style.bottom = 0;
-                generateVisualContent += Draw;
-                RegisterCallback<CustomStyleResolvedEvent>(evt =>
-                {
-                    if (evt.customStyle.TryGetValue(GridColor, out Color color)) _line = color;
-                    MarkDirtyRepaint();
-                });
-            }
-            private void Draw(MeshGenerationContext context)
-            {
-                var painter = context.painter2D;
-                painter.lineWidth = 1f;
-                painter.strokeColor = _line;
-                painter.BeginPath();
-                const float step = 96f;
-                for (float x = step; x < contentRect.width; x += step)
-                {
-                    painter.MoveTo(new Vector2(x, 0));
-                    painter.LineTo(new Vector2(x, contentRect.height));
-                }
-                for (float y = step; y < contentRect.height; y += step)
-                {
-                    painter.MoveTo(new Vector2(0, y));
-                    painter.LineTo(new Vector2(contentRect.width, y));
-                }
-                painter.Stroke();
-            }
-        }
     }
 }
-

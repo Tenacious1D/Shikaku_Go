@@ -292,6 +292,7 @@ namespace Shikaku.UI
             view.CreatedAt = Time.unscaledTime;
             view.Canvas.alpha = AppSettings.ReduceMotion ? 1f : 0f;
             view.FurnitureCanvas.alpha = view.Canvas.alpha;
+            view.Furniture.SetReveal(AppSettings.ReduceMotion ? 1f : 0f);
             view.Rect.gameObject.SetActive(true);
             view.Furniture.gameObject.SetActive(true);
             view.Rect.localScale = Vector3.one;
@@ -802,7 +803,10 @@ namespace Shikaku.UI
                 float eased = 1f - Mathf.Pow(1f - t, 3f);
                 view.Rect.localScale = Vector3.one;
                 view.Canvas.alpha = AppSettings.ReduceMotion ? 1f : eased;
-                view.FurnitureCanvas.alpha = view.Canvas.alpha;
+                float furnitureReveal = FloorplanFurnitureGraphic.RevealProgress(
+                    Time.unscaledTime - view.CreatedAt, AppSettings.ReduceMotion);
+                view.FurnitureCanvas.alpha = furnitureReveal;
+                view.Furniture.SetReveal(furnitureReveal);
             }
         }
 

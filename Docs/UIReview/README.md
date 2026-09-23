@@ -69,3 +69,8 @@ The captures in the index have been refreshed for these changed views. The gamep
 | Puzzle result | [Preview](solved-modal-light.png) | [Preview](solved-modal-dark.png) |
 | Welcome | [Preview](privacy-welcome-screen-light.png) | [Preview](privacy-welcome-screen-dark.png) |
 | Privacy | [Preview](privacy-settings-light.png) | [Preview](privacy-settings-dark.png) |
+
+
+## Current floorplan menus
+
+See [Pass 5](FloorplanPass5/README.md) for the current furnished-floorplan menu palette, illustrations, and previews. The older captures above preserve the earlier blueprint iteration.

@@ -22,7 +22,7 @@ The renderer uses flat geometric faces, supports light/dark themes, and draws ab
 
 ## Toggle and future mode control
 
-The existing **BoardController → Floorplan Furniture → Show Room Furniture** Inspector toggle still controls every template. Mode controllers can use `SetRoomFurnitureEnabled(bool)`; no game modes have been excluded in this pass.
+The existing **BoardController → Floorplan Furniture → Show Room Furniture** Inspector toggle still controls every template. Mode controllers can use `SetRoomFurnitureEnabled(bool)`; Time Trial now always hides furniture, while other modes respect the toggle.
 
 ## Scope
 
@@ -42,3 +42,27 @@ Doors, windows, additional animation, and menu rollout remain in later passes. A
 - [Central clues — light](central-clues-light.png) / [dark](central-clues-dark.png)
 - [Dense mobile board](small-rooms-light.png)
 - [Narrow rooms](narrow-light.png)
+
+## September 22 catalog expansion
+
+The approved nursery, clock, TV console, wardrobe, toy chest, and breakfast-bar batch is documented with updated previews in [Expansion](Expansion/README.md).
+
+
+## Current nursery and room variations
+
+The nursery has been redrawn with a traditional wooden crib and rocking chair. The new home office, music room, and storage variations are documented with current previews in [Traditional nursery and room variations](Traditional/README.md).
+
+
+## Library and nursery alignment update
+
+See [the current nursery refinements, filled bookshelf, and library previews](Library/README.md) for the latest meshes and validation.
+
+
+## Upright library revision
+
+The current library uses a bank of tall bookcases standing side by side. See [current previews and validation](UprightLibrary/README.md).
+
+
+## Pass 4 implemented
+
+Doors, exterior windows, and a reduced-motion-aware furniture reveal are documented in [Pass 4](../FloorplanPass4/README.md).

@@ -76,12 +76,12 @@ namespace Shikaku.UI
             BlueprintThemeAssets.Resolve(blueprintTheme).GetClueTextColor(dark);
 
         [Header("Floorplan Furniture")]
-        [Tooltip("Show geometric furniture in valid placed rooms. Can be changed in Play mode or overridden per game mode through SetRoomFurnitureEnabled.")]
+        [Tooltip("Show geometric furniture in valid placed rooms. Time Trial always hides furniture; other modes respect this setting.")]
         [SerializeField] private bool showRoomFurniture = true;
         private bool _furnitureRefreshPending;
-        public bool RoomFurnitureEnabled => showRoomFurniture;
+        public bool RoomFurnitureEnabled => showRoomFurniture && GameSession.Mode != MenuMode.TimeTrial;
 
-        /// <summary>Presentation-only switch for future mode policies; leaves puzzle state untouched.</summary>
+        /// <summary>Presentation preference for modes that support furniture; leaves puzzle state untouched.</summary>
         public void SetRoomFurnitureEnabled(bool enabled)
         {
             if (showRoomFurniture == enabled) return;
@@ -958,7 +958,7 @@ namespace Shikaku.UI
                 ThemeManager.IsDark,
                 hasPreview,
                 preview,
-                showRoomFurniture);
+                RoomFurnitureEnabled);
         }
 
         private bool TryGetDraftVisual(
@@ -1848,7 +1848,8 @@ namespace Shikaku.UI
                 if (!CellExists(i))
                     continue;
 
-                if (_model.GetRegionIdAt(i) >= 0)
+                if (_model.GetRegionIdAt(i) >= 0 &&
+                    !_model.IsHintLockedCell(i))
                 {
                     count++;
                 }

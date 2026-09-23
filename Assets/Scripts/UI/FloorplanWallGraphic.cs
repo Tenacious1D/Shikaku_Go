@@ -44,6 +44,11 @@ namespace Shikaku.UI
         private readonly List<FloorplanEdge> _edges = new(256);
         private readonly Dictionary<int, Color> _hintColors = new();
         private readonly List<int> _staleHints = new();
+        private readonly FloorplanOpeningLayout _openingLayout = new();
+        private readonly List<FloorplanOpening> _openings = new(64);
+        private readonly Dictionary<(int, int, bool), FloorplanOpening> _openingByEdge = new();
+        private float _cellPixels;
+        public IReadOnlyList<FloorplanOpening> Openings => _openings;
         private PuzzleModel _model;
         private BlueprintThemeAssets _theme;
         private bool _dark;
@@ -60,7 +65,7 @@ namespace Shikaku.UI
         public void SetBoard(PuzzleModel model, CellView[] cells, BlueprintThemeAssets theme, bool dark)
         {
             _model = model; _theme = theme; _dark = dark;
-            _edges.Clear();
+            _edges.Clear(); _openings.Clear(); _openingByEdge.Clear();
             if (model == null || cells == null || cells.Length != model.Width * model.Height ||
                 cells.Length == 0 || cells[0] == null)
             { SetVerticesDirty(); return; }
@@ -79,6 +84,14 @@ namespace Shikaku.UI
             _y[model.Height] = BoundsAt((model.Height - 1) * model.Width).min.y;
             _thickness = Mathf.Clamp(Mathf.Min(first.size.x, first.size.y) * 0.055f, 2.4f, 5.5f);
             FloorplanEdges.Build(model, _edges);
+            _openingLayout.Build(model, _edges, _openings);
+            foreach (var opening in _openings)
+                _openingByEdge[(opening.Edge.X, opening.Edge.Y, opening.Edge.Horizontal)] = opening;
+            Camera camera = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+            Vector2 origin = RectTransformUtility.WorldToScreenPoint(camera, rectTransform.TransformPoint(Vector3.zero));
+            _cellPixels = Mathf.Min(
+                Vector2.Distance(origin, RectTransformUtility.WorldToScreenPoint(camera, rectTransform.TransformPoint(new Vector3(first.size.x, 0)))),
+                Vector2.Distance(origin, RectTransformUtility.WorldToScreenPoint(camera, rectTransform.TransformPoint(new Vector3(0, first.size.y)))));
             _staleHints.Clear();
             foreach (int id in _hintColors.Keys)
                 if (!model.TryGetRegion(id, out _)) _staleHints.Add(id);
@@ -132,15 +145,97 @@ namespace Shikaku.UI
                         right = left + width;
                     }
                 }
-                int start = mesh.currentVertCount;
-                Color32 ink = EdgeColor(edge);
-                mesh.AddVert(new Vector3(left,bottom),ink,Vector2.zero);
-                mesh.AddVert(new Vector3(left,top),ink,Vector2.zero);
-                mesh.AddVert(new Vector3(right,top),ink,Vector2.zero);
-                mesh.AddVert(new Vector3(right,bottom),ink,Vector2.zero);
-                mesh.AddTriangle(start,start+1,start+2);
-                mesh.AddTriangle(start,start+2,start+3);
+                Color ink = EdgeColor(edge);
+                if (_cellPixels >= FloorplanOpeningLayout.MinimumCellPixels &&
+                    _openingByEdge.TryGetValue((edge.X, edge.Y, edge.Horizontal), out var opening))
+                {
+                    float a = edge.Horizontal ? Mathf.Lerp(left, right, FloorplanOpeningLayout.Start) : Mathf.Lerp(top, bottom, FloorplanOpeningLayout.Start);
+                    float b = edge.Horizontal ? Mathf.Lerp(left, right, FloorplanOpeningLayout.End) : Mathf.Lerp(top, bottom, FloorplanOpeningLayout.End);
+                    if (edge.Horizontal)
+                    {
+                        Quad(mesh, left, bottom, a, top, ink);
+                        Quad(mesh, b, bottom, right, top, ink);
+                    }
+                    else
+                    {
+                        Quad(mesh, left, a, right, top, ink);
+                        Quad(mesh, left, bottom, right, b, ink);
+                    }
+                    DrawOpening(mesh, opening, left, bottom, right, top, ink);
+                }
+                else Quad(mesh, left, bottom, right, top, ink);
             }
+        }
+        private void DrawOpening(VertexHelper mesh, FloorplanOpening opening,
+            float left, float bottom, float right, float top, Color ink)
+        {
+            var edge = opening.Edge;
+            Vector2 along = edge.Horizontal ? Vector2.right : Vector2.down;
+            Vector2 inward = (edge.Horizontal ? Vector2.down : Vector2.right) * opening.Inward;
+            Vector2 start = edge.Horizontal ? new Vector2(left, (top + bottom) * .5f) : new Vector2((left + right) * .5f, top);
+            float cell = edge.Horizontal ? right - left : top - bottom;
+            Vector2 hinge = start + along * (cell * FloorplanOpeningLayout.Start);
+            float length = cell * (FloorplanOpeningLayout.End - FloorplanOpeningLayout.Start);
+            Vector2 end = hinge + along * length;
+            float fine = Mathf.Max(.8f, _thickness * .27f);
+            // A thin threshold preserves the exact puzzle boundary through every decorative opening.
+            Line(mesh, hinge, end, fine, ink);
+            if (opening.Kind == FloorplanOpeningKind.Window)
+            {
+                float depth = edge.Horizontal ? top - bottom : right - left;
+                Color glass = _dark ? new Color32(116, 187, 201, 255) : new Color32(124, 178, 190, 255);
+                Line(mesh, hinge, end, depth * .52f, glass);
+                Line(mesh, hinge + inward * depth * .38f, end + inward * depth * .38f, fine, ink);
+                Line(mesh, hinge - inward * depth * .38f, end - inward * depth * .38f, fine, ink);
+                Vector2 center = (hinge + end) * .5f;
+                Line(mesh, center - inward * depth * .5f, center + inward * depth * .5f, fine, ink);
+            }
+            else
+            {
+                float acrossCell = edge.Horizontal ? _y[edge.Y- (opening.Inward < 0 ? 1 : 0)] - _y[edge.Y + (opening.Inward > 0 ? 1 : 0)]
+                    : _x[edge.X + (opening.Inward > 0 ? 1 : 0)] - _x[edge.X - (opening.Inward < 0 ? 1 : 0)];
+                if (opening.Kind == FloorplanOpeningKind.SlidingDoor)
+                {
+                    Vector2 offset = inward * (acrossCell * .065f);
+                    // A compact pocket-door leaf parallel to its track, entirely in the wall margin.
+                    Line(mesh, hinge + offset, end + offset, fine * 1.6f, ink);
+                    Line(mesh, end + offset * .5f, end + offset * 1.3f, fine, ink);
+                    return;
+                }
+                float depth = acrossCell * (FloorplanOpeningLayout.End - FloorplanOpeningLayout.Start);
+                Line(mesh, hinge, hinge + inward * depth, fine * 1.6f, ink);
+                if (_cellPixels >= 44f)
+                {
+                    Color arc = ink; arc.a *= .52f;
+                    Vector2 previous = end;
+                    for (int i = 1; i <= 10; i++)
+                    {
+                        float angle = i * Mathf.PI * .05f;
+                        Vector2 next = hinge + along * (Mathf.Cos(angle) * length) + inward * (Mathf.Sin(angle) * depth);
+                        Line(mesh, previous, next, fine, arc); previous = next;
+                    }
+                }
+            }
+        }
+
+        private static void Quad(VertexHelper mesh, float left, float bottom, float right, float top, Color color)
+        {
+            int first = mesh.currentVertCount;
+            mesh.AddVert(new Vector3(left,bottom),color,Vector2.zero);
+            mesh.AddVert(new Vector3(left,top),color,Vector2.zero);
+            mesh.AddVert(new Vector3(right,top),color,Vector2.zero);
+            mesh.AddVert(new Vector3(right,bottom),color,Vector2.zero);
+            mesh.AddTriangle(first,first+1,first+2); mesh.AddTriangle(first,first+2,first+3);
+        }
+
+        private static void Line(VertexHelper mesh, Vector2 a, Vector2 b, float width, Color color)
+        {
+            Vector2 direction = b-a;
+            Vector2 normal = new Vector2(-direction.y,direction.x).normalized * width * .5f;
+            int first = mesh.currentVertCount;
+            mesh.AddVert(a-normal,color,Vector2.zero); mesh.AddVert(a+normal,color,Vector2.zero);
+            mesh.AddVert(b+normal,color,Vector2.zero); mesh.AddVert(b-normal,color,Vector2.zero);
+            mesh.AddTriangle(first,first+1,first+2); mesh.AddTriangle(first,first+2,first+3);
         }
     }
 }

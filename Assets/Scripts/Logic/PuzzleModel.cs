@@ -168,8 +168,31 @@ namespace Shikaku.Logic
             AssignedCellCount = 0;
             SelectedCellIndex = -1;
             SelectedRegionId = -1;
+            CreateAutomaticSingletonRegions();
             BoardReset?.Invoke();
             SelectionChanged?.Invoke();
+        }
+
+        private void CreateAutomaticSingletonRegions()
+        {
+            for (int index = 0; index < GivenNumber.Length; index++)
+            {
+                if (!CellExistsAt(index) || GivenNumber[index] != 1)
+                    continue;
+
+                var region = new ShikakuRegion(
+                    _nextRegionId++,
+                    index % Width,
+                    index / Width,
+                    1,
+                    1,
+                    true);
+                EvaluateRegion(region);
+                _regions.Add(region.Id, region);
+            }
+
+            if (_regions.Count > 0)
+                RebuildCellOwnership();
         }
 
         public static bool[] BuildExistsFromMask(int width, int height, string mask)

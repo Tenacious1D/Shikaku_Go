@@ -14,7 +14,7 @@
             <ui:ScrollView class="modern-home-scroll" mode="Vertical" vertical-scroller-visibility="Hidden" horizontal-scroller-visibility="Hidden">
                 <ui:VisualElement class="modern-home-content">
                     <ui:VisualElement name="brand-section" class="brand-section">
-                        <ui:Label text="BLUEPRINT PUZZLES" class="blueprint-eyebrow" />
+                        <ui:Label text="LITTLE ROOMS. BIG IDEAS." class="blueprint-eyebrow" />
                         <ui:VisualElement name="brand-mark" class="brand-mark-scatter">
                             <ui:VisualElement class="brand-logo-tile brand-logo-tile-blank scatter-blank" />
                             <ui:VisualElement class="brand-logo-tile brand-logo-tile-grey scatter-one">

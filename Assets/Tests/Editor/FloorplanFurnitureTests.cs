@@ -111,24 +111,133 @@ namespace Shikaku.Tests
             foreach(var kind in new[] { FloorplanFurnitureKind.Bed, FloorplanFurnitureKind.Sofa,
                 FloorplanFurnitureKind.Desk, FloorplanFurnitureKind.DiningSet, FloorplanFurnitureKind.KitchenCounter,
                 FloorplanFurnitureKind.Bathtub, FloorplanFurnitureKind.Basin, FloorplanFurnitureKind.Toilet,
-                FloorplanFurnitureKind.Bookcase, FloorplanFurnitureKind.Washer, FloorplanFurnitureKind.Armchair })
+                FloorplanFurnitureKind.Bookcase, FloorplanFurnitureKind.Washer, FloorplanFurnitureKind.Armchair,
+                FloorplanFurnitureKind.Crib, FloorplanFurnitureKind.ChangingTable, FloorplanFurnitureKind.RockingChair,
+                FloorplanFurnitureKind.GrandfatherClock, FloorplanFurnitureKind.TvConsole,
+                FloorplanFurnitureKind.Wardrobe, FloorplanFurnitureKind.ToyChest, FloorplanFurnitureKind.BreakfastBar,
+                FloorplanFurnitureKind.DoubleWorkstation, FloorplanFurnitureKind.FilingCabinet, FloorplanFurnitureKind.PrinterStand,
+                FloorplanFurnitureKind.UprightPiano, FloorplanFurnitureKind.RecordCabinet,
+                FloorplanFurnitureKind.BoxShelves, FloorplanFurnitureKind.CoatRack, FloorplanFurnitureKind.LaundryHamper, FloorplanFurnitureKind.TallBookshelf })
                 Assert.That(observed.Contains(kind), Is.True, $"Missing template coverage: {kind}");
         }
 
-        [TestCase(1,5,true)]
-        [TestCase(5,1,false)]
-        public void NarrowRooms_OrientStorageAlongTheLongWall(int w, int h, bool rotated)
+        [TestCase(1,5)]
+        [TestCase(5,1)]
+        public void NarrowRooms_OrientFurnitureAlongTheLongWall(int w, int h)
         {
             var given = new int[w*h];given[0]=w*h;
             var model = new PuzzleModel(w,h,given);
             var items = new List<FloorplanFurniturePlacement>();
             FloorplanFurnitureLayout.Build(model,Commit(model,0,0,w,h),80,items);
             Assert.That(items.Count, Is.EqualTo(1));
-            Assert.That(items[0].QuarterTurn, Is.EqualTo(rotated));
+            Assert.That(items[0].Bounds.height > items[0].Bounds.width, Is.EqualTo(h > w));
             CollectionAssert.Contains(new[] { FloorplanFurnitureKind.Cabinet,
-                FloorplanFurnitureKind.Bookcase, FloorplanFurnitureKind.Bench }, items[0].Kind);
+                FloorplanFurnitureKind.Bookcase, FloorplanFurnitureKind.Bench, FloorplanFurnitureKind.GrandfatherClock,
+                FloorplanFurnitureKind.TvConsole, FloorplanFurnitureKind.BreakfastBar, FloorplanFurnitureKind.Wardrobe,
+                FloorplanFurnitureKind.BoxShelves, FloorplanFurnitureKind.CoatRack, FloorplanFurnitureKind.LaundryHamper, FloorplanFurnitureKind.FilledBookshelf }, items[0].Kind);
         }
 
+        [Test]
+        public void Nursery_RequiresLargeRoomAndSpaceForSupportingFurniture()
+        {
+            var items = new List<FloorplanFurniturePlacement>();
+            int nurseries = 0;
+            for(int w=1;w<=8;w++) for(int h=1;h<=8;h++) for(int c=0;c<w*h;c++)
+            {
+                var given=new int[w*h];given[c]=w*h;
+                var model=new PuzzleModel(w,h,given);
+                var room=Commit(model,0,0,w,h);
+                FloorplanFurnitureLayout.Build(model,room,80,items);
+                if(items.Count==0 || items[0].Kind!=FloorplanFurnitureKind.Crib) continue;
+                nurseries++;
+                Assert.That(w*h, Is.GreaterThanOrEqualTo(12));
+                Assert.That(Mathf.Min(w,h), Is.GreaterThanOrEqualTo(3));
+                Assert.That(items.Count, Is.InRange(2,3));
+                for(int i=1;i<items.Count;i++)
+                    CollectionAssert.Contains(new[]{FloorplanFurnitureKind.ChangingTable,
+                        FloorplanFurnitureKind.RockingChair,FloorplanFurnitureKind.ToyChest},items[i].Kind);
+                var crib=items[0];
+                FloorplanFurnitureLayout.Build(model,room,24,items);
+                Assert.That(items.Count, Is.EqualTo(1));
+                Assert.That(items[0], Is.EqualTo(crib), "LOD must not reroll the room family or resize the crib.");
+            }
+            Assert.That(nurseries, Is.GreaterThan(10));
+        }
+
+        [Test]
+        public void NarrowCatalog_IncludesClockTvAndBreakfastBar()
+        {
+            var seen=new HashSet<FloorplanFurnitureKind>();
+            var items=new List<FloorplanFurniturePlacement>();
+            for(int length=2;length<=12;length++) for(int c=0;c<length;c++)
+            {
+                var given=new int[length];given[c]=length;
+                var model=new PuzzleModel(1,length,given);
+                FloorplanFurnitureLayout.Build(model,Commit(model,0,0,1,length),80,items);
+                if(items.Count>0) seen.Add(items[0].Kind);
+            }
+            foreach(var kind in new[]{FloorplanFurnitureKind.GrandfatherClock,FloorplanFurnitureKind.TvConsole,
+                FloorplanFurnitureKind.BreakfastBar,FloorplanFurnitureKind.FilledBookshelf}) Assert.That(seen.Contains(kind),Is.True,kind.ToString());
+        }
+        [Test]
+        public void DoubleOfficeAndMusicRooms_RespectTheirSizeRequirements()
+        {
+            var items=new List<FloorplanFurniturePlacement>();
+            int offices=0,musicRooms=0;
+            for(int w=1;w<=8;w++) for(int h=1;h<=8;h++) for(int c=0;c<w*h;c++)
+            {
+                var given=new int[w*h];given[c]=w*h;
+                var model=new PuzzleModel(w,h,given);
+                FloorplanFurnitureLayout.Build(model,Commit(model,0,0,w,h),80,items);
+                if(items.Count==0) continue;
+                if(items[0].Kind==FloorplanFurnitureKind.DoubleWorkstation)
+                {
+                    offices++;
+                    Assert.That(w*h,Is.GreaterThanOrEqualTo(10));
+                    Assert.That(Mathf.Min(w,h),Is.GreaterThanOrEqualTo(2));
+                }
+                if(items[0].Kind==FloorplanFurnitureKind.UprightPiano)
+                {
+                    musicRooms++;
+                    Assert.That(w*h,Is.GreaterThanOrEqualTo(6));
+                    Assert.That(Mathf.Min(w,h),Is.GreaterThanOrEqualTo(2));
+                }
+            }
+            Assert.That(offices,Is.GreaterThan(0));
+            Assert.That(musicRooms,Is.GreaterThan(0));
+        }
+        [Test]
+        public void Libraries_KeepUprightShelvesAdjacentAlignedAndStableAtLowDetail()
+        {
+            var items=new List<FloorplanFurniturePlacement>();
+            int libraries=0;
+            for(int w=2;w<=8;w++) for(int h=2;h<=8;h++) for(int c=0;c<w*h;c++)
+            {
+                var given=new int[w*h];given[c]=w*h;
+                var model=new PuzzleModel(w,h,given);
+                var room=Commit(model,0,0,w,h);
+                FloorplanFurnitureLayout.Build(model,room,80,items);
+                if(items.Count==0 || items[0].Kind!=FloorplanFurnitureKind.TallBookshelf) continue;
+                libraries++;
+                Assert.That(w*h,Is.GreaterThanOrEqualTo(12));
+                Assert.That(Mathf.Min(w,h),Is.GreaterThanOrEqualTo(3));
+                Assert.That(items.Count,Is.InRange(3,5));
+                var bank=items.ToArray();
+                for(int i=0;i<items.Count;i++)
+                {
+                    Assert.That(items[i].Kind,Is.EqualTo(FloorplanFurnitureKind.TallBookshelf));
+                    Assert.That(items[i].QuarterTurn,Is.False,"Bookcases must stand upright.");
+                    Assert.That(items[i].Bounds.height,Is.GreaterThan(items[i].Bounds.width));
+                    Assert.That(items[i].Bounds.y,Is.EqualTo(items[0].Bounds.y).Within(.0001f));
+                    Assert.That(items[i].Bounds.size,Is.EqualTo(items[0].Bounds.size));
+                    if(i>0) Assert.That(items[i].Bounds.xMin-items[i-1].Bounds.xMax,
+                        Is.InRange(.031f,.045f),"Cases must sit directly next to one another.");
+                }
+                FloorplanFurnitureLayout.Build(model,room,24,items);
+                CollectionAssert.AreEqual(bank,items,"Dense boards must preserve the whole shelf bank.");
+            }
+            Assert.That(libraries,Is.GreaterThan(10));
+        }
         [Test]
         public void EveryFurnitureMesh_StaysInItsFootprintInBothOrientations()
         {

@@ -714,3 +714,102 @@
 .character-reduced-motion.modern-ui.modern-ui Button:active { scale: 1 1; }
 .character-reduced-motion .modern-ui.modern-ui .gameplay-streak-celebration,
 .character-reduced-motion .modern-ui.modern-ui .gameplay-streak-celebration-number { transition-duration: 0s; translate: 0 0; scale: 1 1; }
+
+/* Pass 5: menu surfaces share the furnished puzzle's floor palette.
+   Explicit opt-in excludes Adventure and the gameplay/celebration trees. */
+.floorplan-menu.modern-ui {
+    --bp-background: #f6f4ec; --bp-surface: #fffdf7; --bp-soft: #e7eeea;
+    --bp-ink: #293f43; --bp-muted: #5b6e70; --bp-line: #cbd6cf;
+    --bp-accent: #2c6e70; --bp-on-accent: #ffffff;
+    --bp-success: #336a4a; --bp-success-soft: #dbe9d8;
+    --bp-gold: #866022; --bp-gold-soft: #f2e6cd; --bp-disabled: #778789;
+    --fp-sage: #dbe9d8; --fp-blue: #dae9f3; --fp-peach: #f2ddd2; --fp-lavender: #e5dff0;
+}
+.theme-dark .floorplan-menu.modern-ui {
+    --bp-background: #10212d; --bp-surface: #1c3038; --bp-soft: #294147;
+    --bp-ink: #ecf2ee; --bp-muted: #afc4c6; --bp-line: #496168;
+    --bp-accent: #93d1c7; --bp-on-accent: #122e30;
+    --bp-success: #a4d2ad; --bp-success-soft: #31493d;
+    --bp-gold: #ebc37f; --bp-gold-soft: #4c422b; --bp-disabled: #899fa7;
+    --fp-sage: #31493d; --fp-blue: #2b4355; --fp-peach: #4d362f; --fp-lavender: #3e3650;
+}
+.floorplan-menu.modern-ui .floorplan-menu-art {
+    width: 100%; height: 100%; flex-shrink: 0;
+    --fp-art-ink: #35484d; --fp-sage: #dbe9d8; --fp-blue: #dae9f3; --fp-peach: #f2ddd2;
+}
+.theme-dark .floorplan-menu.modern-ui .floorplan-menu-art {
+    --fp-art-ink: #b3c9d0; --fp-sage: #31493d; --fp-blue: #2b4355; --fp-peach: #4d362f;
+}
+.floorplan-menu.modern-ui .floorplan-illustrated-preview > .floorplan-menu-art {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+}
+.floorplan-menu.modern-ui .character-sketch {
+    --character-ink: #42696d; --character-accent: #ad7838; --character-paper: #dbe9d8;
+}
+.theme-dark .floorplan-menu.modern-ui .character-sketch {
+    --character-ink: #aed7d3; --character-accent: #ebc37f; --character-paper: #31493d;
+}
+.floorplan-menu.modern-ui .blueprint-eyebrow { letter-spacing: 2px; font-size: 24px; }
+.floorplan-menu.modern-ui .tagline { font-size: 32px; }
+.floorplan-menu.modern-ui .main-menu-button { border-radius: 20px; border-width: 2px; }
+.floorplan-menu.modern-ui .home-adventure-feature { background-color: var(--fp-sage); }
+.floorplan-menu.modern-ui .free-play-button { background-color: var(--fp-blue); }
+.floorplan-menu.modern-ui .time-trial-button { background-color: var(--fp-peach); border-top-color: var(--bp-line); }
+.floorplan-menu.modern-ui .home-daily-wide { background-color: var(--bp-gold-soft); border-color: var(--bp-line); border-radius: 20px; }
+.floorplan-menu.modern-ui .main-menu-button:hover { background-color: var(--bp-soft); border-color: var(--bp-accent); }
+.floorplan-menu.modern-ui .main-menu-button:focus { border-width: 3px; border-color: var(--bp-accent); }
+.floorplan-menu.modern-ui .home-compact-button .character-home-art { width: 220px; height: 156px; }
+.floorplan-menu.modern-ui .secondary-menu-button { background-color: var(--bp-surface); border-width: 1px; border-color: var(--bp-line); border-radius: 18px; }
+.floorplan-menu.modern-ui .character-header-art { width: 118px; height: 100px; }
+.floorplan-menu.modern-ui .character-page-title { padding-right: 130px; }
+.floorplan-menu.modern-ui .daily-back-button,
+.floorplan-menu.modern-ui .time-trial-back-button,
+.floorplan-menu.modern-ui .free-play-back-button,
+.floorplan-menu.modern-ui .settings-back-button,
+.floorplan-menu.modern-ui .shop-back-button { border-radius: 18px; background-color: var(--bp-surface); border-width: 2px; }
+
+/* Calendar dates remain recognizable, with completed days becoming colored rooms. */
+.floorplan-menu.modern-ui .daily-work-order { border-color: var(--bp-line); border-radius: 20px; }
+.floorplan-menu.modern-ui .daily-calendar-card { border-radius: 18px; }
+.floorplan-menu.modern-ui .daily-day-button { border-radius: 10px; background-color: var(--bp-soft); }
+.floorplan-menu.modern-ui .daily-day-completed { background-color: var(--fp-sage); border-bottom-width: 3px; }
+.floorplan-menu.modern-ui .daily-day-today { background-color: var(--bp-gold-soft); border-color: var(--bp-gold); }
+.floorplan-menu.modern-ui .daily-day-future,
+.floorplan-menu.modern-ui .daily-day-unavailable { background-color: transparent; }
+.floorplan-menu.modern-ui .daily-modal-card { border-radius: 22px; }
+.floorplan-menu.modern-ui .daily-difficulty-button { border-radius: 14px; }
+.floorplan-menu.modern-ui .daily-difficulty-badge { border-radius: 8px; }
+.floorplan-menu.modern-ui .daily-easy-button .daily-difficulty-badge { background-color: var(--fp-sage); }
+.floorplan-menu.modern-ui .daily-medium-button .daily-difficulty-badge { background-color: var(--bp-gold-soft); }
+.floorplan-menu.modern-ui .daily-hard-button .daily-difficulty-badge { background-color: var(--fp-peach); }
+
+/* Illustrated plans occupy a consistent, unrotated frame. Size labels stay legible. */
+.floorplan-menu.modern-ui .time-trial-assignment { border-radius: 18px; border-left-width: 5px; }
+.floorplan-menu.modern-ui .time-trial-quick { border-left-color: var(--bp-accent); }
+.floorplan-menu.modern-ui .time-trial-classic { border-left-color: var(--bp-gold); }
+.floorplan-menu.modern-ui .time-trial-expert { border-left-color: var(--bp-success); }
+.floorplan-menu.modern-ui .time-trial-plan-preview { width: 230px; height: 198px; rotate: 0; border-width: 0; background-color: transparent; overflow: visible; }
+.floorplan-menu.modern-ui .time-trial-plan-size { position: absolute; bottom: -4px; right: 0; left: auto; top: auto; font-size: 34px; padding: 6px 12px; background-color: var(--bp-surface); color: var(--bp-ink); border-width: 2px; border-color: var(--bp-line); border-radius: 8px; }
+.floorplan-menu.modern-ui .time-trial-assignment-action { border-radius: 14px; background-color: var(--fp-blue); }
+.floorplan-menu.modern-ui .free-play-pack-button { border-radius: 18px; border-bottom-width: 2px; }
+.floorplan-menu.modern-ui .free-play-plan-preview { width: 218px; height: 174px; rotate: 0; border-width: 0; background-color: transparent; }
+.floorplan-menu.modern-ui .free-play-size-button { border-radius: 18px; }
+.floorplan-menu.modern-ui .free-play-size-preview { background-color: transparent; border-width: 0; }
+.floorplan-menu.modern-ui .free-play-size-badge { position: absolute; right: 8px; bottom: 4px; font-size: 36px; background-color: var(--bp-surface); color: var(--bp-ink); border-width: 2px; border-color: var(--bp-line); border-radius: 8px; padding: 4px 14px; }
+.floorplan-menu.modern-ui .free-play-level-button { border-radius: 12px; }
+.floorplan-menu.modern-ui .free-play-level-completed { background-color: var(--fp-sage); }
+.floorplan-menu.modern-ui .free-play-level-next { background-color: var(--bp-gold-soft); border-color: var(--bp-gold); border-width: 3px; }
+.floorplan-menu.modern-ui .free-play-level-completed .free-play-level-approved-stamp { rotate: 0; border-width: 0; padding: 0; }
+
+/* Utility screens use the same paper and room-colored accents without adding clutter. */
+.floorplan-menu.modern-ui .settings-section-card,
+.floorplan-menu.modern-ui .shop-pack-card,
+.floorplan-menu.modern-ui .privacy-welcome-card,
+.floorplan-menu.modern-ui .privacy-preferences-card { border-radius: 18px; }
+.floorplan-menu.modern-ui .settings-section-accent { width: 5px; background-color: var(--bp-accent); }
+.floorplan-menu.modern-ui .settings-control-row { border-bottom-width: 1px; }
+.floorplan-menu.modern-ui .shop-pack-icon-shell { background-color: var(--fp-blue); border-radius: 12px; border-bottom-width: 0; }
+.floorplan-menu.modern-ui .shop-balance-chip { border-radius: 14px; background-color: var(--bp-gold-soft); }
+.floorplan-menu.modern-ui .shop-buy-button { border-radius: 12px; }
+.floorplan-menu.modern-ui .privacy-welcome-brand-mark { background-color: var(--fp-sage); border-radius: 12px; }
+.floorplan-menu.modern-ui .privacy-welcome-analytics-card { border-radius: 14px; }

@@ -20,6 +20,23 @@ namespace Shikaku.Tests
         }
 
         [Test]
+        public void LoadPuzzle_AutomaticallyCommitsAndLocksSingletonClues()
+        {
+            var model = new PuzzleModel(
+                3,
+                2,
+                new[] { 1, 0, 0, 0, 0, 5 });
+
+            Assert.That(model.AssignedCellCount, Is.EqualTo(1));
+            Assert.That(model.RegionCount, Is.EqualTo(1));
+            Assert.That(model.GetRegionIdAt(0), Is.GreaterThanOrEqualTo(0));
+            Assert.That(model.IsRegionValidAt(0), Is.True);
+            Assert.That(model.IsHintLockedCell(0), Is.True);
+            Assert.That(model.TryRemoveRegionAt(0), Is.False);
+            Assert.That(model.TryCommitRectangle(0, 0, 2, 1), Is.False);
+        }
+
+        [Test]
         public void CommitRegion_OverridesWholeTouchedRegionsOnlyAtCommit()
         {
             var model = new PuzzleModel(4, 2, new[] { 4, 0, 4, 0, 0, 0, 0, 0 });

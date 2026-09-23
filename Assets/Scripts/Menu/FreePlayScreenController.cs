@@ -267,6 +267,7 @@ namespace Shikaku.Menu
             markerTwo.AddToClassList("free-play-plan-marker-two");
             preview.Add(markerTwo);
 
+            FloorplanMenuArt.DecoratePreview(preview, seed);
             return preview;
         }
 
@@ -384,6 +385,7 @@ namespace Shikaku.Menu
             var badge = new Label($"{sizePack.Size}\u00D7{sizePack.Size}");
             badge.AddToClassList("free-play-size-badge");
             preview.Add(badge);
+            FloorplanMenuArt.DecoratePreview(preview, sizePack.Size);
             button.Add(preview);
 
             int completed = CountCompleted(

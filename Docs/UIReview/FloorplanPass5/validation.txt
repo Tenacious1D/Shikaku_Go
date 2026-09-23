@@ -1,0 +1,8 @@
+Pass 5 validation
+Application script compilation: exit 0
+Unity UI render run: REVIEW_COMPLETE
+Rendered captures: 108
+Themes: light, dark
+Sizes: 1080x2340, 960x1700, 1600x2100
+Assertions: calendar containment; horizontal bounds; menu opt-in; no duplicate art; art ignores input; Adventure excluded; mascot visibility; building animation completion; tutorial/result containment.
+No stylesheet import or C# compilation errors reported.

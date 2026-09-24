@@ -16,7 +16,7 @@ namespace Shikaku.EditorTools
         public int callbackOrder => -900;
 
         [MenuItem(
-            "Tools/Shikaku Go/iOS/Validate Production Ad Configuration")]
+            "Tools/Shikaku City/iOS/Validate Production Ad Configuration")]
         public static void ValidateFromMenu()
         {
             IReadOnlyList<string> errors =

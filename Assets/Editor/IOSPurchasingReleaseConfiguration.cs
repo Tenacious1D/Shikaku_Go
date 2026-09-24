@@ -296,7 +296,7 @@ namespace Shikaku.EditorTools
         public int callbackOrder => -840;
 
         [MenuItem(
-            "Tools/Shikaku Go/iOS/Validate In-App Purchases")]
+            "Tools/Shikaku City/iOS/Validate In-App Purchases")]
         public static void ValidateFromMenu()
         {
             IReadOnlyList<string> errors =

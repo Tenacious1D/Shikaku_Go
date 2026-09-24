@@ -813,3 +813,31 @@
 .floorplan-menu.modern-ui .shop-buy-button { border-radius: 12px; }
 .floorplan-menu.modern-ui .privacy-welcome-brand-mark { background-color: var(--fp-sage); border-radius: 12px; }
 .floorplan-menu.modern-ui .privacy-welcome-analytics-card { border-radius: 14px; }
+/* Shikaku City: one cohesive skyline and wordmark on Home and welcome. */
+.floorplan-menu.modern-ui .shikaku-city-logo {
+    width: 100%; height: 100%; flex-shrink: 0;
+    --city-logo-ink: #35484d; --city-logo-paper: #fffdf7;
+}
+.theme-dark .floorplan-menu.modern-ui .shikaku-city-logo {
+    --city-logo-ink: #b3c9d0; --city-logo-paper: #20363d;
+}
+.floorplan-menu.modern-ui .brand-section { height: 408px; }
+.floorplan-menu.modern-ui .brand-mark-scatter.city-logo-host {
+    width: 286px; height: 186px; min-height: 186px; margin: 0 0 8px;
+    scale: 1 1; rotate: 0; align-self: center; flex-shrink: 0;
+}
+.floorplan-menu.modern-ui .brand-title-row { height: 94px; flex-shrink: 0; }
+.floorplan-menu.modern-ui .brand-title { font-size: 82px; letter-spacing: -2px; white-space: nowrap; }
+.floorplan-menu.modern-ui .brand-title-gold { rotate: 0; margin-left: 16px; color: var(--bp-accent); }
+.floorplan-menu.modern-ui .blueprint-eyebrow { display: none; }
+.floorplan-menu.modern-ui .tagline-row { height: 70px; }
+.floorplan-menu.modern-ui .tagline { font-size: 29px; color: var(--bp-muted); }
+.floorplan-menu.modern-ui .privacy-welcome-brand-mark.city-logo-host {
+    width: 234px; height: 153px; min-height: 153px; padding: 0; margin-bottom: 12px;
+    background-color: transparent; border-width: 0; rotate: 0;
+}
+.floorplan-menu.modern-ui .main-menu-button { border-bottom-width: 3px; }
+.floorplan-menu.modern-ui .menu-button-note { margin-top: 6px; }
+.floorplan-menu.modern-ui .free-play-level-locked { opacity: 0.65; }
+.floorplan-menu.modern-ui .free-play-level-next-label { color: var(--bp-gold); }
+.floorplan-menu.modern-ui .daily-work-order-action { min-width: 128px; }

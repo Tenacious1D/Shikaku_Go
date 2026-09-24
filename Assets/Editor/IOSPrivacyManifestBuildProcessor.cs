@@ -21,7 +21,7 @@ namespace Shikaku.EditorTools
         public int callbackOrder => -850;
 
         [MenuItem(
-            "Tools/Shikaku Go/iOS/Validate Privacy Manifest")]
+            "Tools/Shikaku City/iOS/Validate Privacy Manifest")]
         public static void ValidateFromMenu()
         {
             IReadOnlyList<string> errors =

@@ -89,7 +89,7 @@ namespace Shikaku.Ads
         private const int MaximumRecentAds = 5;
         private const int MaximumValueLength = 160;
         private const string EmailSubject =
-            "Shikaku Go - Inappropriate Ad Report";
+            "Shikaku City - Inappropriate Ad Report";
 
         private static readonly object Gate = new object();
         private static readonly List<AdReportEntry> RecentAds =
@@ -180,7 +180,7 @@ namespace Shikaku.Ads
                 "Please attach a screenshot of the ad if possible.");
             report.AppendLine();
             report.AppendLine(
-                "Recent ad details captured by Shikaku Go " +
+                "Recent ad details captured by Shikaku City " +
                 "(no advertising ID is included):");
 
             if (recentAds == null || recentAds.Count == 0)

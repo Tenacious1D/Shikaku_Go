@@ -72,9 +72,9 @@
             <ui:Button name="gameplay-rate-prompt-backdrop" class="gameplay-modal-backdrop" />
             <ui:VisualElement class="gameplay-modal-card gameplay-rate-card">
                 <ui:VisualElement class="gameplay-rate-icon" picking-mode="Ignore" />
-                <ui:Label text="Rate Shikaku Go" class="gameplay-modal-title" />
-                <ui:Label text="You’ve reached a 3-day streak! If you’re enjoying Shikaku Go, would you take a moment to rate it?" class="gameplay-modal-message" />
-                <ui:Button name="gameplay-rate-prompt-rate-button" text="Rate Shikaku Go" class="gameplay-modal-button gameplay-primary-button" />
+                <ui:Label text="Rate Shikaku City" class="gameplay-modal-title" />
+                <ui:Label text="You’ve reached a 3-day streak! If you’re enjoying Shikaku City, would you take a moment to rate it?" class="gameplay-modal-message" />
+                <ui:Button name="gameplay-rate-prompt-rate-button" text="Rate Shikaku City" class="gameplay-modal-button gameplay-primary-button" />
                 <ui:Button name="gameplay-rate-prompt-later-button" text="Not Now" class="gameplay-modal-button gameplay-secondary-button" />
             </ui:VisualElement>
         </ui:VisualElement>

@@ -34,8 +34,25 @@ namespace Shikaku.SaveSystem
                 ? _savePathOverride
                 :
 #endif
-            Path.Combine(Application.persistentDataPath, SaveFileName);
+            Path.Combine(PersistentSaveDirectory, SaveFileName);
 
+        private static string PersistentSaveDirectory
+        {
+            get
+            {
+                string directory = Application.persistentDataPath;
+#if UNITY_EDITOR || UNITY_STANDALONE
+                // Desktop Unity paths include the product name. Keep the established save
+                // location when displaying the new brand; mobile paths use the unchanged bundle ID.
+                if (Application.productName == "Shikaku City")
+                {
+                    string parent = Path.GetDirectoryName(directory);
+                    if (!string.IsNullOrEmpty(parent)) return Path.Combine(parent, "Shikaku Go");
+                }
+#endif
+                return directory;
+            }
+        }
         public static string BackupPath => SavePath + ".bak";
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

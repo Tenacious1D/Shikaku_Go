@@ -74,3 +74,8 @@ The captures in the index have been refreshed for these changed views. The gamep
 ## Current floorplan menus
 
 See [Pass 5](FloorplanPass5/README.md) for the current furnished-floorplan menu palette, illustrations, and previews. The older captures above preserve the earlier blueprint iteration.
+
+
+## Shikaku City branding
+
+See [Shikaku City](ShikakuCity/README.md) for the latest main-menu logo, wordmark, welcome screens, and branding validation.

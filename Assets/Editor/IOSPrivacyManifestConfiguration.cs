@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Shikaku.EditorTools
 {
     /// <summary>
-    /// Defines and validates Shikaku Go's app-owned privacy manifest.
+    /// Defines and validates Shikaku City's app-owned privacy manifest.
     /// Third-party SDK manifests remain responsible for SDK-specific APIs,
     /// collection, and tracking domains.
     /// </summary>

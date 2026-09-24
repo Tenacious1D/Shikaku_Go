@@ -27,7 +27,7 @@ namespace Shikaku.Notifications
     }
 
     /// <summary>
-    /// Owns Shikaku Go's optional, locally scheduled mobile reminders.
+    /// Owns Shikaku City's optional, locally scheduled mobile reminders.
     /// Reminders are deliberately quiet, inexact, and limited to one per day.
     /// </summary>
     [DefaultExecutionOrder(-1000)]
@@ -468,7 +468,7 @@ namespace Shikaku.Notifications
                 string message = GetReminderMessage(fireTime.Date);
 
                 var notification = new AndroidNotification(
-                    "Shikaku Go",
+                    "Shikaku City",
                     message,
                     fireTime)
                 {
@@ -673,7 +673,7 @@ namespace Shikaku.Notifications
                 var notification = new iOSNotification(
                     IOSNotificationIdentifierPrefix + scheduled)
                 {
-                    Title = "Shikaku Go",
+                    Title = "Shikaku City",
                     Body = GetReminderMessage(fireTime.Date),
                     Data = ReminderIntentData + "|" +
                         fireTime.ToUniversalTime().Ticks,

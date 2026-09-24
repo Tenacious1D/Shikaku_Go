@@ -12,7 +12,7 @@ using UnityEngine.UnityConsent;
 #endif
 
 /// <summary>
-/// Central Analytics service for Shikaku Go.
+/// Central Analytics service for Shikaku City.
 ///
 /// Example:
 /// GameAnalytics.PuzzleStarted(

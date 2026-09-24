@@ -7,7 +7,7 @@ namespace Shikaku.EditorTools
 {
     public static class PuzzleProgressDebugMenu
     {
-        private const string MenuPath = "Shikaku Go/Progress/Reset Puzzle Progress...";
+        private const string MenuPath = "Shikaku City/Progress/Reset Puzzle Progress...";
 
         [MenuItem(MenuPath)]
         private static void ResetPuzzleProgress()

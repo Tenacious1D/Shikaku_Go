@@ -17,7 +17,7 @@ namespace Shikaku.EditorTools
         public const string SourceAssetPath =
             "Assets/Art/Logos/shikaku_blueprint_app_icon.png";
 
-        [MenuItem("Tools/Shikaku Go/iOS/Apply App Icon")]
+        [MenuItem("Tools/Shikaku City/iOS/Apply App Icon")]
         public static void ApplyIOSAppIcon()
         {
             Texture2D source = AssetDatabase.LoadAssetAtPath<Texture2D>(

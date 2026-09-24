@@ -18,6 +18,7 @@ namespace Shikaku.UI
             }
             BlueprintCharacter.Install(root);
             FloorplanMenuArt.Install(root);
+            ShikakuCityLogo.Install(root);
             ApplySafeArea(root);
         }
 

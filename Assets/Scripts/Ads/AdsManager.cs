@@ -873,7 +873,7 @@ namespace Shikaku.Ads
                 LevelPlay.SetMetaData("is_test_suite", "enable");
 #endif
 
-            // Shikaku Go is not child-directed unless you intentionally publish it that way.
+            // Shikaku City is not child-directed unless you intentionally publish it that way.
             LevelPlayPrivacySettings.SetCOPPA(false);
 
             Debug.Log("AdsManager: Initializing LevelPlay.");

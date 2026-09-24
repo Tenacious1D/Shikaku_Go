@@ -610,7 +610,7 @@ namespace Shikaku.Menu
         private static void EmailSupport()
         {
             string subject =
-                UnityWebRequest.EscapeURL("Shikaku Go Support");
+                UnityWebRequest.EscapeURL("Shikaku City Support");
             string body = UnityWebRequest.EscapeURL(
                 "Please describe the issue you are experiencing:\n\n" +
                 $"App version: {Application.version}\n" +

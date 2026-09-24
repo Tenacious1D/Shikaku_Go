@@ -12,7 +12,7 @@ using UnityEngine;
 namespace Shikaku.EditorTools
 {
     /// <summary>
-    /// Owns the stable Unity-side settings for the Shikaku Go iOS release.
+    /// Owns the stable Unity-side settings for the Shikaku City iOS release.
     /// Run the menu command after upgrading Unity or changing Player Settings.
     /// Builds also validate these settings before Unity exports Xcode.
     /// </summary>
@@ -33,7 +33,7 @@ namespace Shikaku.EditorTools
 
         public int callbackOrder => -1000;
 
-        [MenuItem("Tools/Shikaku Go/iOS/Apply Release Foundation")]
+        [MenuItem("Tools/Shikaku City/iOS/Apply Release Foundation")]
         public static void ApplyReleaseFoundation()
         {
             PlayerSettings.SetApplicationIdentifier(
@@ -83,18 +83,18 @@ namespace Shikaku.EditorTools
             if (errors.Count > 0)
             {
                 throw new InvalidOperationException(
-                    "The Shikaku Go iOS release foundation could not be " +
+                    "The Shikaku City iOS release foundation could not be " +
                     "applied:\n- " + string.Join("\n- ", errors));
             }
 
             Debug.Log(
-                "Shikaku Go iOS release foundation applied: " +
+                "Shikaku City iOS release foundation applied: " +
                 $"{BundleIdentifier}, version {Version} ({FirstBuildNumber}), " +
                 "iPhone + iPad, portrait, iOS 15.0+, IL2CPP ARM64, " +
                 $"automatic signing with team {AppleTeamId}.");
         }
 
-        [MenuItem("Tools/Shikaku Go/iOS/Validate Release Foundation")]
+        [MenuItem("Tools/Shikaku City/iOS/Validate Release Foundation")]
         public static void ValidateFromMenu()
         {
             IReadOnlyList<string> errors = CollectErrors();
@@ -123,7 +123,7 @@ namespace Shikaku.EditorTools
                 return;
 
             throw new BuildFailedException(
-                "Shikaku Go iOS release validation failed:\n- " +
+                "Shikaku City iOS release validation failed:\n- " +
                 string.Join("\n- ", errors));
         }
 

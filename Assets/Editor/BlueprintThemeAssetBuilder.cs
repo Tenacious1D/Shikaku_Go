@@ -21,7 +21,7 @@ namespace Shikaku.EditorTools
         private const string RivetPath =
             BlueprintFolder + "/Rivet/rivet-sprite-sheet.png";
 
-        [MenuItem("Tools/Shikaku Go/Blueprint Workshop/Build Theme Assets")]
+        [MenuItem("Tools/Shikaku City/Blueprint Workshop/Build Theme Assets")]
         public static void BuildThemeAssets()
         {
             EnsureFolder("Assets/Resources/UI");

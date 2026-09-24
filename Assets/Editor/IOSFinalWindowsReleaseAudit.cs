@@ -22,7 +22,7 @@ namespace Shikaku.EditorTools
         private const string GameplayScene =
             "Assets/Resources/Scenes/Gameplay.unity";
         private const string ExpectedCompanyName = "Smooth Brain Games";
-        private const string ExpectedProductName = "Shikaku Go";
+        private const string ExpectedProductName = "Shikaku City";
         private const string AppleGameCenterDefine =
             "SHIKAKU_APPLE_GAME_CENTER";
         private const string LevelPlayDefine =
@@ -33,7 +33,7 @@ namespace Shikaku.EditorTools
         public int callbackOrder => -700;
 
         [MenuItem(
-            "Tools/Shikaku Go/iOS/Run Final Windows Release Audit")]
+            "Tools/Shikaku City/iOS/Run Final Windows Release Audit")]
         public static void RunFromMenu()
         {
             IReadOnlyList<string> errors = CollectErrors();

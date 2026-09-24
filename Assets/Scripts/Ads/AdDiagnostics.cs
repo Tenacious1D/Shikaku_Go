@@ -39,7 +39,7 @@ namespace Shikaku.Ads
         {
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             var report = new StringBuilder();
-            report.AppendLine("Shikaku Go ad diagnostics");
+            report.AppendLine("Shikaku City ad diagnostics");
             report.AppendLine($"UTC: {DateTime.UtcNow:O}");
             report.AppendLine($"Version: {Application.version}");
             report.AppendLine($"Platform: {Application.platform}");

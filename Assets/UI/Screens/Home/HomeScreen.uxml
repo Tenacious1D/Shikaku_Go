@@ -15,31 +15,14 @@
                 <ui:VisualElement class="modern-home-content">
                     <ui:VisualElement name="brand-section" class="brand-section">
                         <ui:Label text="LITTLE ROOMS. BIG IDEAS." class="blueprint-eyebrow" />
-                        <ui:VisualElement name="brand-mark" class="brand-mark-scatter">
-                            <ui:VisualElement class="brand-logo-tile brand-logo-tile-blank scatter-blank" />
-                            <ui:VisualElement class="brand-logo-tile brand-logo-tile-grey scatter-one">
-                                <ui:Label text="1" class="brand-logo-number" />
-                            </ui:VisualElement>
-                            <ui:VisualElement class="brand-logo-tile brand-logo-tile-red scatter-two">
-                                <ui:Label text="2" class="brand-logo-number" />
-                            </ui:VisualElement>
-                            <ui:VisualElement class="brand-logo-tile brand-logo-tile-green scatter-three">
-                                <ui:Label text="3" class="brand-logo-number" />
-                            </ui:VisualElement>
-                            <ui:VisualElement class="brand-logo-tile brand-logo-tile-blue scatter-four">
-                                <ui:Label text="4" class="brand-logo-number" />
-                            </ui:VisualElement>
-                            <ui:VisualElement class="brand-logo-tile brand-logo-tile-gold scatter-five">
-                                <ui:Label text="5" class="brand-logo-number" />
-                            </ui:VisualElement>
-                        </ui:VisualElement>
+                        <ui:VisualElement name="brand-mark" class="brand-mark-scatter city-logo-host" picking-mode="Ignore" />
                         <ui:VisualElement class="brand-title-row">
                             <ui:Label text="Shikaku" class="brand-title brand-title-dark" />
-                            <ui:Label text="Go" class="brand-title brand-title-gold" />
+                            <ui:Label text="City" class="brand-title brand-title-gold" />
                         </ui:VisualElement>
                         <ui:VisualElement class="tagline-row">
                             <ui:VisualElement class="tagline-rule" />
-                            <ui:Label text="Draw rooms. Find your flow." class="tagline" />
+                            <ui:Label text="Little puzzles. A city of possibilities." class="tagline" />
                             <ui:VisualElement class="tagline-rule" />
                         </ui:VisualElement>
                     </ui:VisualElement>
@@ -326,7 +309,7 @@
                                     <ui:Label text="›" class="settings-link-chevron" />
                                 </ui:Button>
                                 <ui:Button name="settings-rate-button" class="settings-link-button settings-template-button">
-                                    <ui:Label text="Rate Shikaku Go" class="settings-link-label" />
+                                    <ui:Label text="Rate Shikaku City" class="settings-link-label" />
                                     <ui:Label text="›" class="settings-link-chevron" />
                                 </ui:Button>
                             </ui:VisualElement>
@@ -363,7 +346,7 @@
                                 <ui:VisualElement class="settings-control-row settings-analytics-row">
                                     <ui:VisualElement class="settings-appearance-copy">
                                         <ui:Label text="Usage Analytics" class="settings-control-label" />
-                                        <ui:Label text="Share optional gameplay and app usage analytics to help improve Shikaku Go. No name or email is collected." class="settings-appearance-note settings-analytics-note" />
+                                        <ui:Label text="Share optional gameplay and app usage analytics to help improve Shikaku City. No name or email is collected." class="settings-appearance-note settings-analytics-note" />
                                     </ui:VisualElement>
                                     <ui:Toggle name="privacy-preferences-analytics-toggle" class="settings-switch" />
                                 </ui:VisualElement>
@@ -703,7 +686,7 @@
                         <ui:Label text="1" class="privacy-welcome-brand-number" />
                     </ui:VisualElement>
                     <ui:VisualElement class="rivet rivet-welcome" picking-mode="Ignore" />
-                    <ui:Label text="Welcome to Shikaku Go" class="privacy-welcome-title" />
+                    <ui:Label text="Welcome to Shikaku City" class="privacy-welcome-title" />
                     <ui:Label text="By continuing, you agree to our Terms of Service and acknowledge our Privacy Policy." class="privacy-welcome-legal-copy" />
                     <ui:VisualElement class="privacy-welcome-legal-links">
                         <ui:Button name="privacy-welcome-terms-button" text="Terms of Service" class="privacy-welcome-link-button" />
@@ -712,8 +695,8 @@
                     </ui:VisualElement>
                     <ui:VisualElement class="privacy-welcome-analytics-card">
                         <ui:VisualElement class="privacy-welcome-analytics-copy">
-                            <ui:Label text="Help improve Shikaku Go" class="privacy-welcome-analytics-title" />
-                            <ui:Label text="Share optional usage analytics to help improve Shikaku Go. No name or email is collected." class="privacy-welcome-analytics-note" />
+                            <ui:Label text="Help improve Shikaku City" class="privacy-welcome-analytics-title" />
+                            <ui:Label text="Share optional usage analytics to help improve Shikaku City. No name or email is collected." class="privacy-welcome-analytics-note" />
                         </ui:VisualElement>
                         <ui:Toggle name="privacy-welcome-analytics-toggle" class="settings-switch privacy-welcome-toggle" />
                     </ui:VisualElement>
@@ -759,11 +742,11 @@
             <ui:VisualElement class="analytics-modal-card rate-modal-card">
                 <ui:VisualElement class="rate-modal-icon" picking-mode="Ignore" />
                 <ui:VisualElement class="rivet rivet-welcome rivet-small" picking-mode="Ignore" />
-                <ui:Label text="Rate Shikaku Go" class="analytics-modal-title" />
-                <ui:Label text="You’ve reached a 3-day streak! If you’re enjoying Shikaku Go, would you take a moment to rate it?" class="analytics-modal-copy" />
+                <ui:Label text="Rate Shikaku City" class="analytics-modal-title" />
+                <ui:Label text="You’ve reached a 3-day streak! If you’re enjoying Shikaku City, would you take a moment to rate it?" class="analytics-modal-copy" />
                 <ui:VisualElement class="analytics-modal-actions">
                     <ui:Button name="rate-prompt-later-button" text="Not Now" class="analytics-modal-button analytics-secondary-button" />
-                    <ui:Button name="rate-prompt-rate-button" text="Rate Shikaku Go" class="analytics-modal-button analytics-primary-button" />
+                    <ui:Button name="rate-prompt-rate-button" text="Rate Shikaku City" class="analytics-modal-button analytics-primary-button" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

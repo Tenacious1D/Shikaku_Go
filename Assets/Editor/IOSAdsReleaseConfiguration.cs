@@ -52,7 +52,7 @@ namespace Shikaku.EditorTools
         };
 
         [MenuItem(
-            "Tools/Shikaku Go/iOS/Apply Production Ad Configuration")]
+            "Tools/Shikaku City/iOS/Apply Production Ad Configuration")]
         public static void ApplyProductionSettings()
         {
             bool openedForEdit = false;
